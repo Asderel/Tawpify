@@ -286,7 +286,7 @@
                                                     fila = cuerpo[x].getElementsByTagName('tr');
                                                     for (i = 0; i < fila.length; i++) {
                                                         columnas = fila[i].getElementsByTagName("td");
-                                                        for (j = 0; j < columnas.length - 3; j++) {
+                                                        for (j = 0; j < columnas.length - 4; j++) {
                                                             valor = columnas[j].textContent || columnas[j].innerText;
                                                             if (valor.toUpperCase().indexOf(filtro) > -1) {
                                                                 fila[i].style.display = "";
