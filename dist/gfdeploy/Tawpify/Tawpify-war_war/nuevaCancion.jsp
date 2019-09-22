@@ -61,6 +61,9 @@
                             <tr class="table">
                                 <td><a href="#" class="nav-link">Listas de reproduccion</a></td>
                             </tr>
+                            <tr class="table">
+                                <td><a href="#" class="nav-link">Usuarios</a></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -83,7 +86,7 @@
 
                     <!-- FIN JUMBOTRON -->
 
-                    <!-- FORMULARIO LOGIN -->
+                    <!-- FORMULARIO NUEVA CANCION -->
 
                     <div class="container">
                         <form action="NuevaCancionServlet" id="cancionForm" >
@@ -136,7 +139,7 @@
                         </form>
                     </div>
 
-                    <!-- FIN FORMULARIO LOGIN -->
+                    <!-- FIN FORMULARIO NUEVA CANCION -->
 
                 </div>
 

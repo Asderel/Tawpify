@@ -32,12 +32,10 @@
 
                 <li class="nav-item">
                     <button class="btn btn-secondary my-2 mx-2 my-sm-0" type="submit">Accede</button>
-                    <a href="logUI.jsp">Accede</a>
                 </li>
 
                 <li class="nav-item">
                     <button class="btn btn-outline-secondary my-2 mx-2 my-sm-0" type="submit">Registrate</button>
-                    <a href="logUI.jsp">Registrate</a>
                 </li>
             </ul>
 
@@ -81,37 +79,38 @@
                     <!-- JUMBOTRON -->
 
                     <div class="jumbotron" style="padding: 1rem 2rem">
-                        <h1 class="row" style="font-size: 2em">Generos</h1>
+                        <h1 class="row" style="font-size: 2em">Usuarios</h1>
                         <p class="row" style="font-size: 1em">
-                            Aqui puede acceder a todas generos registrados
+                            Aqui puede gestionar los usuarios registrados
                         </p>
                     </div>
 
                     <!-- FIN JUMBOTRON -->
 
-                    <!-- LISTADO GENEROS -->
+                    <!-- LISTADO CANCIONES -->
 
                     <div class="col-12 mt-2">
                         <div class="row my-2 justify-content-between">
                             <div class="col-3">
-                                <a class="btn btn-outline-warning" href="nuevoGenero.jsp">Nuevo genero</a>
+                                <a class="btn btn-outline-warning" href="login.jsp">Nuevo usuario</a>
                             </div>
+
                             <div class="col-3">
                                 <input type="text" class="form-control" id="filtroInput" aria-describedby="filtroInput" placeholder="Filtra en la tabla"
                                        onkeyup="filtrar()">
                             </div>
                         </div>
 
-                        <form id="cancionesForm" action="CancionCRUDServlet" method="POST">
-                            <input id="idCancionInput" name="idCancionInput" value="" type="hidden"/>
+                        <form id="cancionesForm" action="UsuarioCRUDServlet" method="POST">
+                            <input id="idUsuarioInput" name="idCancionInput" value="" type="hidden"/>
+                            <input id="accionInput" name="accionInput" value="" type="hidden"/>
 
-                            <table id="tablaGeneros" class="table table-hover">
+                            <table id="tablaUsuarios" class="table table-hover">
                                 <thead>
                                     <tr>
                                         <th scope="col">Nombre</th>
-                                        <th scope="col">Artista</th>
-                                        <th scope="col">Album</th>
-                                        <th scope="col">Lanzamiento</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col"></th>
                                         <th scope="col"></th>
                                     </tr>
                                 </thead>
@@ -119,34 +118,31 @@
                                     <tr class="table-active">
                                         <td>a</td>
                                         <td>a</td>
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('1')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('1', '2')">Elminar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('1', '1')">Modificar</button></td>
                                     </tr>
                                 </tbody>
                                 <tbody>
                                     <tr class="table-active">
                                         <td>b</td>
                                         <td>b</td>
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('2')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('2', '2')">Elminar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('2', '1')">Modificar</button></td>
                                     </tr>
                                 </tbody>
                                 <tbody>
                                     <tr class="table-active">
                                         <td>c</td>
                                         <td>c</td>
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('3')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('3', '2')">Elminar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('3', '1')">Modificar</button></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </form>
                     </div>
 
-                    <!-- FIN LISTADO GENEROS -->
+                    <!-- FIN LISTADO CANCIONES -->
 
                 </div>
 
@@ -160,16 +156,19 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
         <script>
-                                            function seleccionarGenero(idGenero) {
-                                                window.alert(idGenero);
-                                                $('#idGenero').val(idGenero);
+                                            function seleccionarUsuario(idUsuario, accion) {
+                                                var str = idUsuario.concat(accion);
+
+                                                window.alert(str);
+                                                $('#idUsuario').val(idUsuario);
+                                                $('#accionInput').val(accion);
                                             }
 
                                             function filtrar() {
                                                 var input, filtro, tabla, cuerpo, fila, columnas, x, i, j, valor;
                                                 input = document.getElementById("filtroInput");
                                                 filtro = input.value.toUpperCase();
-                                                tabla = document.getElementById("tablaGeneros");
+                                                tabla = document.getElementById("tablaUsuarios");
                                                 cuerpo = tabla.getElementsByTagName('tbody');
 
                                                 for (x = 0; cuerpo.length; x++) {

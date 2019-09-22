@@ -34,12 +34,12 @@
 
                 <li class="nav-item">
                     <button class="btn btn-secondary my-2 mx-2 my-sm-0" type="submit">Accede</button>
-                    <a href="logUI.jsp">Accede</a>
+                    <a href="login.jsp">Accede</a>
                 </li>
 
                 <li class="nav-item">
                     <button class="btn btn-outline-secondary my-2 mx-2 my-sm-0" type="submit">Registrate</button>
-                    <a href="logUI.jsp">Registrate</a>
+                    <a href="login.jsp">Registrate</a>
                 </li>
             </ul>
         </nav>
@@ -60,6 +60,9 @@
                             </tr>
                             <tr class="table">
                                 <td><a href="#" class="nav-link">Listas de reproduccion</a></td>
+                            </tr>
+                            <tr class="table">
+                                <td><a href="#" class="nav-link">Usuarios</a></td>
                             </tr>
                         </tbody>
                     </table>

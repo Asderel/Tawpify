@@ -61,6 +61,9 @@
                             <tr class="table">
                                 <td><a href="#" class="nav-link">Listas de reproduccion</a></td>
                             </tr>
+                            <tr class="table">
+                                <td><a href="#" class="nav-link">Usuarios</a></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
