@@ -32,12 +32,10 @@
 
                 <li class="nav-item">
                     <button class="btn btn-secondary my-2 mx-2 my-sm-0" type="submit">Accede</button>
-                    <a href="logUI.jsp">Accede</a>
                 </li>
 
                 <li class="nav-item">
                     <button class="btn btn-outline-secondary my-2 mx-2 my-sm-0" type="submit">Registrate</button>
-                    <a href="logUI.jsp">Registrate</a>
                 </li>
             </ul>
 
@@ -54,16 +52,22 @@
                     <table class="table table-hover">
                         <tbody>
                             <tr class="table">
-                                <td><a href="#" class="nav-link">Canciones</a></td>
+                                <td><a href="canciones.jsp" class="nav-link">Canciones</a></td>
                             </tr>
                             <tr class="table">
-                                <td><a href="#" class="nav-link">Albumes</a></td>
+                                <td><a href="albumes.jsp" class="nav-link">Albumes</a></td>
                             </tr>
                             <tr class="table">
-                                <td><a href="#" class="nav-link">Artistas</a></td>
+                                <td><a href="artistas.jsp" class="nav-link">Artistas</a></td>
                             </tr>
                             <tr class="table">
-                                <td><a href="#" class="nav-link">Listas de reproduccion</a></td>
+                                <td><a href="generos.jsp" class="nav-link">Generos</a></td>
+                            </tr>
+                            <tr class="table">
+                                <td><a href="listasReproduccion.jsp" class="nav-link">Listas de reproduccion</a></td>
+                            </tr>
+                            <tr class="table">
+                                <td><a href="usuarios.jsp" class="nav-link">Usuarios</a></td>
                             </tr>
                         </tbody>
                     </table>

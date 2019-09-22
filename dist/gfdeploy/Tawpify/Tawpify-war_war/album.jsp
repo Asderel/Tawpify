@@ -32,12 +32,10 @@
 
                 <li class="nav-item">
                     <button class="btn btn-secondary my-2 mx-2 my-sm-0" type="submit">Accede</button>
-                    <a href="logUI.jsp">Accede</a>
                 </li>
 
                 <li class="nav-item">
                     <button class="btn btn-outline-secondary my-2 mx-2 my-sm-0" type="submit">Registrate</button>
-                    <a href="logUI.jsp">Registrate</a>
                 </li>
             </ul>
 
@@ -54,16 +52,22 @@
                     <table class="table table-hover">
                         <tbody>
                             <tr class="table">
-                                <td><a href="#" class="nav-link">Canciones</a></td>
+                                <td><a href="canciones.jsp" class="nav-link">Canciones</a></td>
                             </tr>
                             <tr class="table">
-                                <td><a href="#" class="nav-link">Albumes</a></td>
+                                <td><a href="albumes.jsp" class="nav-link">Albumes</a></td>
                             </tr>
                             <tr class="table">
-                                <td><a href="#" class="nav-link">Artistas</a></td>
+                                <td><a href="artistas.jsp" class="nav-link">Artistas</a></td>
                             </tr>
                             <tr class="table">
-                                <td><a href="#" class="nav-link">Listas de reproduccion</a></td>
+                                <td><a href="generos.jsp" class="nav-link">Generos</a></td>
+                            </tr>
+                            <tr class="table">
+                                <td><a href="listasReproduccion.jsp" class="nav-link">Listas de reproduccion</a></td>
+                            </tr>
+                            <tr class="table">
+                                <td><a href="usuarios.jsp" class="nav-link">Usuarios</a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -78,7 +82,7 @@
                     <!-- JUMBOTRON -->
 
                     <div class="jumbotron" style="padding: 1rem 2rem">
-                        <h1 class="row" style="font-size: 2em">Album</h1>
+                        <h1 class="row" style="font-size: 2em">Album EL COSO</h1>
                         <p class="row" style="font-size: 1em">
                             Artista VIVALDI
                         </p>
@@ -86,9 +90,9 @@
                             Canciones 25 (ANAL)
                         </p>
                         <div class="row">
-                            <form>
+                            <form method="POST" action="AlbumCRUDServlet">
                                 <fieldset>
-                                    <legend style="font-size: 1.2em">Incluir en lista</legend>
+                                    <legend style="font-size: 1.2em">Incluir album entero en la lista de reproduccion...</legend>
                                     <div class="form-group">
                                         <select class="form-control" name="seleccionLista" id="seleccionLista">
                                             <option value="a">a</option>
@@ -114,7 +118,7 @@
                     <div class="col-12 mt-2">
                         <div class="row my-2 justify-content-between">
                             <div class="col-3">
-                                <a class="btn btn-outline-warning" href="nuevaCancion.jsp">Nueva cancion</a>
+                                <a class="btn btn-outline-warning" href="nuevaCancion.jsp?idAlbum=1">Incluir nueva cancion</a>
                             </div>
 
                             <div class="col-3">
@@ -199,7 +203,6 @@
                                             }
 
                                             function filtrar() {
-                                                // Declare variables
                                                 var input, filtro, tabla, cuerpo, fila, columnas, x, i, j, valor;
                                                 input = document.getElementById("filtroInput");
                                                 filtro = input.value.toUpperCase();

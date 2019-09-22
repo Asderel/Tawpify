@@ -62,7 +62,7 @@
                                 <td><a href="generos.jsp" class="nav-link">Generos</a></td>
                             </tr>
                             <tr class="table">
-                                <td><a href="listas.jsp" class="nav-link">Listas de reproduccion</a></td>
+                                <td><a href="listasReproduccion.jsp" class="nav-link">Listas de reproduccion</a></td>
                             </tr>
                             <tr class="table">
                                 <td><a href="usuarios.jsp" class="nav-link">Usuarios</a></td>
