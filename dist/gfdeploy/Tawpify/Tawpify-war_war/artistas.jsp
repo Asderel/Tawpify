@@ -171,7 +171,7 @@
                                                 var str = idArtista.concat(accion);
                                                 window.alert(str);
                                                 $('#idArtistaInput').val(idArtista);
-                                                $('#accion').val(accion);
+                                                $('#accionInput').val(accion);
                                             }
 
                                             function filtrar() {

@@ -160,7 +160,7 @@
                                         <td>a</td>
                                         <td>a</td>
                                         <td>a</td>
-                                        <td><a class="btn btn-outline-warning" href="album.jsp/idAlbum=1">Ver</a></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '3')">Ver</button></td>
                                         <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('1', '1')">Modificar</button></td>
                                         <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('1', '2')">Eliminar</button></td>
                                     </tr>
@@ -171,7 +171,7 @@
                                         <td>b</td>
                                         <td>b</td>
                                         <td>b</td>
-                                        <td><a class="btn btn-outline-warning" href="album.jsp/idAlbum=1">Ver</a></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '3')">Ver</button></td>
                                         <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('2', '2')">Modificar</button></td>
                                         <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('2', '2')">Eliminar</button></td>
                                     </tr>
@@ -182,7 +182,7 @@
                                         <td>c</td>
                                         <td>c</td>
                                         <td>c</td>
-                                        <td><a class="btn btn-outline-warning" href="album.jsp/idAlbum=1">Ver</a></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '3')">Ver</button></td>
                                         <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('3', '1')">Modificar</button></td>
                                         <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('3', '2')">Eliminar</button></td>
                                     </tr>

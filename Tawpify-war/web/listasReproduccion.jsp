@@ -10,7 +10,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="css/bootstrap.min.css">
-        <title>Artistas</title>
+        <title>Listas reproduccion</title>
     </head>
     <body>
 
@@ -82,9 +82,9 @@
                     <!-- JUMBOTRON -->
 
                     <div class="jumbotron" style="padding: 1rem 2rem">
-                        <h1 class="row" style="font-size: 2em">Artistas</h1>
+                        <h1 class="row" style="font-size: 2em">Listas de reproduccion</h1>
                         <p class="row" style="font-size: 1em">
-                            Aqui puedes consultar los artistas registrados
+                            Aqui puedes ver tus propias listas de reproduccion
                         </p>
                     </div>
 
@@ -95,7 +95,7 @@
                     <div class="col-12 mt-2">
                         <div class="row my-2 justify-content-between">
                             <div class="col-3">
-                                <a class="btn btn-outline-warning" href="nuevoArtista.jsp">Nuevo Artista</a>
+                                <a class="btn btn-outline-warning" href="nuevaLitaReproduccion.jsp">Nueva lista</a>
                             </div>
 
                             <div class="col-3">
@@ -104,8 +104,8 @@
                             </div>
                         </div>
 
-                        <form id="artistasForm" action="ArtistaCRUDServlet" method="POST">
-                            <input id="idArtistaInput" name="idArtistaInput" value="" type="hidden"/>
+                        <form id="artistasForm" action="ListaReproduccionCRUDServlet" method="POST">
+                            <input id="idArtistaInput" name="idListaReproduccionInput" value="" type="hidden"/>
                             <input id="accionInput" name="accionInput" value="" type="hidden"/>
 
                             <table id="tablaArtistas" class="table table-hover">
@@ -117,6 +117,7 @@
                                         <th scope="col">Lanzamiento</th>
                                         <th scope="col"></th>
                                         <th scope="col"></th>
+                                        <th scope="col"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -125,6 +126,7 @@
                                         <td>a</td>
                                         <td>a</td>
                                         <td>a</td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '3')">Ver</button></td>
                                         <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '1')">Modificar</button></td>
                                         <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '2')">Elminar</button></td>
                                     </tr>
@@ -135,6 +137,7 @@
                                         <td>b</td>
                                         <td>b</td>
                                         <td>b</td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '3')">Ver</button></td>
                                         <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('2', '1')">Modificar</button></td>
                                         <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('2', '2')">Elminar</button></td>
                                     </tr>
@@ -145,6 +148,7 @@
                                         <td>c</td>
                                         <td>c</td>
                                         <td>c</td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '3')">Ver</button></td>
                                         <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('3', '1')">Modificar</button></td>
                                         <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('3', '2')">Elminar</button></td>
                                     </tr>
@@ -167,10 +171,10 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
         <script>
-                                            function seleccionarartista(idArtista, accion) {
-                                                var str = idArtista.concat(accion);
+                                            function seleccionarartista(idListaReproduccion, accion) {
+                                                var str = idListaReproduccion.concat(accion);
                                                 window.alert(str);
-                                                $('#idArtistaInput').val(idArtista);
+                                                $('#idListaReproduccionInput').val(idListaReproduccion);
                                                 $('#accionInput').val(accion);
                                             }
 
@@ -185,7 +189,7 @@
                                                     fila = cuerpo[x].getElementsByTagName('tr');
                                                     for (i = 0; i < fila.length; i++) {
                                                         columnas = fila[i].getElementsByTagName("td");
-                                                        for (j = 0; j < columnas.length - 2; j++) {
+                                                        for (j = 0; j < columnas.length - 3; j++) {
                                                             valor = columnas[j].textContent || columnas[j].innerText;
                                                             if (valor.toUpperCase().indexOf(filtro) > -1) {
                                                                 fila[i].style.display = "";
