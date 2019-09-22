@@ -91,7 +91,7 @@
                     <div class="col-12 mt-2">
                         <div class="row my-2 justify-content-between">
                             <div class="col-3">
-                                <a class="btn btn-outline-warning" href="nuevoGnero.jsp">Nuevo genero</a>
+                                <a class="btn btn-outline-warning" href="nuevoGenero.jsp">Nuevo genero</a>
                             </div>
                             <div class="col-3">
                                 <input type="text" class="form-control" id="filtroInput" aria-describedby="filtroInput" placeholder="Filtra en la tabla"
