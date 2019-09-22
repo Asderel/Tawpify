@@ -140,8 +140,12 @@
                     </div>
 
                     <div class="col-12 mt-2">
-                        <div class="row justify-content-end">
-                            <div class="col-3 my-2">
+                        <div class="row my-2 justify-content-between">
+                            <div class="col-3">
+                                <a class="btn btn-outline-warning" href="nuevaCancion.jsp">Nueva cancion</a>
+                            </div>
+
+                            <div class="col-3">
                                 <input type="text" class="form-control" id="filtroInput" aria-describedby="filtroInput" placeholder="Filtra en la tabla"
                                        onkeyup="filtrar()">
                             </div>

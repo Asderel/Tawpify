@@ -75,32 +75,58 @@
                     <!-- JUMBOTRON -->
 
                     <div class="jumbotron" style="padding: 1rem 2rem">
-                        <h1 class="row" style="font-size: 2em">Creacion de genero</h1>
+                        <h1 class="row" style="font-size: 2em">Creacion de cancion</h1>
                         <p class="row" style="font-size: 1em">
-                            Crea un genero nuevo
+                            Crea una nueva cancion
                         </p>
                     </div>
 
                     <!-- FIN JUMBOTRON -->
 
-                    <!-- FORMULARIO NUEVO GENERO -->
+                    <!-- FORMULARIO NUEVA CANCION -->
 
                     <div class="container">
-                        <form action="NuevoGeneroServlet" id="generoForm" >
+                        <form action="NuevaCancionServlet" id="cancionForm" >
                             <fieldset>
+                                <legend style="font-size: 1.2em">Informacion basica</legend>
                                 <div class="form-group">
                                     <label for="nombreInput">Nombre</label>
                                     <input type="text" class="form-control" id="nombreInput" placeholder="Nombre" name="nombreInput"/>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="xInput">X</label>
-                                    <input type="text" class="form-control" id="xInput" placeholder="X" name="xInput"/>
+                                    <label for="fechaLanzamientoInput">Fecha de lanzamiento</label>
+                                    <input type="text" class="form-control" id="fechaLanzamientoInput" placeholder="Fecha de lanzamiento" name="fechaLanzamientoInput"/>
                                 </div>
+                            </fieldset>
 
+                            <fieldset>
+                                <legend style="font-size: 1.2em">Artista</legend>
                                 <div class="form-group">
-                                    <label for="contrasenaInput">Y</label>
-                                    <input type="text" class="form-control" id="yInput" placeholder="Y" name="yInput"/>
+                                    <select class="form-control" name="seleccionArtistas" id="seleccionArtistas">
+                                        <option value="a">a</option>
+                                        <option value="b">b</option>
+                                        <option value="c">c</option>
+                                        <option value="d">d</option>
+                                        <option value="e">e</option>
+                                        <option value="f">f</option>
+                                        <option value="g">g</option>
+                                    </select>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend style="font-size: 1.2em">Album</legend>
+                                <div class="form-group">
+                                    <select class="form-control" name="seleccionArtistas" id="seleccionArtistas">
+                                        <option value="a">a</option>
+                                        <option value="b">b</option>
+                                        <option value="c">c</option>
+                                        <option value="d">d</option>
+                                        <option value="e">e</option>
+                                        <option value="f">f</option>
+                                        <option value="g">g</option>
+                                    </select>
                                 </div>
 
                                 <div>
@@ -110,7 +136,7 @@
                         </form>
                     </div>
 
-                    <!-- FIN FORMULARIO NUEVO GENERO -->
+                    <!-- FIN FORMULARIO NUEVA CANCION -->
 
                 </div>
 

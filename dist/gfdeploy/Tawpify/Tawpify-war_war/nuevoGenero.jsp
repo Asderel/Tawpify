@@ -87,24 +87,26 @@
 
                     <div class="container">
                         <form action="NuevoGeneroServlet" id="generoForm" >
-                            <div class="form-group">
-                                <label for="nombreInput">Nombre</label>
-                                <input type="text" class="form-control" id="nombreInput" placeholder="Nombre" name="nombreInput"/>
-                            </div>
+                            <fieldset>
+                                <div class="form-group">
+                                    <label for="nombreInput">Nombre</label>
+                                    <input type="text" class="form-control" id="nombreInput" placeholder="Nombre" name="nombreInput"/>
+                                </div>
 
-                            <div class="form-group">
-                                <label for="xInput">X</label>
-                                <input type="text" class="form-control" id="xInput" placeholder="X" name="xInput"/>
-                            </div>
+                                <div class="form-group">
+                                    <label for="xInput">X</label>
+                                    <input type="text" class="form-control" id="xInput" placeholder="X" name="xInput"/>
+                                </div>
 
-                            <div class="form-group">
-                                <label for="contrasenaInput">Y</label>
-                                <input type="text" class="form-control" id="yInput" placeholder="Y" name="yInput"/>
-                            </div>
+                                <div class="form-group">
+                                    <label for="contrasenaInput">Y</label>
+                                    <input type="text" class="form-control" id="yInput" placeholder="Y" name="yInput"/>
+                                </div>
 
-                            <div>
-                                <button class="btn btn-block btn-warning" type="submit">Listo</button>
-                            </div>
+                                <div>
+                                    <button class="btn btn-block btn-warning" type="submit">Listo</button>
+                                </div>
+                            </fieldset>
                         </form>
                     </div>
 
