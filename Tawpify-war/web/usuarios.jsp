@@ -10,7 +10,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="css/bootstrap.min.css">
-        <title>Index</title>
+        <title>Usuarios</title>
     </head>
     <body>
 
@@ -81,7 +81,7 @@
                     <div class="jumbotron" style="padding: 1rem 2rem">
                         <h1 class="row" style="font-size: 2em">Usuarios</h1>
                         <p class="row" style="font-size: 1em">
-                            Aqui puede gestionar los usuarios registrados
+                            Aqui puedes gestionar los usuarios registrados
                         </p>
                     </div>
 
@@ -101,8 +101,8 @@
                             </div>
                         </div>
 
-                        <form id="cancionesForm" action="UsuarioCRUDServlet" method="POST">
-                            <input id="idUsuarioInput" name="idCancionInput" value="" type="hidden"/>
+                        <form id="usuariosForm" action="UsuarioCRUDServlet" method="POST">
+                            <input id="idUsuarioInput" name="idUsuarioInput" value="" type="hidden"/>
                             <input id="accionInput" name="accionInput" value="" type="hidden"/>
 
                             <table id="tablaUsuarios" class="table table-hover">
@@ -118,24 +118,24 @@
                                     <tr class="table-active">
                                         <td>a</td>
                                         <td>a</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('1', '2')">Elminar</button></td>
                                         <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('1', '1')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('1', '2')">Elminar</button></td>
                                     </tr>
                                 </tbody>
                                 <tbody>
                                     <tr class="table-active">
                                         <td>b</td>
                                         <td>b</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('2', '2')">Elminar</button></td>
                                         <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('2', '1')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('2', '2')">Elminar</button></td>
                                     </tr>
                                 </tbody>
                                 <tbody>
                                     <tr class="table-active">
                                         <td>c</td>
                                         <td>c</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('3', '2')">Elminar</button></td>
                                         <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('3', '1')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('3', '2')">Elminar</button></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -160,7 +160,7 @@
                                                 var str = idUsuario.concat(accion);
 
                                                 window.alert(str);
-                                                $('#idUsuario').val(idUsuario);
+                                                $('#idUsuarioInput').val(idUsuario);
                                                 $('#accionInput').val(accion);
                                             }
 

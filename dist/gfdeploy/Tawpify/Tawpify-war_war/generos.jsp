@@ -83,7 +83,7 @@
                     <div class="jumbotron" style="padding: 1rem 2rem">
                         <h1 class="row" style="font-size: 2em">Generos</h1>
                         <p class="row" style="font-size: 1em">
-                            Aqui puede acceder a todas generos registrados
+                            Aqui puedes acceder a todas generos registrados
                         </p>
                     </div>
 
@@ -102,8 +102,9 @@
                             </div>
                         </div>
 
-                        <form id="cancionesForm" action="CancionCRUDServlet" method="POST">
-                            <input id="idCancionInput" name="idCancionInput" value="" type="hidden"/>
+                        <form id="generosForm" action="CancionCRUDServlet" method="POST">
+                            <input id="idGeneroInput" name="idGeneroInput" value="" type="hidden"/>
+                            <input id="accionInput" name="accionInput" value="" type="hidden"/>
 
                             <table id="tablaGeneros" class="table table-hover">
                                 <thead>
@@ -113,6 +114,7 @@
                                         <th scope="col">Album</th>
                                         <th scope="col">Lanzamiento</th>
                                         <th scope="col"></th>
+                                        <th scope="col"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -121,7 +123,8 @@
                                         <td>a</td>
                                         <td>a</td>
                                         <td>a</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('1')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('1', '1')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('1', '2')">Eliminar</button></td>
                                     </tr>
                                 </tbody>
                                 <tbody>
@@ -130,7 +133,8 @@
                                         <td>b</td>
                                         <td>b</td>
                                         <td>b</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('2')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('2', '1')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('2', '2')">Eliminar</button></td>
                                     </tr>
                                 </tbody>
                                 <tbody>
@@ -139,7 +143,8 @@
                                         <td>c</td>
                                         <td>c</td>
                                         <td>c</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('3')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('3', '1')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('3', '2')">Eliminar</button></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -160,9 +165,12 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
         <script>
-                                            function seleccionarGenero(idGenero) {
-                                                window.alert(idGenero);
-                                                $('#idGenero').val(idGenero);
+                                            function seleccionarGenero(idGenero, accion) {
+                                                var str = idGenero.concat(accion);
+
+                                                window.alert(str);
+                                                $('#idGeneroInput').val(idGenero);
+                                                $('#accionInput').val(accion);
                                             }
 
                                             function filtrar() {

@@ -10,7 +10,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="css/bootstrap.min.css">
-        <title>Index</title>
+        <title>Artistas</title>
     </head>
     <body>
 
@@ -65,9 +65,6 @@
                             <tr class="table">
                                 <td><a href="#" class="nav-link">Listas de reproduccion</a></td>
                             </tr>
-                            <tr class="table">
-                                <td><a href="#" class="nav-link">Usuarios</a></td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -81,32 +78,33 @@
                     <!-- JUMBOTRON -->
 
                     <div class="jumbotron" style="padding: 1rem 2rem">
-                        <h1 class="row" style="font-size: 2em">Generos</h1>
+                        <h1 class="row" style="font-size: 2em">Artistas</h1>
                         <p class="row" style="font-size: 1em">
-                            Aqui puedes acceder a todas generos registrados
+                            Aqui puedes consultar los artistas registrados
                         </p>
                     </div>
 
                     <!-- FIN JUMBOTRON -->
 
-                    <!-- LISTADO GENEROS -->
+                    <!-- LISTADO ARTISTAS -->
 
                     <div class="col-12 mt-2">
                         <div class="row my-2 justify-content-between">
                             <div class="col-3">
-                                <a class="btn btn-outline-warning" href="nuevoGenero.jsp">Nuevo genero</a>
+                                <a class="btn btn-outline-warning" href="nuevoArtista.jsp">Nuevo Artista</a>
                             </div>
+
                             <div class="col-3">
                                 <input type="text" class="form-control" id="filtroInput" aria-describedby="filtroInput" placeholder="Filtra en la tabla"
                                        onkeyup="filtrar()">
                             </div>
                         </div>
 
-                        <form id="generosForm" action="CancionCRUDServlet" method="POST">
-                            <input id="idGeneroInput" name="idGeneroInput" value="" type="hidden"/>
+                        <form id="artistasForm" action="ArtistaCRUDServlet" method="POST">
+                            <input id="idArtistaInput" name="idArtistaInput" value="" type="hidden"/>
                             <input id="accionInput" name="accionInput" value="" type="hidden"/>
 
-                            <table id="tablaGeneros" class="table table-hover">
+                            <table id="tablaArtistas" class="table table-hover">
                                 <thead>
                                     <tr>
                                         <th scope="col">Nombre</th>
@@ -123,8 +121,8 @@
                                         <td>a</td>
                                         <td>a</td>
                                         <td>a</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('1', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('1', '2')">Eliminar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '1')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '2')">Elminar</button></td>
                                     </tr>
                                 </tbody>
                                 <tbody>
@@ -133,8 +131,8 @@
                                         <td>b</td>
                                         <td>b</td>
                                         <td>b</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('2', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('2', '2')">Eliminar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('2', '1')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('2', '2')">Elminar</button></td>
                                     </tr>
                                 </tbody>
                                 <tbody>
@@ -143,15 +141,15 @@
                                         <td>c</td>
                                         <td>c</td>
                                         <td>c</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('3', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('3', '2')">Eliminar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('3', '1')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('3', '2')">Elminar</button></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </form>
                     </div>
 
-                    <!-- FIN LISTADO GENEROS -->
+                    <!-- FIN LISTADO ARTISTAS -->
 
                 </div>
 
@@ -165,19 +163,18 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
         <script>
-                                            function seleccionarGenero(idGenero, accion) {
-                                                var str = idGenero.concat(accion);
-
+                                            function seleccionarartista(idArtista, accion) {
+                                                var str = idArtista.concat(accion);
                                                 window.alert(str);
-                                                $('#idGeneroInput').val(idGenero);
-                                                $('#accionInput').val(accion);
+                                                $('#idArtistaInput').val(idArtista);
+                                                $('#accion').val(accion);
                                             }
 
                                             function filtrar() {
                                                 var input, filtro, tabla, cuerpo, fila, columnas, x, i, j, valor;
                                                 input = document.getElementById("filtroInput");
                                                 filtro = input.value.toUpperCase();
-                                                tabla = document.getElementById("tablaGeneros");
+                                                tabla = document.getElementById("tablaArtistas");
                                                 cuerpo = tabla.getElementsByTagName('tbody');
 
                                                 for (x = 0; cuerpo.length; x++) {

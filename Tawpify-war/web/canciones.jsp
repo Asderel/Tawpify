@@ -10,7 +10,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="css/bootstrap.min.css">
-        <title>Index</title>
+        <title>Canciones</title>
     </head>
     <body>
 
@@ -80,7 +80,7 @@
                     <div class="jumbotron" style="padding: 1rem 2rem">
                         <h1 class="row" style="font-size: 2em">Canciones</h1>
                         <p class="row" style="font-size: 1em">
-                            Aqui puede acceder a todas las canciones registradas y reproducirlas
+                            Aqui puedes acceder a todas las canciones registradas y reproducirlas
                         </p>
                     </div>
 
@@ -153,6 +153,7 @@
 
                         <form id="cancionesForm" action="CancionCRUDServlet" method="POST">
                             <input id="idCancionInput" name="idCancionInput" value="" type="hidden"/>
+                            <input id="accionInput" name="accionInput" value="" type="hidden"/>
 
                             <table id="tablaCanciones" class="table table-hover">
                                 <thead>
@@ -161,6 +162,7 @@
                                         <th scope="col">Artista</th>
                                         <th scope="col">Album</th>
                                         <th scope="col">Lanzamiento</th>
+                                        <th scope="col"></th>
                                         <th scope="col"></th>
                                         <th scope="col"></th>
                                     </tr>
@@ -172,7 +174,8 @@
                                         <td>a</td>
                                         <td>a</td>
                                         <td><a class="btn btn-outline-warning" target=_blank" href="https://www.youtube.com/watch?v=ODKTITUPusM&t">Escuchar</a></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('1')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('1', '1')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('1', '2')">Eliminar</button></td>
                                     </tr>
                                 </tbody>
                                 <tbody>
@@ -182,7 +185,8 @@
                                         <td>b</td>
                                         <td>b</td>
                                         <td><a class="btn btn-outline-warning" target=_blank" href="https://www.youtube.com/watch?v=ODKTITUPusM&t">Escuchar</a></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('2')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('2', '2')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('2', '2')">Eliminar</button></td>
                                     </tr>
                                 </tbody>
                                 <tbody>
@@ -192,7 +196,8 @@
                                         <td>c</td>
                                         <td>c</td>
                                         <td><a class="btn btn-outline-warning" target=_blank" href="https://www.youtube.com/watch?v=ODKTITUPusM&t">Escuchar</a></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('2')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('3', '1')">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('3', '2')">Eliminar</button></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -213,9 +218,12 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
         <script>
-                                            function seleccionarCancion(idCancion) {
-                                                window.alert(idCancion);
-                                                $('#idCancion').val(idCancion);
+                                            function seleccionarCancion(idCancion, accion) {
+                                                var str = idCancion.concat(accion);
+
+                                                window.alert(str);
+                                                $('#idCancionInput').val(idCancion);
+                                                $('#accionInput').val(accion);
                                             }
 
                                             function filtrar() {
@@ -230,7 +238,7 @@
                                                     fila = cuerpo[x].getElementsByTagName('tr');
                                                     for (i = 0; i < fila.length; i++) {
                                                         columnas = fila[i].getElementsByTagName("td");
-                                                        for (j = 0; j < columnas.length - 2; j++) {
+                                                        for (j = 0; j < columnas.length - 3; j++) {
                                                             valor = columnas[j].textContent || columnas[j].innerText;
                                                             if (valor.toUpperCase().indexOf(filtro) > -1) {
                                                                 fila[i].style.display = "";
