@@ -59,7 +59,7 @@
                                 <td><a href="artistas.jsp" class="nav-link">Artistas</a></td>
                             </tr>
                             <tr class="table">
-                                <td><a href="generos.jsp" class="nav-link">Artistas</a></td>
+                                <td><a href="generos.jsp" class="nav-link">Generos</a></td>
                             </tr>
                             <tr class="table">
                                 <td><a href="listas.jsp" class="nav-link">Listas de reproduccion</a></td>

@@ -32,12 +32,10 @@
 
                 <li class="nav-item">
                     <button class="btn btn-secondary my-2 mx-2 my-sm-0" type="submit">Accede</button>
-                    <a href="logUI.jsp">Accede</a>
                 </li>
 
                 <li class="nav-item">
                     <button class="btn btn-outline-secondary my-2 mx-2 my-sm-0" type="submit">Registrate</button>
-                    <a href="logUI.jsp">Registrate</a>
                 </li>
             </ul>
 
