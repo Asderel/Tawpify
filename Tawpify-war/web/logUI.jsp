@@ -11,12 +11,10 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <title>Index</title>
-
-        <%
-            String resp = session.getAttribute("resp") != null ? session.getAttribute("resp").toString() : "";
-        %>
     </head>
     <body>
+
+        <!-- NAV BAR -->
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-warning">
 
@@ -34,18 +32,20 @@
 
                 <li class="nav-item">
                     <button class="btn btn-secondary my-2 mx-2 my-sm-0" type="submit">Accede</button>
-                    <a href="logUI.jsp">Accede</a>
                 </li>
-
                 <li class="nav-item">
                     <button class="btn btn-outline-secondary my-2 mx-2 my-sm-0" type="submit">Registrate</button>
-                    <a href="logUI.jsp">Registrate</a>
                 </li>
             </ul>
         </nav>
 
+        <!-- FIN NAV BAR -->
+
         <div class="container-fluid">
             <div id="contenedorContenido" class="row">
+
+                <!-- PANEL LATERARL -->
+
                 <div id="panelLateral" class="col-2">
                     <table class="table table-hover">
                         <tbody>
@@ -65,16 +65,59 @@
                     </table>
                 </div>
 
+                <!-- FIN PANEL LATERARL -->
+
+
+                <!-- CONTENIDO -->
+
                 <div id="contenido" class="col-10">
+
+                    <!-- JUMBOTRON -->
+
                     <div class="jumbotron" style="padding: 1rem 2rem">
-                        <h1 class="row" style="font-size: 2em">Bienvenido de nuevo a Tawpify</h1>
+                        <h1 class="row" style="font-size: 2em">Registro/login Tawpify</h1>
                         <p class="row" style="font-size: 1em">
-                            Su gestor de música preferido
+                            Introduce tu email y contraseña para crear un usuario y empezar a usar Tawpify
                         </p>
                     </div>
+
+                    <!-- FIN JUMBOTRON -->
+
+                    <!-- FORMULARIO LOGIN -->
+
+                    <div class="container">
+                        <form action="LoginServlet" id="loginForm" >
+                            <div class="form-group">
+                                <label for="emailInput">Email</label>
+                                <input type="text" class="form-control" id="emailInput" placeholder="Email" name="emailInput"/>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="nickInput">Apodo</label>
+                                <input type="text" class="form-control" id="nickInput" placeholder="Apodo" name="nickInput"/>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contrasenaInput">Contraseña</label>
+                                <input type="password" class="form-control" id="contrasenaInput" placeholder="Contraseña" name="contrasenaInput"/>
+                            </div>
+
+                            <div>
+                                <button class="btn btn-block btn-warning" type="submit">Listo</button>
+                            </div>
+
+                        </form>
+                    </div>
+
+                    <!-- FIN FORMULARIO LOGIN -->
+
                 </div>
+
+                <!-- FIN CONTENIDO -->
             </div>
         </div>
+
+
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
