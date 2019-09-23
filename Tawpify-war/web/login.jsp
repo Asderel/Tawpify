@@ -1,8 +1,5 @@
-<%--
-    Document   : index
-    Created on : 11-sep-2019, 16:23:39
-    Author     : alumno
---%>
+<%@page import="entities.Usuario"%>
+<%@page import="utils.Utils"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -10,6 +7,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="css/bootstrap.min.css">
+
+        <%
+            Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
+            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+        %>
+
         <title>Index</title>
     </head>
     <body>
@@ -26,16 +29,30 @@
             </ul>
 
             <ul class="navbar-nav">
+
+                <%if (usuarioConectado != null) {%>
                 <li class="nav-item">
-                    <span class="badge badge-pill badge-secondary mt-2 mr-4" id="user-pill">WOLOLO</span>
+                    <span class="badge badge-pill badge-secondary mt-2 mr-4" id="user-pill">
+                        <%=!usuarioConectado.getApodo().isEmpty() ? usuarioConectado.getApodo() : usuarioConectado.getNombre()%>
+                    </span>
+                </li>
+                <%}%>
+
+                <%if (usuarioConectado == null) {%>
+                <li class="nav-item">
+                    <a class="btn btn-secondary my-2 mx-2 my-sm-0" href="login.jsp?opcode=9">Accede</a>
                 </li>
 
                 <li class="nav-item">
-                    <button class="btn btn-secondary my-2 mx-2 my-sm-0" type="submit">Accede</button>
+                    <a class="btn btn-outline-secondary my-2 mx-2 my-sm-0" href="login.jsp?opcode=8">Registrate</a>
                 </li>
-                <li class="nav-item">
-                    <button class="btn btn-outline-secondary my-2 mx-2 my-sm-0" type="submit">Registrate</button>
-                </li>
+                <%} else {%>
+                <form id="formLogout" method="POST" action="IndexServlet">
+                    <li class="nav-item">
+                        <button class="btn btn-outline-secondary my-2 mx-2 my-sm-0" type="submit">Salir</button>
+                    </li>
+                </form>
+                <%}%>
             </ul>
         </nav>
 
@@ -47,6 +64,8 @@
                 <!-- PANEL LATERARL -->
 
                 <div id="panelLateral" class="col-2">
+
+                    <%if (usuarioConectado != null) {%>
                     <table class="table table-hover">
                         <tbody>
                             <tr class="table">
@@ -64,11 +83,17 @@
                             <tr class="table">
                                 <td><a href="listasReproduccion.jsp" class="nav-link">Listas de reproduccion</a></td>
                             </tr>
+
+                            <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
                             <tr class="table">
                                 <td><a href="usuarios.jsp" class="nav-link">Usuarios</a></td>
                             </tr>
+                            <%}%>
+
                         </tbody>
                     </table>
+                    <%}%>
+
                 </div>
 
                 <!-- FIN PANEL LATERARL -->
@@ -81,9 +106,20 @@
                     <!-- JUMBOTRON -->
 
                     <div class="jumbotron" style="padding: 1rem 2rem">
-                        <h1 class="row" style="font-size: 2em">Registro/login Tawpify</h1>
+                        <h1 class="row" style="font-size: 2em">
+                            <%if (opcode == Utils.OP_REGISTRAR) {%>
+                            Registrate en Tawpify
+                            <%} else {%>
+                            Accede aTawpify
+                            <%}%>
+                        </h1>
                         <p class="row" style="font-size: 1em">
-                            Introduce tu email y contraseña para crear un usuario y empezar a usar Tawpify
+                            <%if (opcode == Utils.OP_REGISTRAR) {%>
+                            Introduce tu email y contraseña para usar Tawpify
+                            <%} else {%>
+                            Introduce tus datos para crear un usuario y empezar a usar Tawpify
+                            <%}%>
+
                         </p>
                     </div>
 
@@ -92,26 +128,35 @@
                     <!-- FORMULARIO LOGIN -->
 
                     <div class="container">
-                        <form action="LoginServlet" id="loginForm" >
+                        <form action="LoginServlet" method="POST">
+
+                            <%if (opcode != Utils.OP_LOGIN) {%>
                             <div class="form-group">
-                                <label for="emailInput">Email</label>
-                                <input type="text" class="form-control" id="emailInput" placeholder="Email" name="emailInput"/>
+                                <label for="<%=Utils.NOMBREINPUT%>">Nombre</label>
+                                <input type="text" class="form-control" id="<%=Utils.NOMBREINPUT%>" placeholder="Nombre" name="<%=Utils.NOMBREINPUT%>"/>
                             </div>
 
                             <div class="form-group">
-                                <label for="nickInput">Apodo</label>
-                                <input type="text" class="form-control" id="nickInput" placeholder="Apodo" name="nickInput"/>
+                                <label for="<%=Utils.APODOINPUT%>">Apodo</label>
+                                <input type="text" class="form-control" id="<%=Utils.APODOINPUT%>" placeholder="Apodo" name="<%=Utils.APODOINPUT%>"/>
+                            </div>
+                            <%}%>
+
+                            <div class="form-group">
+                                <label for="<%=Utils.EMAILINPUT%>">Email</label>
+                                <input type="email" class="form-control" id="<%=Utils.EMAILINPUT%>" placeholder="Email" name="<%=Utils.EMAILINPUT%>"/>
                             </div>
 
                             <div class="form-group">
-                                <label for="contrasenaInput">Contraseña</label>
-                                <input type="password" class="form-control" id="contrasenaInput" placeholder="Contraseña" name="contrasenaInput"/>
+                                <label for="<%=Utils.CONTRASENAINPUT%>">Contraseña</label>
+                                <input type="password" class="form-control" id="<%=Utils.CONTRASENAINPUT%>" placeholder="Contraseña" name="<%=Utils.CONTRASENAINPUT%>"/>
                             </div>
 
                             <div>
-                                <button class="btn btn-block btn-warning" type="submit">Listo</button>
+                                <button class="btn btn-block btn-warning">Listo</button>
                             </div>
 
+                            <input name="<%=Utils.OPCODE%>" value="<%=opcode%>" type="hidden">
                         </form>
                     </div>
 
