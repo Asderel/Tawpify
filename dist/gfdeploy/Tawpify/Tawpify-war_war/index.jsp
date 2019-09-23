@@ -1,8 +1,4 @@
-<%--
-    Document   : index
-    Created on : 11-sep-2019, 16:23:39
-    Author     : alumno
---%>
+<%@page import="entities.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -13,7 +9,7 @@
         <title>Index</title>
 
         <%
-            String resp = session.getAttribute("resp") != null ? session.getAttribute("resp").toString() : "";
+            Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
         %>
     </head>
     <body>
@@ -28,25 +24,38 @@
             </ul>
 
             <ul class="navbar-nav">
+
+                <%if (usuarioConectado != null) {%>
                 <li class="nav-item">
-                    <span class="badge badge-pill badge-secondary mt-2 mr-4" id="user-pill">WOLOLO</span>
+                    <span class="badge badge-pill badge-secondary mt-2 mr-4" id="user-pill">
+                        <%=!usuarioConectado.getApodo().isEmpty() ? usuarioConectado.getApodo() : usuarioConectado.getNombre()%>
+                    </span>
+                </li>
+                <%}%>
+
+                <%if (usuarioConectado == null) {%>
+                <li class="nav-item">
+                    <a class="btn btn-secondary my-2 mx-2 my-sm-0" href="login.jsp?opcode=9">Accede</a>
                 </li>
 
                 <li class="nav-item">
-                    <button class="btn btn-secondary my-2 mx-2 my-sm-0" type="submit">Accede</button>
-                    <a href="login.jsp">Accede</a>
+                    <a class="btn btn-outline-secondary my-2 mx-2 my-sm-0" href="login.jsp?opcode=8">Registrate</a>
                 </li>
-
-                <li class="nav-item">
-                    <button class="btn btn-outline-secondary my-2 mx-2 my-sm-0" type="submit">Registrate</button>
-                    <a href="login.jsp">Registrate</a>
-                </li>
+                <%} else {%>
+                <form id="formLogout" method="POST" action="IndexServlet">
+                    <li class="nav-item">
+                        <button class="btn btn-outline-secondary my-2 mx-2 my-sm-0" type="submit">Salir</button>
+                    </li>
+                </form>
+                <%}%>
             </ul>
         </nav>
 
         <div class="container-fluid">
             <div id="contenedorContenido" class="row">
                 <div id="panelLateral" class="col-2">
+
+                    <%if (usuarioConectado != null) {%>
                     <table class="table table-hover">
                         <tbody>
                             <tr class="table">
@@ -64,18 +73,30 @@
                             <tr class="table">
                                 <td><a href="listasReproduccion.jsp" class="nav-link">Listas de reproduccion</a></td>
                             </tr>
+
+                            <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
                             <tr class="table">
                                 <td><a href="usuarios.jsp" class="nav-link">Usuarios</a></td>
                             </tr>
+                            <%}%>
+
                         </tbody>
                     </table>
+                    <%}%>
+
                 </div>
 
                 <div id="contenido" class="col-10">
                     <div class="jumbotron" style="padding: 1rem 2rem">
                         <h1 class="row" style="font-size: 2em">Bienvenido de nuevo a Tawpify</h1>
                         <p class="row" style="font-size: 1em">
+
+                            <%if(usuarioConectado != null) {%>
                             Su gestor de música preferido
+                            <%} else {%>
+                            Registrate o accede para empezar a disfrutar de la mejor musica
+                            <%}%>
+                            
                         </p>
                     </div>
                 </div>
@@ -87,48 +108,3 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     </body>
 </html>
-
-<!--
-<div class="container-fluid">
-
-                        <div class="mt-2 mb-2">
-
-                            <form action="IndexServlet" method="POST">
-                                <div class="row align-content-end">
-                                    <fieldset>
-                                        <legend>Use 'CTRL' and right click to select several artists</legend>
-                                        <div class="form-group">
-                                            <label for="exampleSelect2">Filter by artist</label>
-                                            <select multiple="" class="form-control" name="artistas" id="artistasFilter" style="width: ">
-                                                <option value="a">a</option>
-                                            </select>
-                                        </div>
-
-                                        <button type="submit" class="btn btn-outline-warning">Filter</button>
-                                    </fieldset>
-                                </div>
-                            </form>
-                        </div>
-
-                        <div>
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Artist</th>
-                                        <th scope="col">Album</th>
-                                        <th scope="col">Song</th>
-                                        <th scope="col">Release</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td>a</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
--->

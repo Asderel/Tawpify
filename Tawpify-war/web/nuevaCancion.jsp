@@ -1,8 +1,4 @@
-<%--
-    Document   : index
-    Created on : 11-sep-2019, 16:23:39
-    Author     : alumno
---%>
+<%@page import="entities.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -10,7 +6,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="css/bootstrap.min.css">
-        <title>Index</title>
+
+        <%
+            Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
+        %>
+
+        <title>Nueva cancion</title>
     </head>
     <body>
 
@@ -26,16 +27,30 @@
             </ul>
 
             <ul class="navbar-nav">
+
+                <%if (usuarioConectado != null) {%>
                 <li class="nav-item">
-                    <span class="badge badge-pill badge-secondary mt-2 mr-4" id="user-pill">WOLOLO</span>
+                    <span class="badge badge-pill badge-secondary mt-2 mr-4" id="user-pill">
+                        <%=!usuarioConectado.getApodo().isEmpty() ? usuarioConectado.getApodo() : usuarioConectado.getNombre()%>
+                    </span>
+                </li>
+                <%}%>
+
+                <%if (usuarioConectado == null) {%>
+                <li class="nav-item">
+                    <a class="btn btn-secondary my-2 mx-2 my-sm-0" href="login.jsp?opcode=9">Accede</a>
                 </li>
 
                 <li class="nav-item">
-                    <button class="btn btn-secondary my-2 mx-2 my-sm-0" type="submit">Accede</button>
+                    <a class="btn btn-outline-secondary my-2 mx-2 my-sm-0" href="login.jsp?opcode=8">Registrate</a>
                 </li>
-                <li class="nav-item">
-                    <button class="btn btn-outline-secondary my-2 mx-2 my-sm-0" type="submit">Registrate</button>
-                </li>
+                <%} else {%>
+                <form id="formLogout" method="POST" action="IndexServlet">
+                    <li class="nav-item">
+                        <button class="btn btn-outline-secondary my-2 mx-2 my-sm-0" type="submit">Salir</button>
+                    </li>
+                </form>
+                <%}%>
             </ul>
         </nav>
 
@@ -47,6 +62,8 @@
                 <!-- PANEL LATERARL -->
 
                 <div id="panelLateral" class="col-2">
+
+                    <%if (usuarioConectado != null) {%>
                     <table class="table table-hover">
                         <tbody>
                             <tr class="table">
@@ -64,11 +81,17 @@
                             <tr class="table">
                                 <td><a href="listasReproduccion.jsp" class="nav-link">Listas de reproduccion</a></td>
                             </tr>
+
+                            <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
                             <tr class="table">
                                 <td><a href="usuarios.jsp" class="nav-link">Usuarios</a></td>
                             </tr>
+                            <%}%>
+
                         </tbody>
                     </table>
+                    <%}%>
+
                 </div>
 
                 <!-- FIN PANEL LATERARL -->

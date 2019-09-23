@@ -1,8 +1,4 @@
-<%--
-    Document   : index
-    Created on : 11-sep-2019, 16:23:39
-    Author     : alumno
---%>
+<%@page import="entities.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -10,6 +6,11 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="css/bootstrap.min.css">
+
+        <%
+            Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
+        %>
+
         <title>Canciones</title>
     </head>
     <body>
@@ -49,6 +50,8 @@
                 <!-- PANEL LATERARL -->
 
                 <div id="panelLateral" class="col-2">
+
+                    <%if (usuarioConectado != null) {%>
                     <table class="table table-hover">
                         <tbody>
                             <tr class="table">
@@ -66,11 +69,17 @@
                             <tr class="table">
                                 <td><a href="listasReproduccion.jsp" class="nav-link">Listas de reproduccion</a></td>
                             </tr>
+
+                            <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
                             <tr class="table">
                                 <td><a href="usuarios.jsp" class="nav-link">Usuarios</a></td>
                             </tr>
+                            <%}%>
+
                         </tbody>
                     </table>
+                    <%}%>
+                    
                 </div>
 
                 <!-- FIN PANEL LATERARL -->

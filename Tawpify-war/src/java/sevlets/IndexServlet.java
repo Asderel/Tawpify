@@ -47,13 +47,6 @@ public class IndexServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-
-        String resp = "WOLOLO";
-
-        session.setAttribute("resp", resp);
-        RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
-        rd.forward(request, response);
     }
 
     /**
@@ -67,7 +60,11 @@ public class IndexServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+
+        session.removeAttribute("usuarioConectado");
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
+        rd.forward(request, response);
     }
 
     /**
