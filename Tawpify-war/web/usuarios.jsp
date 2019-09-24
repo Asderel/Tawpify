@@ -1,3 +1,5 @@
+<%@page import="utils.Utils"%>
+<%@page import="java.util.List"%>
 <%@page import="entities.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -9,6 +11,7 @@
 
         <%
             Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
+            List<Usuario> usuarios = (List) request.getAttribute("usuarios");
         %>
 
         <title>Usuarios</title>
@@ -126,44 +129,35 @@
                         </div>
 
                         <form id="usuariosForm" action="UsuarioCRUDServlet" method="POST">
-                            <input id="idUsuarioInput" name="idUsuarioInput" value="" type="hidden"/>
-                            <input id="accionInput" name="accionInput" value="" type="hidden"/>
-
-                            <table id="tablaUsuarios" class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Nombre</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('1', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('1', '2')">Elminar</button></td>
-                                    </tr>
-                                </tbody>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('2', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('2', '2')">Elminar</button></td>
-                                    </tr>
-                                </tbody>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('3', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarUsuario('3', '2')">Elminar</button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <input id="idUsuarioInput" name="<%=Utils.IDUSUARIOINPUT%>" value="" type="hidden"/>
+                            <input id="accionInput" name="<%=Utils.OPCODE%>" value="" type="hidden"/>
                         </form>
+
+                        <table id="tablaUsuarios" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Apodo</th>
+                                    <th scope="col">Admin</th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+
+                            <% for (Usuario u : usuarios) {%>
+                            <tbody>
+                                <tr class="table-active">
+                                    <td><%=u.getNombre()%></td>
+                                    <td><%=u.getEmail()%></td>
+                                    <td><%=u.getApodo()%></td>
+                                    <td><%=u.getAdministrador() == 1 ? "Si" : "No"%></td>
+                                    <td><button class="btn btn-outline-warning" form="usuariosForm" type="submit" onclick="seleccionarUsuario(<%=u.getIdUsuario()%>, <%=Utils.OP_MODIFICAR%>)">Modificar</button></td>
+                                    <td><button class="btn btn-outline-warning" form="usuariosForm" type="submit" onclick="seleccionarUsuario(<%=u.getIdUsuario()%>, <%=Utils.OP_BORRAR%>)">Eliminar</button></td>
+                                </tr>
+                            </tbody>
+                            <%}%>
+                        </table>
                     </div>
 
                     <!-- FIN LISTADO CANCIONES -->
@@ -180,36 +174,33 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
         <script>
-                                            function seleccionarUsuario(idUsuario, accion) {
-                                                var str = idUsuario.concat(accion);
+                                        function seleccionarUsuario(idUsuario, accion) {
+                                            $('#idUsuarioInput').val(idUsuario);
+                                            $('#accionInput').val(accion);
+                                        }
 
-                                                window.alert(str);
-                                                $('#idUsuarioInput').val(idUsuario);
-                                                $('#accionInput').val(accion);
-                                            }
+                                        function filtrar() {
+                                            var input, filtro, tabla, cuerpo, fila, columnas, x, i, j, valor;
+                                            input = document.getElementById("filtroInput");
+                                            filtro = input.value.toUpperCase();
+                                            tabla = document.getElementById("tablaUsuarios");
+                                            cuerpo = tabla.getElementsByTagName('tbody');
 
-                                            function filtrar() {
-                                                var input, filtro, tabla, cuerpo, fila, columnas, x, i, j, valor;
-                                                input = document.getElementById("filtroInput");
-                                                filtro = input.value.toUpperCase();
-                                                tabla = document.getElementById("tablaUsuarios");
-                                                cuerpo = tabla.getElementsByTagName('tbody');
-
-                                                for (x = 0; cuerpo.length; x++) {
-                                                    fila = cuerpo[x].getElementsByTagName('tr');
-                                                    for (i = 0; i < fila.length; i++) {
-                                                        columnas = fila[i].getElementsByTagName("td");
-                                                        for (j = 0; j < columnas.length - 2; j++) {
-                                                            valor = columnas[j].textContent || columnas[j].innerText;
-                                                            if (valor.toUpperCase().indexOf(filtro) > -1) {
-                                                                fila[i].style.display = "";
-                                                            } else {
-                                                                fila[i].style.display = "none";
-                                                            }
+                                            for (x = 0; cuerpo.length; x++) {
+                                                fila = cuerpo[x].getElementsByTagName('tr');
+                                                for (i = 0; i < fila.length; i++) {
+                                                    columnas = fila[i].getElementsByTagName("td");
+                                                    for (j = 0; j < columnas.length - 2; j++) {
+                                                        valor = columnas[j].textContent || columnas[j].innerText;
+                                                        if (valor.toUpperCase().indexOf(filtro) > -1) {
+                                                            fila[i].style.display = "";
+                                                        } else {
+                                                            fila[i].style.display = "none";
                                                         }
                                                     }
                                                 }
                                             }
+                                        }
         </script>
     </body>
 </html>
