@@ -10,6 +10,7 @@
 
         <%
             Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
+            Usuario usuarioSeleccionado = request.getAttribute("usuarioSeleccionado") != null ? (Usuario) request.getAttribute("usuarioSeleccionado") : null;
             int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
         %>
 
@@ -116,10 +117,13 @@
                         <p class="row" style="font-size: 1em">
                             <%if (opcode == Utils.OP_REGISTRAR) {%>
                             Introduce tu email y contraseña para usar Tawpify
-                            <%} else {%>
+                            <%} else if(opcode == Utils.OP_LOGIN) {%>
                             Introduce tus datos para crear un usuario y empezar a usar Tawpify
+                            <%} else if(opcode == Utils.OP_MODIFICAR){%>
+                            Modifica el usuario seleccionado
+                            <%} else {%>
+                            Crea un nuevo usuario
                             <%}%>
-
                         </p>
                     </div>
 
@@ -130,33 +134,53 @@
                     <div class="container">
                         <form action="LoginServlet" method="POST">
 
-                            <%if (opcode != Utils.OP_LOGIN) {%>
+                            <%if (opcode != Utils.OP_LOGIN || opcode == Utils.OP_MODIFICAR || opcode == Utils.OP_CREAR) {%>
+
                             <div class="form-group">
                                 <label for="<%=Utils.NOMBREINPUT%>">Nombre</label>
-                                <input type="text" class="form-control" id="<%=Utils.NOMBREINPUT%>" placeholder="Nombre" name="<%=Utils.NOMBREINPUT%>"/>
+                                <input type="text" class="form-control" id="<%=Utils.NOMBREINPUT%>" placeholder="Nombre" name="<%=Utils.NOMBREINPUT%>"
+                                       value="<%=opcode == Utils.OP_MODIFICAR ? usuarioSeleccionado.getNombre() : ""%>"/>
                             </div>
 
                             <div class="form-group">
                                 <label for="<%=Utils.APODOINPUT%>">Apodo</label>
-                                <input type="text" class="form-control" id="<%=Utils.APODOINPUT%>" placeholder="Apodo" name="<%=Utils.APODOINPUT%>"/>
+                                <input type="text" class="form-control" id="<%=Utils.APODOINPUT%>" placeholder="Apodo" name="<%=Utils.APODOINPUT%>"
+                                       value="<%=opcode == Utils.OP_MODIFICAR && usuarioSeleccionado.getApodo() != null ? usuarioSeleccionado.getApodo(): ""%>"/>
                             </div>
                             <%}%>
 
                             <div class="form-group">
                                 <label for="<%=Utils.EMAILINPUT%>">Email</label>
-                                <input type="email" class="form-control" id="<%=Utils.EMAILINPUT%>" placeholder="Email" name="<%=Utils.EMAILINPUT%>"/>
+                                <input type="email" class="form-control" id="<%=Utils.EMAILINPUT%>" placeholder="Email" name="<%=Utils.EMAILINPUT%>"
+                                       value="<%=opcode == Utils.OP_MODIFICAR ? usuarioSeleccionado.getEmail() : ""%>"/>
                             </div>
 
                             <div class="form-group">
                                 <label for="<%=Utils.CONTRASENAINPUT%>">Contraseña</label>
-                                <input type="password" class="form-control" id="<%=Utils.CONTRASENAINPUT%>" placeholder="Contraseña" name="<%=Utils.CONTRASENAINPUT%>"/>
+                                <input type="password" class="form-control" id="<%=Utils.CONTRASENAINPUT%>" placeholder="Contraseña" name="<%=Utils.CONTRASENAINPUT%>"
+                                       value="<%=opcode == Utils.OP_MODIFICAR ? usuarioSeleccionado.getContrasena(): ""%>"/>
                             </div>
+
+                            <%if (opcode == Utils.OP_MODIFICAR || opcode == Utils.OP_CREAR) {%>
+                            <fieldset class="form-group">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" value="" checked="<%=opcode == Utils.OP_MODIFICAR ? usuarioSeleccionado.getAdministrador() == 1 : false%>"
+                                               name="<%=Utils.ADMINISTRADORINPUT%>">
+                                        Es administrador
+                                    </label>
+                                </div>
+                            </fieldset>
+                            <%}%>
 
                             <div>
                                 <button class="btn btn-block btn-warning">Listo</button>
                             </div>
 
                             <input name="<%=Utils.OPCODE%>" value="<%=opcode%>" type="hidden">
+                            <%if (opcode == Utils.OP_MODIFICAR) {%>
+                            <input name="<%=Utils.IDUSUARIOINPUT%>" value="<%=usuarioSeleccionado.getIdUsuario()%>" type="hidden">
+                            <%}%>
                         </form>
                     </div>
 

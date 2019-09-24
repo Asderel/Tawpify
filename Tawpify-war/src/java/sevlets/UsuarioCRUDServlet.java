@@ -2,7 +2,6 @@ package sevlets;
 
 import entities.Usuario;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
@@ -52,14 +51,11 @@ public class UsuarioCRUDServlet extends HttpServlet {
 
         int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
 
-        if (opcode == Utils.OP_LISTAR) {
-            List<Usuario> usuarios = usuarioFacade.findAll();
+//        if (opcode == Utils.OP_LISTAR) {
+        List<Usuario> usuarios = usuarioFacade.findAll();
 
-            request.setAttribute("usuarios", usuarios);
-        } else if (opcode == Utils.OP_MODIFICAR) {
-            Usuario usuarioSeleccionado = cargarUsuario(request);
-            request.setAttribute("usuarioSeleccionado", usuarioSeleccionado);
-        }
+        request.setAttribute("usuarios", usuarios);
+//        }
 
         RequestDispatcher rd = getServletContext().getRequestDispatcher("/usuarios.jsp");
         rd.forward(request, response);
@@ -77,18 +73,29 @@ public class UsuarioCRUDServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        RequestDispatcher rd = null;
         int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
 
-        if (opcode == Utils.OP_MODIFICAR) {
-            usuarioFacade.edit(modificarUsuario(request));
-        } else if (opcode == Utils.OP_BORRAR) {
-            eliminarUsuario(request);
+        switch (opcode) {
+            case Utils.OP_MODIFICAR:
+                Usuario usuarioSeleccionado = cargarUsuario(request);
+                request.setAttribute("usuarioSeleccionado", usuarioSeleccionado);
+                request.setAttribute("opcode", opcode);
+                rd = getServletContext().getRequestDispatcher("/login.jsp");
+                break;
+            case Utils.OP_BORRAR:
+                eliminarUsuario(request);
+                rd = getServletContext().getRequestDispatcher("/usuarios.jsp");
+                break;
+            default:
+                // Venimos de la creacion / modificacion del ususario
+                rd = getServletContext().getRequestDispatcher("/usuarios.jsp");
+                break;
         }
 
         List<Usuario> usuarios = usuarioFacade.findAll();
         request.setAttribute("usuarios", usuarios);
 
-        RequestDispatcher rd = getServletContext().getRequestDispatcher("/usuarios.jsp");
         rd.forward(request, response);
     }
 

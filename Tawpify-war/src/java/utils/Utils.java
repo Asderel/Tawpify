@@ -22,6 +22,6 @@ public class Utils {
     public static final String EMAILINPUT = "emailInput";
     public static final String APODOINPUT = "apodoInput";
     public static final String CONTRASENAINPUT = "contrasenaInput";
-    public static final String ADMINISTRADORINPUT = "contrasenaInput";
+    public static final String ADMINISTRADORINPUT = "administradorInput";
 
 }

@@ -119,7 +119,7 @@
                     <div class="col-12 mt-2">
                         <div class="row my-2 justify-content-between">
                             <div class="col-3">
-                                <a class="btn btn-outline-warning" href="login.jsp">Nuevo usuario</a>
+                                <a class="btn btn-outline-warning" href="login.jsp?<%=Utils.OPCODE%>=<%=Utils.OP_CREAR%>">Nuevo usuario</a>
                             </div>
 
                             <div class="col-3">
