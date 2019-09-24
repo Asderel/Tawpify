@@ -1,3 +1,6 @@
+<%@page import="utils.Utils"%>
+<%@page import="java.util.List"%>
+<%@page import="entities.Genero"%>
 <%@page import="entities.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -13,6 +16,8 @@
 
         <%
             Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
+            List<Genero> generos = (List) request.getAttribute("generos");
+            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
         %>
 
         <title>Generos</title>
@@ -120,7 +125,7 @@
                     <div class="col-12 mt-2">
                         <div class="row my-2 justify-content-between">
                             <div class="col-3">
-                                <a class="btn btn-outline-warning" href="nuevoGenero.jsp">Nuevo genero</a>
+                                <button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalCrearGenero">Nuevo genero</button>
                             </div>
                             <div class="col-3">
                                 <input type="text" class="form-control" id="filtroInput" aria-describedby="filtroInput" placeholder="Filtra en la tabla"
@@ -128,53 +133,32 @@
                             </div>
                         </div>
 
-                        <form id="generosForm" action="CancionCRUDServlet" method="POST">
-                            <input id="idGeneroInput" name="idGeneroInput" value="" type="hidden"/>
-                            <input id="accionInput" name="accionInput" value="" type="hidden"/>
-
-                            <table id="tablaGeneros" class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Nombre</th>
-                                        <th scope="col">Artista</th>
-                                        <th scope="col">Album</th>
-                                        <th scope="col">Lanzamiento</th>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('1', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('1', '2')">Eliminar</button></td>
-                                    </tr>
-                                </tbody>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('2', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('2', '2')">Eliminar</button></td>
-                                    </tr>
-                                </tbody>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('3', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero('3', '2')">Eliminar</button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <form id="generosForm" action="GeneroCRUDServlet" method="POST">
+                            <input id="idGeneroInput" name="<%=Utils.IDGENEROINPUT%>" value="" type="hidden"/>
+                            <input id="accionInput" name="<%=Utils.OPCODE%>" value="" type="hidden"/>
+                            <input id="nombreInput" name="<%=Utils.NOMBREINPUT%>" value="" type="hidden"/>
                         </form>
+
+                        <table id="tablaGeneros" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <%for (Genero g : generos) {%>
+                            <tbody>
+                                <tr class="table-active">
+                                    <td><%=g.getNombre()%></td>
+                                    <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalModificarGenero"
+                                                onclick="seleccionarGenero(<%=g.getIdGenero()%>, <%=Utils.OP_MODIFICAR%>)">Modificar</button></td>
+                                    <td><button class="btn btn-outline-warning" form="generosForm" type="submit" onclick="seleccionarGenero(<%=g.getIdGenero()%>, <%=Utils.OP_BORRAR%>)">Eliminar</button></td>
+                                </tr>
+                            </tbody>
+                            <input id="nombreOculto_<%=g.getIdGenero()%>" type="hidden" value="<%=g.getNombre()%>">
+                            <%}%>
+                        </table>
                     </div>
 
                     <!-- FIN LISTADO GENEROS -->
@@ -186,14 +170,85 @@
             </div>
         </div>
 
+        <!-- MODALES -->
+
+        <div id="modalCrearGenero" class="modal fade">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            Crear genero
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <fieldset>
+                            <legend style="font-size: 1.2em">Datos</legend>
+                            <div class="form-group">
+                                <label for="<%=Utils.NOMBREINPUT%>ModalCrearGenero">Nombre</label>
+                                <input type="text" class="form-control" id="<%=Utils.NOMBREINPUT%>ModalCrearGenero" placeholder="Nombre"/>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" form="generosForm" onclick="setupCrearGenero()" class="btn btn-outline-warning">Listo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="modalModificarGenero" class="modal fade">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            Modificar genero
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <fieldset>
+                            <legend style="font-size: 1.2em">Datos</legend>
+                            <div class="form-group">
+                                <label for="<%=Utils.NOMBREINPUT%>ModificarGenero">Nombre</label>
+                                <input id="nombreInputModalModificarGenero" type="text" class="form-control" placeholder="Nombre" value=""/>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" form="generosForm" onclick="setupModificarGenero()" class="btn btn-outline-warning">Listo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FIN MODALES -->
+
         <script>
             function seleccionarGenero(idGenero, accion) {
-                var str = idGenero.concat(accion);
-
-                window.alert(str);
                 $('#idGeneroInput').val(idGenero);
                 $('#accionInput').val(accion);
+                $('#nombreInputModalModificarGenero').val($('#nombreOculto_' + idGenero).val());
             }
+
+            function setupModificarGenero() {
+                $('#nombreInput').val($('#nombreInputModalModificarGenero').val());
+            }
+
+            function setupCrearGenero() {
+                $('#nombreInput').val($('#nombreInputModalCrearGenero').val());
+                $('#accionInput').val(<%=Utils.OP_CREAR%>);
+            }
+
+            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 2 : 0%>
 
             function filtrar() {
                 var input, filtro, tabla, cuerpo, fila, columnas, x, i, j, valor;
@@ -206,7 +261,7 @@
                     fila = cuerpo[x].getElementsByTagName('tr');
                     for (i = 0; i < fila.length; i++) {
                         columnas = fila[i].getElementsByTagName("td");
-                        for (j = 0; j < columnas.length - 2; j++) {
+                        for (j = 0; j < columnas.length - numFilasIngorar; j++) {
                             valor = columnas[j].textContent || columnas[j].innerText;
                             if (valor.toUpperCase().indexOf(filtro) > -1) {
                                 fila[i].style.display = "";

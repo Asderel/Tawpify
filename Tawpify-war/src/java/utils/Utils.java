@@ -1,4 +1,3 @@
-
 package utils;
 
 public class Utils {
@@ -16,12 +15,20 @@ public class Utils {
     public static final int OP_REGISTRAR = 8;
     public static final int OP_LOGIN = 9;
 
+    // Codigo operaciones
     public static final String OPCODE = "opcode";
-    public static final String IDUSUARIOINPUT = "idUsuarioInput";
+
+    // Input genericos
     public static final String NOMBREINPUT = "nombreInput";
+
+    // Input Usuario
+    public static final String IDUSUARIOINPUT = "idUsuarioInput";
     public static final String EMAILINPUT = "emailInput";
     public static final String APODOINPUT = "apodoInput";
     public static final String CONTRASENAINPUT = "contrasenaInput";
     public static final String ADMINISTRADORINPUT = "administradorInput";
+
+    // Input Genero
+    public static final String IDGENEROINPUT = "idGeneroInput";
 
 }
