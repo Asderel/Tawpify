@@ -23,8 +23,8 @@
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 
             List<Cancion> canciones = (List) request.getAttribute("canciones");
-            List<Artista> artistas = (List) request.getAttribute("artistas");
-            List<Album> albumes = (List) request.getAttribute("albumes");
+            List<Artista> artistas = (List) session.getAttribute("artistas");
+            List<Album> albumes = (List) session.getAttribute("albumes");
             List<ListaReproduccion> listasReproduccion = (List) request.getAttribute("listasReproduccion");
 
             int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));

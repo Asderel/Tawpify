@@ -4,6 +4,8 @@ public class Utils {
 
     public static final String NIL = "nil";
 
+    public static final String PLACEHOLDER_FECHA = "__/__/____";
+
     // CODIGOS CRUD
     public static final int OP_CREAR = 1;
     public static final int OP_BORRAR = 2;

@@ -1,3 +1,9 @@
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="entities.Cancion"%>
+<%@page import="entities.Album"%>
+<%@page import="entities.Artista"%>
+<%@page import="java.util.List"%>
+<%@page import="utils.Utils"%>
 <%@page import="entities.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -13,6 +19,12 @@
 
         <%
             Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
+            Cancion cancionSeleccionada = request.getAttribute("cancionSeleccionada") != null ? (Cancion) request.getAttribute("cancionSeleccionada") : null;
+            List<Artista> artistas = (List) session.getAttribute("artistas");
+            List<Album> albumes = (List) session.getAttribute("albumes");
+
+            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         %>
 
         <title>Nueva cancion</title>
@@ -62,6 +74,9 @@
 
         <div class="container-fluid">
             <div id="contenedorContenido" class="row">
+                <form id="formRuta">
+                    <input id="accionInput" name="<%=Utils.OPCODE%>" value="<%=Utils.OP_LISTAR%>" type="hidden"/>
+                </form>
 
                 <!-- PANEL LATERARL -->
 
@@ -108,9 +123,19 @@
                     <!-- JUMBOTRON -->
 
                     <div class="jumbotron" style="padding: 1rem 2rem">
-                        <h1 class="row" style="font-size: 2em">Creacion de cancion</h1>
+                        <h1 class="row" style="font-size: 2em">
+                            <%if (cancionSeleccionada != null) {%>
+                            Modificacion de cancion
+                            <%} else {%>
+                            Creacion de cancion
+                            <%}%>
+                        </h1>
                         <p class="row" style="font-size: 1em">
+                            <%if (cancionSeleccionada != null) {%>
+                            Modifica la cancion seleccionada
+                            <%} else {%>
                             Crea una nueva cancion
+                            <%}%>
                         </p>
                     </div>
 
@@ -123,27 +148,35 @@
                             <fieldset>
                                 <legend style="font-size: 1.2em">Informacion basica</legend>
                                 <div class="form-group">
-                                    <label for="nombreInput">Nombre</label>
-                                    <input type="text" class="form-control" id="nombreInput" placeholder="Nombre" name="nombreInput"/>
+                                    <label for="<%=Utils.NOMBREINPUT%>">Nombre</label>
+                                    <input type="text" class="form-control" id="<%=Utils.NOMBREINPUT%>" placeholder="Nombre" name="<%=Utils.NOMBREINPUT%>"
+                                           value="<%=cancionSeleccionada != null ? cancionSeleccionada.getNombre() : "" %>"/>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="fechaLanzamientoInput">Fecha de lanzamiento</label>
-                                    <input type="text" class="form-control" id="fechaLanzamientoInput" placeholder="Fecha de lanzamiento" name="fechaLanzamientoInput"/>
+                                    <label for="<%=Utils.FECHASALIDAINPUT%>">Fecha lanzamiento</label>
+                                    <input type="text" class="form-control" id="<%=Utils.FECHASALIDAINPUT%>" placeholder="Fecha lanzamiento" name="<%=Utils.FECHASALIDAINPUT%>"
+                                           <%=cancionSeleccionada != null ? formatter.format(cancionSeleccionada.getFechaSalida()) : Utils.PLACEHOLDER_FECHA%>/>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="<%=Utils.URLINPUT%>">URL</label>
+                                    <input type="text" class="form-control" id="<%=Utils.URLINPUT%>" placeholder="URL de la cancion en Youtube" name="<%=Utils.URLINPUT%>"
+                                           value="<%=cancionSeleccionada != null ? cancionSeleccionada.getUrl(): "" %>"/>
                                 </div>
                             </fieldset>
 
                             <fieldset>
                                 <legend style="font-size: 1.2em">Artista</legend>
                                 <div class="form-group">
-                                    <select class="form-control" name="seleccionArtistas" id="seleccionArtistas">
-                                        <option value="a">a</option>
-                                        <option value="b">b</option>
-                                        <option value="c">c</option>
-                                        <option value="d">d</option>
-                                        <option value="e">e</option>
-                                        <option value="f">f</option>
-                                        <option value="g">g</option>
+                                    <label for="<%=Utils.ARTISTASSELECCIONADOSNPUT%>">Filtra por artista</label>
+                                    <select multiple="true" class="form-control" name="<%=Utils.ARTISTASSELECCIONADOSNPUT%>" id="<%=Utils.ARTISTASSELECCIONADOSNPUT%>" size="3">
+                                        <%for (Artista a : artistas) {%>
+                                        <option value="<%=a.getIdArtista()%>"
+                                                <%=cancionSeleccionada != null && cancionSeleccionada.getArtistaCollection().contains(a) ? "selected" : ""%>>
+                                            <%=a.getNombre()%>
+                                        </option>
+                                        <%}%>
                                     </select>
                                 </div>
                             </fieldset>
@@ -151,14 +184,14 @@
                             <fieldset>
                                 <legend style="font-size: 1.2em">Album</legend>
                                 <div class="form-group">
-                                    <select class="form-control" name="seleccionArtistas" id="seleccionArtistas">
-                                        <option value="a">a</option>
-                                        <option value="b">b</option>
-                                        <option value="c">c</option>
-                                        <option value="d">d</option>
-                                        <option value="e">e</option>
-                                        <option value="f">f</option>
-                                        <option value="g">g</option>
+                                    <label for="<%=Utils.ALBUMSELECCIONADOINPUT%>">Filtra por album</label>
+                                    <select class="form-control" name="<%=Utils.ALBUMSELECCIONADOINPUT%>" id="<%=Utils.ALBUMSELECCIONADOINPUT%>" size="3">
+                                        <%for (Album al : albumes) {%>
+                                        <option value="<%=al.getIdAlbum()%>"
+                                                <%=cancionSeleccionada != null && cancionSeleccionada.getIdAlbum().getIdAlbum() == al.getIdAlbum() ? "selected" : "" %>>
+                                            <%=al.getNombre()%>
+                                        </option>
+                                        <%}%>
                                     </select>
                                 </div>
 

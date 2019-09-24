@@ -65,6 +65,9 @@
 
         <div class="container-fluid">
             <div id="contenedorContenido" class="row">
+                <form id="formRuta">
+                    <input id="accionInput" name="<%=Utils.OPCODE%>" value="<%=Utils.OP_LISTAR%>" type="hidden"/>
+                </form>
 
                 <!-- PANEL LATERARL -->
 

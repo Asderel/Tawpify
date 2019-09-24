@@ -25,6 +25,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import session.AlbumFacade;
 import session.ArtistaFacade;
 import session.CancionFacade;
@@ -75,6 +76,7 @@ public class CancionCRUDServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
         int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
 
         List<Cancion> canciones = cancionFacade.findAll();
@@ -83,8 +85,8 @@ public class CancionCRUDServlet extends HttpServlet {
         List<ListaReproduccion> listasReproduccion = listaReproduccionFacade.findAll();
 
         request.setAttribute("canciones", canciones);
-        request.setAttribute("artistas", artistas);
-        request.setAttribute("albumes", albumes);
+        session.setAttribute("artistas", artistas);
+        session.setAttribute("albumes", albumes);
         request.setAttribute("listasReproduccion", listasReproduccion);
 
         RequestDispatcher rd = getServletContext().getRequestDispatcher("/canciones.jsp");
