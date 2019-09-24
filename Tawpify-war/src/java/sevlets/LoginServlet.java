@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package sevlets;
 
 import entities.Usuario;
@@ -82,25 +77,40 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        RequestDispatcher rd;
 
         Usuario u;
         int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
 
-        if(opcode == Utils.OP_LOGIN) {
-
-            u = logUsuario(request);
-            session.setAttribute("usuarioConectado", u);
-        } else if(opcode == Utils.OP_REGISTRAR) {
-
-
-            String test = request.getParameter(Utils.NOMBREINPUT);
-            u = crearUsuario(request);
-            usuarioFacade.create(u);
-            session.setAttribute("usuarioConectado", u);
+        switch (opcode) {
+            case Utils.OP_LOGIN:
+                u = logUsuario(request);
+                session.setAttribute("usuarioConectado", u);
+                rd = getServletContext().getRequestDispatcher("/index.jsp");
+                rd.forward(request, response);
+                break;
+            case Utils.OP_REGISTRAR:
+                u = crearUsuario(request);
+                usuarioFacade.create(u);
+                session.setAttribute("usuarioConectado", u);
+                rd = getServletContext().getRequestDispatcher("/index.jsp");
+                rd.forward(request, response);
+                break;
+            case Utils.OP_MODIFICAR:
+                usuarioFacade.edit(modificarUsuario(request));
+                rd = getServletContext().getRequestDispatcher("/UsuarioCRUDServlet");
+                rd.forward(request, response);
+                break;
+            case Utils.OP_CREAR:
+                usuarioFacade.create(crearUsuarioAdministracion(request));
+                rd = getServletContext().getRequestDispatcher("/UsuarioCRUDServlet");
+                rd.forward(request, response);
+                break;
+            default:
+                rd = getServletContext().getRequestDispatcher("/index.jsp");
+                rd.forward(request, response);
+                break;
         }
-
-        RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
-        rd.forward(request, response);
     }
 
     /**
@@ -126,6 +136,50 @@ public class LoginServlet extends HttpServlet {
         u.setEmail(email);
         u.setContrasena(pass);
         u.setAdministrador(0);
+
+        return u;
+    }
+
+    private Usuario crearUsuarioAdministracion(HttpServletRequest request) {
+        Usuario u = new Usuario();
+
+        String nombre = request.getParameter(Utils.NOMBREINPUT);
+        String apodo = request.getParameter(Utils.APODOINPUT);
+        String email = request.getParameter(Utils.EMAILINPUT);
+        String pass = request.getParameter(Utils.CONTRASENAINPUT);
+        int administrador = request.getParameter(Utils.ADMINISTRADORINPUT) == null || request.getParameter(Utils.ADMINISTRADORINPUT).equalsIgnoreCase("")
+                ? 0 : Integer.parseInt(request.getParameter(Utils.ADMINISTRADORINPUT));
+
+        u.setNombre(nombre);
+        u.setApodo(apodo);
+        u.setEmail(email);
+        u.setContrasena(pass);
+        u.setAdministrador(administrador);
+
+        return u;
+    }
+
+    private Usuario cargarUsuario(HttpServletRequest request) {
+        int idUsuario = Integer.parseInt(request.getParameter(Utils.IDUSUARIOINPUT));
+
+        return usuarioFacade.find(idUsuario);
+    }
+
+    private Usuario modificarUsuario(HttpServletRequest request) {
+        Usuario u = cargarUsuario(request);
+
+        String nombre = request.getParameter(Utils.NOMBREINPUT);
+        String apodo = request.getParameter(Utils.APODOINPUT);
+        String email = request.getParameter(Utils.EMAILINPUT);
+        String pass = request.getParameter(Utils.CONTRASENAINPUT);
+        int administrador = request.getParameter(Utils.ADMINISTRADORINPUT) == null || request.getParameter(Utils.ADMINISTRADORINPUT).equalsIgnoreCase("")
+                ? 0 : Integer.parseInt(request.getParameter(Utils.ADMINISTRADORINPUT));
+
+        u.setNombre(nombre);
+        u.setApodo(apodo);
+        u.setEmail(email);
+        u.setContrasena(pass);
+        u.setAdministrador(administrador);
 
         return u;
     }
