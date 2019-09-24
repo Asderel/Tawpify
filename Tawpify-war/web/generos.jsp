@@ -17,7 +17,6 @@
         <%
             Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
             List<Genero> generos = (List) request.getAttribute("generos");
-            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
         %>
 
         <title>Generos</title>
@@ -67,6 +66,9 @@
 
         <div class="container-fluid">
             <div id="contenedorContenido" class="row">
+                <form id="formRuta">
+                    <input id="accionInput" name="<%=Utils.OPCODE%>" value="<%=Utils.OP_LISTAR%>" type="hidden"/>
+                </form>
 
                 <!-- PANEL LATERARL -->
 

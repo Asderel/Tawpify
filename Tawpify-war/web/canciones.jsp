@@ -1,3 +1,10 @@
+<%@page import="entities.ListaReproduccion"%>
+<%@page import="entities.Album"%>
+<%@page import="entities.Artista"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="entities.Cancion"%>
+<%@page import="java.util.List"%>
+<%@page import="utils.Utils"%>
 <%@page import="entities.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -13,6 +20,14 @@
 
         <%
             Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+
+            List<Cancion> canciones = (List) request.getAttribute("canciones");
+            List<Artista> artistas = (List) request.getAttribute("artistas");
+            List<Album> albumes = (List) request.getAttribute("albumes");
+            List<ListaReproduccion> listasReproduccion = (List) request.getAttribute("listasReproduccion");
+
+            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
         %>
 
         <title>Canciones</title>
@@ -62,6 +77,9 @@
 
         <div class="container-fluid">
             <div id="contenedorContenido" class="row">
+                <form id="formRuta">
+                    <input id="accionInput" name="<%=Utils.OPCODE%>" value="<%=Utils.OP_LISTAR%>" type="hidden"/>
+                </form>
 
                 <!-- PANEL LATERARL -->
 
@@ -117,7 +135,7 @@
 
                     <!-- LISTADO CANCIONES -->
 
-                    <div class="container-fluid">
+                    <div class="container-fluid mb-5">
                         <div class="row">
                             <div class="col-12 mt-2">
                                 <form action="CancionCRUDServlet" method="POST">
@@ -126,15 +144,11 @@
                                             <fieldset>
                                                 <legend style="font-size: 1.2em">Selecciona diferentes artistas a la vez presionando 'CTRL'</legend>
                                                 <div class="form-group">
-                                                    <label for="seleccionArtistas">Filtra por artista</label>
-                                                    <select multiple="true" class="form-control" name="seleccionArtistas" id="seleccionArtistas" size="3">
-                                                        <option value="a">a</option>
-                                                        <option value="b">b</option>
-                                                        <option value="c">c</option>
-                                                        <option value="d">d</option>
-                                                        <option value="e">e</option>
-                                                        <option value="f">f</option>
-                                                        <option value="g">g</option>
+                                                    <label for="<%=Utils.ARTISTASSELECCIONADOSNPUT%>">Filtra por artista</label>
+                                                    <select multiple="true" class="form-control" name="<%=Utils.ARTISTASSELECCIONADOSNPUT%>" id="<%=Utils.ARTISTASSELECCIONADOSNPUT%>" size="3">
+                                                        <%for(Artista a : artistas) {%>
+                                                        <option value="<%=a.getIdArtista()%>"><%=a.getNombre()%></option>
+                                                        <%}%>
                                                     </select>
                                                 </div>
                                             </fieldset>
@@ -143,15 +157,11 @@
                                             <fieldset>
                                                 <legend style="font-size: 1.2em">Selecciona diferentes albumes a la vez presionando 'CTRL'</legend>
                                                 <div class="form-group">
-                                                    <label for="seleccionAlbum">Filtra por album</label>
-                                                    <select multiple="true" class="form-control" name="seleccionAlbum" id="seleccionAlbum" size="3">
-                                                        <option value="a">a</option>
-                                                        <option value="b">b</option>
-                                                        <option value="c">c</option>
-                                                        <option value="d">d</option>
-                                                        <option value="e">e</option>
-                                                        <option value="f">f</option>
-                                                        <option value="g">g</option>
+                                                    <label for="<%=Utils.ALBUMSELECCIONADOINPUT%>">Filtra por album</label>
+                                                    <select multiple="true" class="form-control" name="<%=Utils.ALBUMSELECCIONADOINPUT%>" id="<%=Utils.ALBUMSELECCIONADOINPUT%>" size="3">
+                                                        <%for(Album al : albumes) {%>
+                                                        <option value="<%=al.getIdAlbum()%>"><%=al.getNombre()%></option>
+                                                        <%}%>
                                                     </select>
                                                 </div>
                                             </fieldset>
@@ -161,6 +171,7 @@
                                     <div class="row justify-content-end">
                                         <div class="col-auto">
                                             <button type="submit" class="btn btn-outline-warning">Filtrar</button>
+                                            <input id="accionInput" name="<%=Utils.OPCODE%>" value="<%=Utils.OP_FILTRAR%>" type="hidden"/>
                                         </div>
                                     </div>
                                 </form>
@@ -171,7 +182,7 @@
                     <div class="col-12 mt-2">
                         <div class="row my-2 justify-content-between">
                             <div class="col-3">
-                                <a class="btn btn-outline-warning" href="nuevaCancion.jsp">Nueva cancion</a>
+                                <a class="btn btn-outline-warning" href="nuevaCancion.jsp?<%=Utils.OPCODE%>=<%=Utils.OP_CREAR%>">Nueva cancion</a>
                             </div>
 
                             <div class="col-3">
@@ -187,52 +198,30 @@
                             <table id="tablaCanciones" class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Nombre</th>
-                                        <th scope="col">Artista</th>
-                                        <th scope="col">Album</th>
-                                        <th scope="col">Lanzamiento</th>
                                         <th scope="col"></th>
+                                        <th scope="col">Nombre</th>
+                                        <th scope="col">Album</th>
+                                        <th scope="col">Artista</th>
+                                        <th scope="col">Lanzamiento</th>
                                         <th scope="col"></th>
                                         <th scope="col"></th>
                                         <th scope="col"></th>
                                     </tr>
                                 </thead>
+                                <%for (Cancion c : canciones) {%>
                                 <tbody>
                                     <tr class="table-active">
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td>a</td>
                                         <td><a class="btn btn-outline-warning" target=_blank" href="https://www.youtube.com/watch?v=ODKTITUPusM&t">Escuchar</a></td>
+                                        <td><%=c.getNombre()%></td>
+                                        <td><%=c.getIdAlbum().getNombre()%></td>
+                                        <td><%=c.getIdAlbum().getIdArtista().getNombre()%></td>
+                                        <td><%=formatter.format(c.getFechaSalida())%></td>
                                         <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalIncluir">Incluir en lista</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('1', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('1', '2')">Eliminar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero(<%=c.getIdCancion()%>, <%=Utils.OP_MODIFICAR%>)">Modificar</button></td>
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero(<%=c.getIdCancion()%>, <%=Utils.OP_BORRAR%>)">Eliminar</button></td>
                                     </tr>
                                 </tbody>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td><a class="btn btn-outline-warning" target=_blank" href="https://www.youtube.com/watch?v=ODKTITUPusM&t">Escuchar</a></td>
-                                        <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalIncluir">Incluir en lista</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('2', '2')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('2', '2')">Eliminar</button></td>
-                                    </tr>
-                                </tbody>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td><a class="btn btn-outline-warning" target=_blank" href="https://www.youtube.com/watch?v=ODKTITUPusM&t">Escuchar</a></td>
-                                        <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalIncluir">Incluir en lista</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('3', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('3', '2')">Eliminar</button></td>
-                                    </tr>
-                                </tbody>
+                                <%}%>
                             </table>
                         </form>
                     </div>
@@ -263,14 +252,10 @@
                             <fieldset>
                                 <legend style="font-size: 1.2em">Incluir cancion en la lista de reproduccion...</legend>
                                 <div class="form-group">
-                                    <select class="form-control" name="seleccionLista" id="seleccionLista">
-                                        <option value="a">a</option>
-                                        <option value="b">b</option>
-                                        <option value="c">c</option>
-                                        <option value="d">d</option>
-                                        <option value="e">e</option>
-                                        <option value="f">f</option>
-                                        <option value="g">g</option>
+                                    <select class="form-control" name="<%=Utils.LISTASELECCIONADAINPUT%>" id="<%=Utils.LISTASELECCIONADAINPUT%>" name="<%=Utils.LISTASELECCIONADAINPUT%>">
+                                        <%for(ListaReproduccion l : listasReproduccion) {%>
+                                        <option value="<%=l.getNombre()%>"><%=l.getNombre()%></option>
+                                        <%}%>
                                     </select>
                                 </div>
                             </fieldset>
@@ -295,6 +280,9 @@
                 $('#accionInput').val(accion);
             }
 
+
+            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 3 : 0%>
+
             function filtrar() {
                 // Declare variables
                 var input, filtro, tabla, cuerpo, fila, columnas, x, i, j, valor;
@@ -307,7 +295,7 @@
                     fila = cuerpo[x].getElementsByTagName('tr');
                     for (i = 0; i < fila.length; i++) {
                         columnas = fila[i].getElementsByTagName("td");
-                        for (j = 0; j < columnas.length - 4; j++) {
+                        for (j = 1; j < columnas.length - numFilasIngorar; j++) {
                             valor = columnas[j].textContent || columnas[j].innerText;
                             if (valor.toUpperCase().indexOf(filtro) > -1) {
                                 fila[i].style.display = "";

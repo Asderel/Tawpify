@@ -40,7 +40,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Cancion.findAll", query = "SELECT c FROM Cancion c")
     , @NamedQuery(name = "Cancion.findByIdCancion", query = "SELECT c FROM Cancion c WHERE c.idCancion = :idCancion")
     , @NamedQuery(name = "Cancion.findByNombre", query = "SELECT c FROM Cancion c WHERE c.nombre = :nombre")
-    , @NamedQuery(name = "Cancion.findByFechaSalida", query = "SELECT c FROM Cancion c WHERE c.fechaSalida = :fechaSalida")})
+    , @NamedQuery(name = "Cancion.findByFechaSalida", query = "SELECT c FROM Cancion c WHERE c.fechaSalida = :fechaSalida")
+    , @NamedQuery(name = "Cancion.findByUrl", query = "SELECT c FROM Cancion c WHERE c.url = :url")})
 public class Cancion implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -59,6 +60,11 @@ public class Cancion implements Serializable {
     @Column(name = "fecha_salida")
     @Temporal(TemporalType.DATE)
     private Date fechaSalida;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "url")
+    private String url;
     @ManyToMany(mappedBy = "cancionCollection")
     private Collection<Artista> artistaCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cancion")
@@ -128,6 +134,14 @@ public class Cancion implements Serializable {
 
     public void setIdAlbum(Album idAlbum) {
         this.idAlbum = idAlbum;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override

@@ -10,6 +10,7 @@ public class Utils {
     public static final int OP_MODIFICAR = 3;
     public static final int OP_CREATE = 4;
     public static final int OP_LISTAR = 5;
+    public static final int OP_FILTRAR = 6;
 
     // CODIGOS ACCIONES
     public static final int OP_REGISTRAR = 8;
@@ -20,6 +21,7 @@ public class Utils {
 
     // Input genericos
     public static final String NOMBREINPUT = "nombreInput";
+    public static final String FECHASALIDAINPUT = "fechaSalidaInput";
 
     // Input Usuario
     public static final String IDUSUARIOINPUT = "idUsuarioInput";
@@ -30,5 +32,16 @@ public class Utils {
 
     // Input Genero
     public static final String IDGENEROINPUT = "idGeneroInput";
+
+    // Input Cancion
+    public static final String IDCANCIONINPUT = "idCancionInput";
+    public static final String URLINPUT = "urlInput";
+    public static final String ARTISTASELECCIONADOSNPUT = "artistaSeleccionadosInput";
+    public static final String ARTISTASSELECCIONADOSNPUT = "artistasSeleccionadosInput";
+    public static final String ALBUMSELECCIONADOINPUT = "albumSeleccionadoInput";
+    public static final String LISTASELECCIONADAINPUT = "listaSeleccionadaInput";
+
+    // Input Album
+    public static final String IDALBUMINPUT = "idAlbumInput";
 
 }
