@@ -169,7 +169,7 @@
                             <fieldset class="form-group">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" value="" checked="<%=opcode == Utils.OP_MODIFICAR ? usuarioSeleccionado.getAdministrador() == 1 : false%>"
+                                        <input class="form-check-input" type="checkbox" checked="<%=opcode == Utils.OP_MODIFICAR ? usuarioSeleccionado.getAdministrador() == 1 : ""%>"
                                                name="<%=Utils.ADMINISTRADORINPUT%>">
                                         Es administrador
                                     </label>
