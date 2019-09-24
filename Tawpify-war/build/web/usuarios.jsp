@@ -157,8 +157,10 @@
                                     <td><%=u.getEmail()%></td>
                                     <td><%=u.getApodo()%></td>
                                     <td><%=u.getAdministrador() == 1 ? "Si" : "No"%></td>
-                                    <td><button class="btn btn-outline-warning" form="usuariosForm" type="submit" onclick="seleccionarUsuario(<%=u.getIdUsuario()%>, <%=Utils.OP_MODIFICAR%>)">Modificar</button></td>
-                                    <td><button class="btn btn-outline-warning" form="usuariosForm" type="submit" onclick="seleccionarUsuario(<%=u.getIdUsuario()%>, <%=Utils.OP_BORRAR%>)">Eliminar</button></td>
+                                    <td><button class="btn btn-outline-warning" form="usuariosForm" type="submit"
+                                                onclick="seleccionarUsuario(<%=u.getIdUsuario()%>, <%=Utils.OP_MODIFICAR%>)">Modificar</button></td>
+                                    <td><button class="btn btn-outline-warning" form="usuariosForm" type="submit"
+                                                onclick="seleccionarUsuario(<%=u.getIdUsuario()%>, <%=Utils.OP_BORRAR%>)">Eliminar</button></td>
                                 </tr>
                             </tbody>
                             <%}%>
