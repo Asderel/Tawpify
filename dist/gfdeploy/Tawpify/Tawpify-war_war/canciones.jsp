@@ -17,6 +17,7 @@
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/86da25765b.js" crossorigin="anonymous"></script>
 
         <%
             Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
@@ -146,7 +147,7 @@
                                                 <div class="form-group">
                                                     <label for="<%=Utils.ARTISTASSELECCIONADOSNPUT%>">Filtra por artista</label>
                                                     <select multiple="true" class="form-control" name="<%=Utils.ARTISTASSELECCIONADOSNPUT%>" id="<%=Utils.ARTISTASSELECCIONADOSNPUT%>" size="3">
-                                                        <%for(Artista a : artistas) {%>
+                                                        <%for (Artista a : artistas) {%>
                                                         <option value="<%=a.getIdArtista()%>"><%=a.getNombre()%></option>
                                                         <%}%>
                                                     </select>
@@ -159,7 +160,7 @@
                                                 <div class="form-group">
                                                     <label for="<%=Utils.ALBUMSELECCIONADOINPUT%>">Filtra por album</label>
                                                     <select multiple="true" class="form-control" name="<%=Utils.ALBUMSELECCIONADOINPUT%>" id="<%=Utils.ALBUMSELECCIONADOINPUT%>" size="3">
-                                                        <%for(Album al : albumes) {%>
+                                                        <%for (Album al : albumes) {%>
                                                         <option value="<%=al.getIdAlbum()%>"><%=al.getNombre()%></option>
                                                         <%}%>
                                                     </select>
@@ -211,14 +212,23 @@
                                 <%for (Cancion c : canciones) {%>
                                 <tbody>
                                     <tr class="table-active">
-                                        <td><a class="btn btn-outline-warning" target=_blank" href="https://www.youtube.com/watch?v=ODKTITUPusM&t">Escuchar</a></td>
+                                        <th scope="row"><a class="btn btn-outline-warning far fa-play-circle" target=_blank" href="https://www.youtube.com/watch?v=ODKTITUPusM&t"
+                                                           style="border: none; font-size: 1.5em"></a></th>
                                         <td><%=c.getNombre()%></td>
                                         <td><%=c.getIdAlbum().getNombre()%></td>
                                         <td><%=c.getIdAlbum().getIdArtista().getNombre()%></td>
                                         <td><%=formatter.format(c.getFechaSalida())%></td>
-                                        <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalIncluir">Incluir en lista</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero(<%=c.getIdCancion()%>, <%=Utils.OP_MODIFICAR%>)">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero(<%=c.getIdCancion()%>, <%=Utils.OP_BORRAR%>)">Eliminar</button></td>
+
+                                        <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalIncluir" title="Incluir en lista de reproduccion"
+                                                    style="border: none;"><span class="fas fa-plus-circle"/></button></td>
+
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero(<%=c.getIdCancion()%>, <%=Utils.OP_MODIFICAR%>)"
+                                                    title="Modificar cancion"
+                                                    style="border: none;"><span class="far fa-edit"/></button></td>
+
+                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero(<%=c.getIdCancion()%>, <%=Utils.OP_BORRAR%>)"
+                                                    title="Eliminar cancion"
+                                                    style="border: none;"><span class="fas fa-trash"/></button></td>
                                     </tr>
                                 </tbody>
                                 <%}%>
@@ -253,7 +263,7 @@
                                 <legend style="font-size: 1.2em">Incluir cancion en la lista de reproduccion...</legend>
                                 <div class="form-group">
                                     <select class="form-control" name="<%=Utils.LISTASELECCIONADAINPUT%>" id="<%=Utils.LISTASELECCIONADAINPUT%>" name="<%=Utils.LISTASELECCIONADAINPUT%>">
-                                        <%for(ListaReproduccion l : listasReproduccion) {%>
+                                        <%for (ListaReproduccion l : listasReproduccion) {%>
                                         <option value="<%=l.getNombre()%>"><%=l.getNombre()%></option>
                                         <%}%>
                                     </select>
@@ -281,7 +291,8 @@
             }
 
 
-            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 3 : 0%>
+            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 3 : 1%>
+            console.log(numFilasIngorar)
 
             function filtrar() {
                 // Declare variables
@@ -295,7 +306,7 @@
                     fila = cuerpo[x].getElementsByTagName('tr');
                     for (i = 0; i < fila.length; i++) {
                         columnas = fila[i].getElementsByTagName("td");
-                        for (j = 1; j < columnas.length - numFilasIngorar; j++) {
+                        for (j = 0; j < columnas.length - numFilasIngorar; j++) {
                             valor = columnas[j].textContent || columnas[j].innerText;
                             if (valor.toUpperCase().indexOf(filtro) > -1) {
                                 fila[i].style.display = "";
