@@ -1,3 +1,4 @@
+<%@page import="entities.Genero"%>
 <%@page import="entities.ListaReproduccion"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="entities.Cancion"%>
@@ -21,8 +22,11 @@
 
         <%
             Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
+
             Album albumSeleccionado = session.getAttribute("albumSeleccionado") != null ? (Album) session.getAttribute("albumSeleccionado") : null;
             List<Artista> artistas = (List) session.getAttribute("artistas");
+            List<Genero> generos = (List) session.getAttribute("generos");
+
             List<ListaReproduccion> listasReproduccion = (List) session.getAttribute("listasReproduccion");
 
             int opcode = request.getParameter(Utils.OPCODE) != null ? Integer.parseInt(request.getParameter(Utils.OPCODE)) : 0;
@@ -130,13 +134,43 @@
 
                     <div class="jumbotron" style="padding: 1rem 2rem">
                         <%if (albumSeleccionado != null && opcode != Utils.OP_MODIFICAR) {%>
-                        <h1 class="row" style="font-size: 2em">Album EL COSO</h1>
+                        <h1 class="row" style="font-size: 2em">
+                            <span class="mr-3">
+                                Album
+                            </span>
+                            <span>
+                                <%=albumSeleccionado.getNombre().toUpperCase()%>
+                            </span>
+
+                        </h1>
                         <p class="row" style="font-size: 1em">
-                            Artista VIVALDI
+                            <span class="mr-3">
+                                Artista:
+                            </span>
+                            <span>
+                                <%=albumSeleccionado.getIdArtista().getNombre().toUpperCase()%>
+                            </span>
                         </p>
                         <p class="row" style="font-size: 1em">
-                            Canciones 25 (ANAL)
+                            <span class="mr-3">
+                                Canciones:
+                            </span>
+                            <span>
+                                <%=albumSeleccionado.getCancionCollection().size()%>
+                            </span>
                         </p>
+
+                        <%if (!albumSeleccionado.getGeneroCollection().isEmpty()) {%>
+                        <p class="row" style="font-size: 1em">
+                            <span class="mr-3">Generos:</span>
+                            <%for (Genero g : albumSeleccionado.getGeneroCollection()) {%>
+                            <span class="badge badge-pill badge-success my-1 mr-4" id="user-pill">
+                                <%=g.getNombre()%>
+                            </span>
+                            <%}%>
+                        </p>
+                        <%}%>
+
                         <div class="row">
                             <button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalIncluirAlbum">Incluir en lista</button>
                         </div>
@@ -195,6 +229,7 @@
                                         <th scope="col">Album</th>
                                         <th scope="col">Artista</th>
                                         <th scope="col">Lanzamiento</th>
+                                        <th scope="col"></th>
                                         <th scope="col"></th>
                                         <th scope="col"></th>
                                     </tr>
@@ -264,6 +299,21 @@
                                         <option value="<%=a.getIdArtista()%>"
                                                 <%=albumSeleccionado != null && albumSeleccionado.getIdArtista().getIdArtista() == a.getIdArtista() ? "selected" : ""%>/>
                                         <%=a.getNombre()%>
+                                        </option>
+                                        <%}%>
+                                    </select>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend style="font-size: 1.2em">Genero</legend>
+                                <div class="form-group">
+                                    <label for="<%=Utils.IDGENEROSSELECCIONADOSALBUM%>">Genero del album</label>
+                                    <select multiple="true" class="form-control" name="<%=Utils.IDGENEROSSELECCIONADOSALBUM%>" id="<%=Utils.IDGENEROSSELECCIONADOSALBUM%>" size="3">
+                                        <%for (Genero g : generos) {%>
+                                        <option value="<%=g.getIdGenero()%>"
+                                                <%=albumSeleccionado != null && albumSeleccionado.getGeneroCollection().contains(g) ? "selected" : ""%>>
+                                            <%=g.getNombre()%>
                                         </option>
                                         <%}%>
                                     </select>
@@ -423,7 +473,7 @@
                 $('#accionInput').val(<%=Utils.OP_CREAR_CANCION_ALBUM%>);
             }
 
-            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 3 : 1%>
+            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 3 : 2%>
 
             function filtrar() {
                 var input, filtro, tabla, cuerpo, fila, columnas, x, i, j, valor;

@@ -33,7 +33,7 @@ public class AlbumFacade extends AbstractFacade<Album> {
     public Album selectAlbumById(int idAlbum) {
         Query q = em.createQuery("SELECT a FROM Album a WHERE a.idAlbum = :idAlbum");
         q.setParameter("idAlbum", idAlbum);
-
+        
         return (Album)q.getSingleResult();
     }
 
