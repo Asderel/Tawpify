@@ -1,3 +1,7 @@
+<%@page import="java.util.List"%>
+<%@page import="entities.Album"%>
+<%@page import="entities.Artista"%>
+<%@page import="utils.Utils"%>
 <%@page import="entities.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -13,6 +17,7 @@
 
         <%
             Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
+            List<Artista> artistas = (List) request.getAttribute("artistas");
         %>
 
         <title>Artistas</title>
@@ -62,6 +67,9 @@
 
         <div class="container-fluid">
             <div id="contenedorContenido" class="row">
+                <form id="formRuta">
+                    <input name="<%=Utils.OPCODE%>" value="<%=Utils.OP_LISTAR%>" type="hidden"/>
+                </form>
 
                 <!-- PANEL LATERARL -->
 
@@ -120,62 +128,38 @@
                     <div class="col-12 mt-2">
                         <div class="row my-2 justify-content-between">
                             <div class="col-3">
-                                <a class="btn btn-outline-warning" href="nuevoArtista.jsp">Nuevo Artista</a>
+                                <a class="btn btn-outline-warning" href="nuevoArtista.jsp?<%=Utils.OPCODE%>=<%=Utils.OP_CREAR%>">Nuevo Artista</a>
                             </div>
 
                             <div class="col-3">
-                                <input type="text" class="form-control" id="filtroInput" aria-describedby="filtroInput" placeholder="Filtra en la tabla"
-                                       onkeyup="filtrar()">
+                                <input type="text" class="form-control" id="filtroInputArtistas" aria-describedby="filtroInputArtistas" placeholder="Filtra en la tabla"
+                                       onkeyup="filtrar('filtroInputArtistas', 'tablaArtistas')">
                             </div>
                         </div>
 
                         <form id="artistasForm" action="ArtistaCRUDServlet" method="POST">
-                            <input id="idArtistaInput" name="idArtistaInput" value="" type="hidden"/>
-                            <input id="accionInput" name="accionInput" value="" type="hidden"/>
-
-                            <table id="tablaArtistas" class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Nombre</th>
-                                        <th scope="col">Artista</th>
-                                        <th scope="col">Album</th>
-                                        <th scope="col">Lanzamiento</th>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '2')">Elminar</button></td>
-                                    </tr>
-                                </tbody>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('2', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('2', '2')">Elminar</button></td>
-                                    </tr>
-                                </tbody>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('3', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('3', '2')">Elminar</button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <input id="idArtistaInput" name="<%=Utils.IDARTISTAINPUT%>" value="" type="hidden"/>
+                            <input id="accionInput" name="<%=Utils.OPCODE%>" value="" type="hidden"/>
                         </form>
+
+                        <table id="tablaArtistas" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <%for (Artista a : artistas) {%>
+                            <tbody>
+                                <tr class="table-active">
+                                    <td><%=a.getNombre()%></td>
+                                    <td><button class="btn btn-outline-warning" type="submit" form="artistasForm" onclick="seleccionarArtista(<%=a.getIdArtista()%>, <%=Utils.OP_BORRAR%>)"
+                                                title="Eliminar artista"
+                                                style="border: none;"><span class="fas fa-trash"/></button></td>
+                                </tr>
+                            </tbody>
+                            <%}%>
+                        </table>
                     </div>
 
                     <!-- FIN LISTADO ARTISTAS -->
@@ -188,25 +172,25 @@
         </div>
 
         <script>
-            function seleccionarartista(idArtista, accion) {
-                var str = idArtista.concat(accion);
-                window.alert(str);
+            function seleccionarArtista(idArtista, accion) {
                 $('#idArtistaInput').val(idArtista);
                 $('#accionInput').val(accion);
             }
 
-            function filtrar() {
+            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 1 : 0%>
+
+            function filtrar(filtro, tabla) {
                 var input, filtro, tabla, cuerpo, fila, columnas, x, i, j, valor;
-                input = document.getElementById("filtroInput");
+                input = document.getElementById(filtro);
                 filtro = input.value.toUpperCase();
-                tabla = document.getElementById("tablaArtistas");
+                tabla = document.getElementById(tabla);
                 cuerpo = tabla.getElementsByTagName('tbody');
 
                 for (x = 0; cuerpo.length; x++) {
                     fila = cuerpo[x].getElementsByTagName('tr');
                     for (i = 0; i < fila.length; i++) {
                         columnas = fila[i].getElementsByTagName("td");
-                        for (j = 0; j < columnas.length - 2; j++) {
+                        for (j = 0; j < columnas.length - numFilasIngorar; j++) {
                             valor = columnas[j].textContent || columnas[j].innerText;
                             if (valor.toUpperCase().indexOf(filtro) > -1) {
                                 fila[i].style.display = "";

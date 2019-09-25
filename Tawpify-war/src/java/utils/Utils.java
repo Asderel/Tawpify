@@ -47,4 +47,7 @@ public class Utils {
     // Input Album
     public static final String IDALBUMINPUT = "idAlbumInput";
 
+    // Input Album
+    public static final String IDARTISTAINPUT = "idAlbumInput";
+
 }

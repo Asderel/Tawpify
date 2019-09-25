@@ -1,3 +1,4 @@
+<%@page import="utils.Utils"%>
 <%@page import="entities.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -13,6 +14,7 @@
 
         <%
             Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
+            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
         %>
 
         <title>Nuevo artista</title>
@@ -62,7 +64,9 @@
 
         <div class="container-fluid">
             <div id="contenedorContenido" class="row">
-
+                <form id="formRuta">
+                    <input name="<%=Utils.OPCODE%>" value="<%=Utils.OP_LISTAR%>" type="hidden"/>
+                </form>
                 <!-- PANEL LATERARL -->
 
                 <div id="panelLateral" class="col-2">
@@ -118,21 +122,13 @@
                     <!-- FORMULARIO NUEVO ARTISTA -->
 
                     <div class="container">
-                        <form action="NuevoGeneroServlet" id="generoForm" >
+                        <form action="ArtistaCRUDServlet" id="artistaForm" method="POST">
+                            <input id="accionInput" name="<%=Utils.OPCODE%>" value="<%=opcode%>" type="hidden"/>
+
                             <fieldset>
                                 <div class="form-group">
                                     <label for="nombreInput">Nombre</label>
-                                    <input type="text" class="form-control" id="nombreInput" placeholder="Nombre" name="nombreInput"/>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="xInput">X</label>
-                                    <input type="text" class="form-control" id="xInput" placeholder="X" name="xInput"/>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="contrasenaInput">Y</label>
-                                    <input type="text" class="form-control" id="yInput" placeholder="Y" name="yInput"/>
+                                    <input type="text" class="form-control" id="nombreInput" placeholder="Nombre" name="<%=Utils.NOMBREINPUT%>"/>
                                 </div>
 
                                 <div>
