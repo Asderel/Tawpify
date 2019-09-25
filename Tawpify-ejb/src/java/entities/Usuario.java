@@ -36,8 +36,8 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Usuario.findByNombre", query = "SELECT u FROM Usuario u WHERE u.nombre = :nombre")
     , @NamedQuery(name = "Usuario.findByApodo", query = "SELECT u FROM Usuario u WHERE u.apodo = :apodo")
     , @NamedQuery(name = "Usuario.findByContrasena", query = "SELECT u FROM Usuario u WHERE u.contrasena = :contrasena")
-    , @NamedQuery(name = "Usuario.findByEmail", query = "SELECT u FROM Usuario u WHERE u.email = :email")
-    , @NamedQuery(name = "Usuario.findByAdministrador", query = "SELECT u FROM Usuario u WHERE u.administrador = :administrador")})
+    , @NamedQuery(name = "Usuario.findByAdministrador", query = "SELECT u FROM Usuario u WHERE u.administrador = :administrador")
+    , @NamedQuery(name = "Usuario.findByEmail", query = "SELECT u FROM Usuario u WHERE u.email = :email")})
 public class Usuario implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -61,14 +61,15 @@ public class Usuario implements Serializable {
     private String contrasena;
     @Basic(optional = false)
     @NotNull
+    @Column(name = "administrador")
+    private int administrador;
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Basic(optional = false)
+    @NotNull
     @Size(min = 1, max = 45)
     @Column(name = "email")
     private String email;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "administrador")
-    private int administrador;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuario")
     private Collection<ListaReproduccion> listaReproduccionCollection;
 
     public Usuario() {
@@ -78,11 +79,12 @@ public class Usuario implements Serializable {
         this.idUsuario = idUsuario;
     }
 
-    public Usuario(Integer idUsuario, String nombre, String contrasena, int administrador) {
+    public Usuario(Integer idUsuario, String nombre, String contrasena, int administrador, String email) {
         this.idUsuario = idUsuario;
         this.nombre = nombre;
         this.contrasena = contrasena;
         this.administrador = administrador;
+        this.email = email;
     }
 
     public Integer getIdUsuario() {
@@ -125,17 +127,17 @@ public class Usuario implements Serializable {
         this.administrador = administrador;
     }
 
-    @XmlTransient
-    public Collection<ListaReproduccion> getListaReproduccionCollection() {
-        return listaReproduccionCollection;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @XmlTransient
+    public Collection<ListaReproduccion> getListaReproduccionCollection() {
+        return listaReproduccionCollection;
     }
 
     public void setListaReproduccionCollection(Collection<ListaReproduccion> listaReproduccionCollection) {

@@ -6,6 +6,7 @@
 package session;
 
 import entities.ListaReproduccion;
+import entities.Usuario;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -31,11 +32,10 @@ public class ListaReproduccionFacade extends AbstractFacade<ListaReproduccion> {
         super(ListaReproduccion.class);
     }
 
+    public List<ListaReproduccion> selectListasReproduccionByUsuario(Usuario usuario) {
+        Query q = em.createQuery("SELECT l FROM ListaReproduccion l WHERE l.idUsuario = :usuario");
 
-    public List<ListaReproduccion> selectListasReproduccionByUsuario(int idUsuario) {
-        Query q = em.createQuery("SELECT l FROM ListaReproduccion l WHERE l.listaReproduccionPK.idUsuario = :idUsuario");
-
-        q.setParameter("idUsuario", idUsuario);
+        q.setParameter("usuario", usuario);
         return q.getResultList();
     }
 }

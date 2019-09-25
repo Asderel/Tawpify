@@ -9,18 +9,17 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -67,7 +66,10 @@ public class Cancion implements Serializable {
     private String url;
     @ManyToMany(mappedBy = "cancionCollection")
     private Collection<Artista> artistaCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cancion")
+    @JoinTable(name = "cancion_lista", joinColumns = {
+        @JoinColumn(name = "id_cancion", referencedColumnName = "id_cancion")}, inverseJoinColumns = {
+        @JoinColumn(name = "id_lista_reproduccion", referencedColumnName = "id_lista_reproduccion")})
+    @ManyToMany
     private Collection<ListaReproduccion> listaReproduccionCollection;
     @JoinColumn(name = "id_album", referencedColumnName = "id_album")
     @ManyToOne(optional = false)
@@ -80,10 +82,11 @@ public class Cancion implements Serializable {
         this.idCancion = idCancion;
     }
 
-    public Cancion(Integer idCancion, String nombre, Date fechaSalida) {
+    public Cancion(Integer idCancion, String nombre, Date fechaSalida, String url) {
         this.idCancion = idCancion;
         this.nombre = nombre;
         this.fechaSalida = fechaSalida;
+        this.url = url;
     }
 
     public Integer getIdCancion() {
@@ -110,6 +113,14 @@ public class Cancion implements Serializable {
         this.fechaSalida = fechaSalida;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     @XmlTransient
     public Collection<Artista> getArtistaCollection() {
         return artistaCollection;
@@ -134,14 +145,6 @@ public class Cancion implements Serializable {
 
     public void setIdAlbum(Album idAlbum) {
         this.idAlbum = idAlbum;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     @Override

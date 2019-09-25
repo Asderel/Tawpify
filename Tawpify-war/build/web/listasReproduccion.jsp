@@ -166,24 +166,24 @@
                                     <td><%=l.getNombre()%></td>
                                     <td><%=formatter.format(l.getFechaCreacion())%></td>
 
-                                    <td><button class="btn btn-outline-warning" type="submit" form="listaForm"
-                                                onclick="seleccionarLista(<%=l.getListaReproduccionPK().getIdCancion()%>, <%=l.getListaReproduccionPK().getIdUsuario()%>, <%=Utils.OP_LISTAR%>)"
-                                                title="Ver album"
+                                    <td><button class="btn btn-outline-warning" type="submit"
+                                                onclick="seleccionarLista(<%=l.getIdListaReproduccion()%>, <%=Utils.OP_LISTAR%>)"
+                                                title="Ver lista de reproduccion"
                                                 style="border: none;"><span class="far fa-eye"/></button></td>
 
-                                    <td><button class="btn btn-outline-warning" type="button" form="listaForm" data-toggle="modal" data-target="#modalModificarLista"
-                                                onclick="seleccionarLista(<%=l.getListaReproduccionPK().getIdCancion()%>, <%=l.getListaReproduccionPK().getIdUsuario()%>, <%=Utils.OP_MODIFICAR%>)"
-                                                title="Modificar album"
+                                    <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalModificarLista"
+                                                onclick="seleccionarLista(<%=l.getIdListaReproduccion()%>, <%=Utils.OP_MODIFICAR%>)"
+                                                title="Modificar lista de reproduccion"
                                                 style="border: none;"><span class="far fa-edit"/></button></td>
 
                                     <td><button class="btn btn-outline-warning" type="submit" form="listaForm"
-                                                onclick="seleccionarLista(<%=l.getListaReproduccionPK().getIdCancion()%>, <%=l.getListaReproduccionPK().getIdUsuario()%>, <%=Utils.OP_BORRAR%>)"
-                                                title="Eliminar album"
+                                                onclick="seleccionarLista(<%=l.getIdListaReproduccion()%>, <%=Utils.OP_BORRAR%>)"
+                                                title="Eliminar lista de reproduccion"
                                                 style="border: none;"><span class="fas fa-trash"/></button></td>
                                 </tr>
                             </tbody>
-                            <input id="nombreOculto_<%=l.getListaReproduccionPK().getIdCancion()%>_<%=l.getListaReproduccionPK().getIdUsuario()%>" type="hidden" value="<%=l.getNombre()%>">
-                            <input id="fechaOculta_<%=l.getListaReproduccionPK().getIdCancion()%>_<%=l.getListaReproduccionPK().getIdUsuario()%>" type="hidden" value="<%=l.getFechaCreacion()%>">
+                            <input id="nombreOculto_<%=l.getIdListaReproduccion()%>" type="hidden" value="<%=l.getNombre()%>">
+                            <input id="fechaOculta_<%=l.getIdListaReproduccion()%>" type="hidden" value="<%=l.getFechaCreacion()%>">
                             <%}%>
                         </table>
                     </div>
@@ -215,7 +215,7 @@
                                 <legend style="font-size: 1.2em">Datos</legend>
                                 <div class="form-group">
                                     <label for="<%=Utils.NOMBREINPUT%>">Nombre</label>
-                                    <input id="nombreModalLista" type="text" class="form-control" id="<%=Utils.NOMBREINPUT%>" placeholder="Nombre" name="<%=Utils.NOMBREINPUT%>"/>
+                                    <input id="<%=Utils.NOMBREINPUT%>ModalCrearLista" type="text" class="form-control" placeholder="Nombre"/>
                                 </div>
 
                             </fieldset>
@@ -223,7 +223,7 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
-                            <button type="submit" form="listaForm" onclick="setupCrearGenero()" class="btn btn-outline-warning">Listo</button>
+                            <button type="submit" form="listaForm" onclick="crearLista()" class="btn btn-outline-warning">Listo</button>
                         </div>
                     </div>
                 </div>
@@ -246,18 +246,18 @@
                                 <legend style="font-size: 1.2em">Datos</legend>
                                 <div class="form-group">
                                     <label for="<%=Utils.NOMBREINPUT%>">Nombre</label>
-                                    <input id="nombreModalLista" type="text" class="form-control" id="<%=Utils.NOMBREINPUT%>" placeholder="Nombre" name="<%=Utils.NOMBREINPUT%>"/>
+                                    <input id="<%=Utils.NOMBREINPUT%>ModalModificarLista" type="text" class="form-control"/>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="<%=Utils.FECHASALIDAINPUT%>">Fecha Creacion</label>
-                                    <input id="fechaModalLista" type="text" class="form-control" id="<%=Utils.FECHASALIDAINPUT%>" placeholder="<%=Utils.PLACEHOLDER_FECHA%>" name="<%=Utils.FECHASALIDAINPUT%>"/>
+                                    <input id="<%=Utils.FECHASALIDAINPUT%>ModalModificarLista" type="text" class="form-control" placeholder="<%=Utils.PLACEHOLDER_FECHA%>"/>
                                 </div>
                             </fieldset>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
-                            <button type="submit" form="listaForm" onclick="setupModalLista()" class="btn btn-outline-warning">Listo</button>
+                            <button type="submit" form="listaForm" onclick="modificarLista()" class="btn btn-outline-warning">Listo</button>
                         </div>
                     </div>
                 </div>
@@ -267,20 +267,21 @@
         </div>
 
         <script>
-            function seleccionarLista(idCancion, idUsuario, accion) {
-                $('#idCancionInput').val(idCancion);
-                $('#idUsuarioInput').val(idUsuario);
+            function seleccionarLista(idLista, accion) {
+                $('#idListaReproduccionInput').val(idLista);
                 $('#accionInput').val(accion);
 
-                // Seteo para el modal
-                $('#nombreModalLista').val($('#nombreOculto_' + idCancion + '_' + idUsuario).val());
-                $('#fechaModalLista').val($('#fechaOculta_' + idCancion).val());
-                $('#accionInput').val(<%=Utils.OP_MODIFICAR%>);
+                $('#nombreInputnombreModalLista').val($('#nombreOculto_' + idLista).val());
+                $('#fechaInputModalModificarLista').val($('#fechaOculta_' + idLista).val());
             }
 
-            function setupModalLista() {
-                $('#<%=Utils.NOMBREINPUT%>').val($('#nombreModalLista').val());
-                $('#<%=Utils.FECHASALIDAINPUT%>').val($('#fechaModalLista').val());
+            function crearLista() {
+                $('#<%=Utils.NOMBREINPUT%>').val($('#nombreInputModalCrearLista').val());
+            }
+
+            function modificarLista() {
+                $('#<%=Utils.NOMBREINPUT%>').val($('#nombreInputModalModificarLista').val());
+                $('#<%=Utils.FECHASALIDAINPUT%>').val($('#fechaInputModalModificarLista').val());
             }
 
             function setupModalCrearLista() {
@@ -302,6 +303,7 @@
                             valor = columnas[j].textContent || columnas[j].innerText;
                             if (valor.toUpperCase().indexOf(filtro) > -1) {
                                 fila[i].style.display = "";
+                                break;
                             } else {
                                 fila[i].style.display = "none";
                             }

@@ -6,12 +6,16 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -21,6 +25,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -31,15 +36,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "ListaReproduccion.findAll", query = "SELECT l FROM ListaReproduccion l")
-    , @NamedQuery(name = "ListaReproduccion.findByIdCancion", query = "SELECT l FROM ListaReproduccion l WHERE l.listaReproduccionPK.idCancion = :idCancion")
-    , @NamedQuery(name = "ListaReproduccion.findByIdUsuario", query = "SELECT l FROM ListaReproduccion l WHERE l.listaReproduccionPK.idUsuario = :idUsuario")
+    , @NamedQuery(name = "ListaReproduccion.findByIdListaReproduccion", query = "SELECT l FROM ListaReproduccion l WHERE l.idListaReproduccion = :idListaReproduccion")
     , @NamedQuery(name = "ListaReproduccion.findByNombre", query = "SELECT l FROM ListaReproduccion l WHERE l.nombre = :nombre")
     , @NamedQuery(name = "ListaReproduccion.findByFechaCreacion", query = "SELECT l FROM ListaReproduccion l WHERE l.fechaCreacion = :fechaCreacion")})
 public class ListaReproduccion implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected ListaReproduccionPK listaReproduccionPK;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id_lista_reproduccion")
+    private Integer idListaReproduccion;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
@@ -50,36 +57,31 @@ public class ListaReproduccion implements Serializable {
     @Column(name = "fecha_creacion")
     @Temporal(TemporalType.DATE)
     private Date fechaCreacion;
-    @JoinColumn(name = "id_cancion", referencedColumnName = "id_cancion", insertable = false, updatable = false)
+    @ManyToMany(mappedBy = "listaReproduccionCollection")
+    private Collection<Cancion> cancionCollection;
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     @ManyToOne(optional = false)
-    private Cancion cancion;
-    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private Usuario usuario;
+    private Usuario idUsuario;
 
     public ListaReproduccion() {
     }
 
-    public ListaReproduccion(ListaReproduccionPK listaReproduccionPK) {
-        this.listaReproduccionPK = listaReproduccionPK;
+    public ListaReproduccion(Integer idListaReproduccion) {
+        this.idListaReproduccion = idListaReproduccion;
     }
 
-    public ListaReproduccion(ListaReproduccionPK listaReproduccionPK, String nombre, Date fechaCreacion) {
-        this.listaReproduccionPK = listaReproduccionPK;
+    public ListaReproduccion(Integer idListaReproduccion, String nombre, Date fechaCreacion) {
+        this.idListaReproduccion = idListaReproduccion;
         this.nombre = nombre;
         this.fechaCreacion = fechaCreacion;
     }
 
-    public ListaReproduccion(int idCancion, int idUsuario) {
-        this.listaReproduccionPK = new ListaReproduccionPK(idCancion, idUsuario);
+    public Integer getIdListaReproduccion() {
+        return idListaReproduccion;
     }
 
-    public ListaReproduccionPK getListaReproduccionPK() {
-        return listaReproduccionPK;
-    }
-
-    public void setListaReproduccionPK(ListaReproduccionPK listaReproduccionPK) {
-        this.listaReproduccionPK = listaReproduccionPK;
+    public void setIdListaReproduccion(Integer idListaReproduccion) {
+        this.idListaReproduccion = idListaReproduccion;
     }
 
     public String getNombre() {
@@ -98,26 +100,27 @@ public class ListaReproduccion implements Serializable {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public Cancion getCancion() {
-        return cancion;
+    @XmlTransient
+    public Collection<Cancion> getCancionCollection() {
+        return cancionCollection;
     }
 
-    public void setCancion(Cancion cancion) {
-        this.cancion = cancion;
+    public void setCancionCollection(Collection<Cancion> cancionCollection) {
+        this.cancionCollection = cancionCollection;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public Usuario getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setIdUsuario(Usuario idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (listaReproduccionPK != null ? listaReproduccionPK.hashCode() : 0);
+        hash += (idListaReproduccion != null ? idListaReproduccion.hashCode() : 0);
         return hash;
     }
 
@@ -128,7 +131,7 @@ public class ListaReproduccion implements Serializable {
             return false;
         }
         ListaReproduccion other = (ListaReproduccion) object;
-        if ((this.listaReproduccionPK == null && other.listaReproduccionPK != null) || (this.listaReproduccionPK != null && !this.listaReproduccionPK.equals(other.listaReproduccionPK))) {
+        if ((this.idListaReproduccion == null && other.idListaReproduccion != null) || (this.idListaReproduccion != null && !this.idListaReproduccion.equals(other.idListaReproduccion))) {
             return false;
         }
         return true;
@@ -136,7 +139,7 @@ public class ListaReproduccion implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.ListaReproduccion[ listaReproduccionPK=" + listaReproduccionPK + " ]";
+        return "entities.ListaReproduccion[ idListaReproduccion=" + idListaReproduccion + " ]";
     }
 
 }

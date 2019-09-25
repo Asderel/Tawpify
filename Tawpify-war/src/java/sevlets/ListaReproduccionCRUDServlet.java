@@ -2,13 +2,11 @@ package sevlets;
 
 import entities.Cancion;
 import entities.ListaReproduccion;
-import entities.ListaReproduccionPK;
 import entities.Usuario;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -108,7 +106,7 @@ public class ListaReproduccionCRUDServlet extends HttpServlet {
 
                 break;
             case Utils.OP_CREAR:
-                crearListaReproduccion(request, null, u);
+                listaReproduccionFacade.create(crearListaReproduccion(request, null, u));
 
                 break;
             case Utils.OP_FILTRAR:
@@ -119,7 +117,7 @@ public class ListaReproduccionCRUDServlet extends HttpServlet {
                 listaSeleccionada = cargarListaReproduccion(request);
 
                 session.setAttribute("listaSeleccionada", listaSeleccionada);
-                rd = getServletContext().getRequestDispatcher("/listasReproduccion.jsp");
+                rd = getServletContext().getRequestDispatcher("/listaReproduccion.jsp");
                 rd.forward(request, response);
                 break;
         }
@@ -143,22 +141,21 @@ public class ListaReproduccionCRUDServlet extends HttpServlet {
     }// </editor-fold>
 
     private ListaReproduccion cargarListaReproduccion(HttpServletRequest request) {
-        int idAlbum = Integer.parseInt(request.getParameter(Utils.IDALBUMINPUT));
+        int idAlbum = Integer.parseInt(request.getParameter(Utils.IDLISTAREPRODUCCIONINPUT));
 
         return listaReproduccionFacade.find(idAlbum);
     }
 
     private List<ListaReproduccion> cargarListasReproduccion(Usuario usuario) {
         return usuario.getAdministrador() == 1
-                ? listaReproduccionFacade.selectListasReproduccionByUsuario(usuario.getIdUsuario())
+                ? listaReproduccionFacade.selectListasReproduccionByUsuario(usuario)
                 : listaReproduccionFacade.findAll();
     }
 
-    private void crearListaReproduccion(HttpServletRequest request, ListaReproduccion lista, Usuario usuario) {
+    private ListaReproduccion crearListaReproduccion(HttpServletRequest request, ListaReproduccion lista, Usuario usuario) {
         ListaReproduccion l = lista;
         Date fechaSalida;
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        List<Cancion> canciones = new ArrayList<>();
 
         try {
 
@@ -174,15 +171,12 @@ public class ListaReproduccionCRUDServlet extends HttpServlet {
             // SETTER
             l.setNombre(nombre);
             l.setFechaCreacion(fechaSalida);
-
-//            for(Cancion c : canciones) {
-//
-//            }
-
+            l.setIdUsuario(usuario);
 
         } catch (ParseException ex) {
             Logger.getLogger(AlbumCRUDServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return l;
     }
 
     private ListaReproduccion modificarListaReproduccion(HttpServletRequest request, Usuario u) {
