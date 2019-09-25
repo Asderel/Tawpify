@@ -1,3 +1,7 @@
+<%@page import="utils.Utils"%>
+<%@page import="java.util.List"%>
+<%@page import="entities.ListaReproduccion"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="entities.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -10,9 +14,13 @@
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/86da25765b.js" crossorigin="anonymous"></script>
 
         <%
             Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+
+            List<ListaReproduccion> listasReproduccion = (List) session.getAttribute("listasReproduccion");
         %>
 
         <title>Listas reproduccion</title>
@@ -62,6 +70,9 @@
 
         <div class="container-fluid">
             <div id="contenedorContenido" class="row">
+                <form id="formRuta">
+                    <input name="<%=Utils.OPCODE%>" value="<%=Utils.OP_LISTAR%>" type="hidden"/>
+                </form>
 
                 <!-- PANEL LATERARL -->
 
@@ -120,7 +131,7 @@
                     <div class="col-12 mt-2">
                         <div class="row my-2 justify-content-between">
                             <div class="col-3">
-                                <a class="btn btn-outline-warning" href="nuevaLitaReproduccion.jsp">Nueva lista</a>
+                                <button class="btn btn-outline-warning" onclick="setupModalCrearLista()"  type="button" data-toggle="modal" data-target="#modalCrearLista">Nueva lista</button>
                             </div>
 
                             <div class="col-3">
@@ -129,57 +140,52 @@
                             </div>
                         </div>
 
-                        <form id="artistasForm" action="ListaReproduccionCRUDServlet" method="POST">
-                            <input id="idArtistaInput" name="idListaReproduccionInput" value="" type="hidden"/>
-                            <input id="accionInput" name="accionInput" value="" type="hidden"/>
+                        <form id="listaForm" action="ListaReproduccionCRUDServlet" method="POST">
+                            <input id="<%=Utils.IDLISTAREPRODUCCIONINPUT%>" name="<%=Utils.IDLISTAREPRODUCCIONINPUT%>" value="" type="hidden"/>
+                            <input id="accionInput" name="<%=Utils.OPCODE%>" value="" type="hidden"/>
 
-                            <table id="tablaArtistas" class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Nombre</th>
-                                        <th scope="col">Artista</th>
-                                        <th scope="col">Album</th>
-                                        <th scope="col">Lanzamiento</th>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '3')">Ver</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '2')">Elminar</button></td>
-                                    </tr>
-                                </tbody>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '3')">Ver</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('2', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('2', '2')">Elminar</button></td>
-                                    </tr>
-                                </tbody>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '3')">Ver</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('3', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('3', '2')">Elminar</button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <input id="<%=Utils.NOMBREINPUT%>" name="<%=Utils.NOMBREINPUT%>" value="" type="hidden"/>
+                            <input id="<%=Utils.FECHASALIDAINPUT%>" name="<%=Utils.FECHASALIDAINPUT%>" value="" type="hidden"/>
                         </form>
+
+
+                        <table id="tablaArtistas" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Lanzamiento</th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+
+                            <% for (ListaReproduccion l : listasReproduccion) {%>
+                            <tbody>
+                                <tr class="table-active">
+                                    <td><%=l.getNombre()%></td>
+                                    <td><%=formatter.format(l.getFechaCreacion())%></td>
+
+                                    <td><button class="btn btn-outline-warning" type="submit" form="listaForm"
+                                                onclick="seleccionarLista(<%=l.getListaReproduccionPK().getIdCancion()%>, <%=l.getListaReproduccionPK().getIdUsuario()%>, <%=Utils.OP_LISTAR%>)"
+                                                title="Ver album"
+                                                style="border: none;"><span class="far fa-eye"/></button></td>
+
+                                    <td><button class="btn btn-outline-warning" type="button" form="listaForm" data-toggle="modal" data-target="#modalModificarLista"
+                                                onclick="seleccionarLista(<%=l.getListaReproduccionPK().getIdCancion()%>, <%=l.getListaReproduccionPK().getIdUsuario()%>, <%=Utils.OP_MODIFICAR%>)"
+                                                title="Modificar album"
+                                                style="border: none;"><span class="far fa-edit"/></button></td>
+
+                                    <td><button class="btn btn-outline-warning" type="submit" form="listaForm"
+                                                onclick="seleccionarLista(<%=l.getListaReproduccionPK().getIdCancion()%>, <%=l.getListaReproduccionPK().getIdUsuario()%>, <%=Utils.OP_BORRAR%>)"
+                                                title="Eliminar album"
+                                                style="border: none;"><span class="fas fa-trash"/></button></td>
+                                </tr>
+                            </tbody>
+                            <input id="nombreOculto_<%=l.getListaReproduccionPK().getIdCancion()%>_<%=l.getListaReproduccionPK().getIdUsuario()%>" type="hidden" value="<%=l.getNombre()%>">
+                            <input id="fechaOculta_<%=l.getListaReproduccionPK().getIdCancion()%>_<%=l.getListaReproduccionPK().getIdUsuario()%>" type="hidden" value="<%=l.getFechaCreacion()%>">
+                            <%}%>
+                        </table>
                     </div>
 
                     <!-- FIN LISTADO ARTISTAS -->
@@ -189,14 +195,96 @@
                 <!-- CONTENIDO -->
 
             </div>
+
+            <!-- MODALES -->
+
+            <div id="modalCrearLista" class="modal fade">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                Crear Lista de reproduccion
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <fieldset>
+                                <legend style="font-size: 1.2em">Datos</legend>
+                                <div class="form-group">
+                                    <label for="<%=Utils.NOMBREINPUT%>">Nombre</label>
+                                    <input id="nombreModalLista" type="text" class="form-control" id="<%=Utils.NOMBREINPUT%>" placeholder="Nombre" name="<%=Utils.NOMBREINPUT%>"/>
+                                </div>
+
+                            </fieldset>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" form="listaForm" onclick="setupCrearGenero()" class="btn btn-outline-warning">Listo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="modalModificarLista" class="modal fade">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                Modificar lista de reproduccion
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <fieldset>
+                                <legend style="font-size: 1.2em">Datos</legend>
+                                <div class="form-group">
+                                    <label for="<%=Utils.NOMBREINPUT%>">Nombre</label>
+                                    <input id="nombreModalLista" type="text" class="form-control" id="<%=Utils.NOMBREINPUT%>" placeholder="Nombre" name="<%=Utils.NOMBREINPUT%>"/>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="<%=Utils.FECHASALIDAINPUT%>">Fecha Creacion</label>
+                                    <input id="fechaModalLista" type="text" class="form-control" id="<%=Utils.FECHASALIDAINPUT%>" placeholder="<%=Utils.PLACEHOLDER_FECHA%>" name="<%=Utils.FECHASALIDAINPUT%>"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" form="listaForm" onclick="setupModalLista()" class="btn btn-outline-warning">Listo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FIN MODALES -->
         </div>
 
         <script>
-            function seleccionarartista(idListaReproduccion, accion) {
-                var str = idListaReproduccion.concat(accion);
-                window.alert(str);
-                $('#idListaReproduccionInput').val(idListaReproduccion);
+            function seleccionarLista(idCancion, idUsuario, accion) {
+                $('#idCancionInput').val(idCancion);
+                $('#idUsuarioInput').val(idUsuario);
                 $('#accionInput').val(accion);
+
+                // Seteo para el modal
+                $('#nombreModalLista').val($('#nombreOculto_' + idCancion + '_' + idUsuario).val());
+                $('#fechaModalLista').val($('#fechaOculta_' + idCancion).val());
+                $('#accionInput').val(<%=Utils.OP_MODIFICAR%>);
+            }
+
+            function setupModalLista() {
+                $('#<%=Utils.NOMBREINPUT%>').val($('#nombreModalLista').val());
+                $('#<%=Utils.FECHASALIDAINPUT%>').val($('#fechaModalLista').val());
+            }
+
+            function setupModalCrearLista() {
+                $('#accionInput').val(<%=Utils.OP_CREAR%>);
             }
 
             function filtrar() {

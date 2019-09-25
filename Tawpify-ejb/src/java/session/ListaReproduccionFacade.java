@@ -6,9 +6,11 @@
 package session;
 
 import entities.ListaReproduccion;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -29,4 +31,11 @@ public class ListaReproduccionFacade extends AbstractFacade<ListaReproduccion> {
         super(ListaReproduccion.class);
     }
 
+
+    public List<ListaReproduccion> selectListasReproduccionByUsuario(int idUsuario) {
+        Query q = em.createQuery("SELECT l FROM ListaReproduccion l WHERE l.listaReproduccionPK.idUsuario = :idUsuario");
+
+        q.setParameter("idUsuario", idUsuario);
+        return q.getResultList();
+    }
 }
