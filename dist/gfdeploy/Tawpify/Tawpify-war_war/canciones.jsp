@@ -283,11 +283,7 @@
             function seleccionarCancion(idCancion, accion) {
                 $('#idCancionInput').val(idCancion);
                 $('#accionInput').val(accion);
-
-                console.log($('#idCancionInput').val());
-                console.log($('#accionInput').val());
             }
-
 
             var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 3 : 1%>
 

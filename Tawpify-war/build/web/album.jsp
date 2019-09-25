@@ -153,30 +153,6 @@
                                         <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('1', '2')">Eliminar</button></td>
                                     </tr>
                                 </tbody>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td><a class="btn btn-outline-warning" target=_blank" href="https://www.youtube.com/watch?v=ODKTITUPusM&t">Escuchar</a></td>
-                                        <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalIncluirCancion">Incluir en lista</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('2', '2')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('2', '2')">Eliminar</button></td>
-                                    </tr>
-                                </tbody>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td><a class="btn btn-outline-warning" target=_blank" href="https://www.youtube.com/watch?v=ODKTITUPusM&t">Escuchar</a></td>
-                                        <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalIncluirCancion">Incluir en lista</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('3', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('3', '2')">Eliminar</button></td>
-                                    </tr>
-                                </tbody>
                             </table>
                         </form>
                     </div>
@@ -190,81 +166,7 @@
             </div>
         </div>
 
-        <!-- MODALES -->
 
-        <div id="modalIncluirAlbum" class="modal fade">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">¿En qué lista quieres incluirlo?</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form method="POST" action="AlbumCRUDServlet">
-                        <div class="modal-body">
-
-                            <fieldset>
-                                <legend style="font-size: 1.2em">Incluir el álbum completo en la lista de reproduccion...</legend>
-                                <div class="form-group">
-                                    <select class="form-control" name="seleccionLista" id="seleccionLista">
-                                        <option value="a">a</option>
-                                        <option value="b">b</option>
-                                        <option value="c">c</option>
-                                        <option value="d">d</option>
-                                        <option value="e">e</option>
-                                        <option value="f">f</option>
-                                        <option value="g">g</option>
-                                    </select>
-                                </div>
-                            </fieldset>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-outline-warning">Incluir</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div id="modalIncluirCancion" class="modal fade">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">¿En qué lista quieres incluirla?</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form method="POST" action="CancionCRUDServlet">
-                        <div class="modal-body">
-
-                            <fieldset>
-                                <legend style="font-size: 1.2em">Incluir cancion en la lista de reproduccion...</legend>
-                                <div class="form-group">
-                                    <select class="form-control" name="seleccionLista" id="seleccionLista">
-                                        <option value="a">a</option>
-                                        <option value="b">b</option>
-                                        <option value="c">c</option>
-                                        <option value="d">d</option>
-                                        <option value="e">e</option>
-                                        <option value="f">f</option>
-                                        <option value="g">g</option>
-                                    </select>
-                                </div>
-                            </fieldset>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-outline-warning">Incluir</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- FIN MODALES -->
 
         <script>
             function seleccionarCancion(idCancion, accion) {

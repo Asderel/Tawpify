@@ -1,3 +1,9 @@
+<%@page import="entities.ListaReproduccion"%>
+<%@page import="entities.Album"%>
+<%@page import="java.util.List"%>
+<%@page import="entities.Artista"%>
+<%@page import="utils.Utils"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="entities.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -10,9 +16,15 @@
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/86da25765b.js" crossorigin="anonymous"></script>
 
         <%
             Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+
+            List<Artista> artistas = (List) session.getAttribute("artistas");
+            List<Album> albumes = (List) session.getAttribute("albumes");
+            List<ListaReproduccion> listasReproduccion = (List) request.getAttribute("listasReproduccion");
         %>
 
         <title>Albumes</title>
@@ -62,6 +74,9 @@
 
         <div class="container-fluid">
             <div id="contenedorContenido" class="row">
+                <form id="formRuta">
+                    <input name="<%=Utils.OPCODE%>" value="<%=Utils.OP_LISTAR%>" type="hidden"/>
+                </form>
 
                 <!-- PANEL LATERARL -->
 
@@ -126,15 +141,11 @@
                                             <fieldset>
                                                 <legend style="font-size: 1.2em">Selecciona diferentes artistas a la vez presionando 'CTRL'</legend>
                                                 <div class="form-group">
-                                                    <label for="seleccionArtistas">Filtra por artista</label>
-                                                    <select multiple="true" class="form-control" name="seleccionArtistas" id="seleccionArtistas" size="3">
-                                                        <option value="a">a</option>
-                                                        <option value="b">b</option>
-                                                        <option value="c">c</option>
-                                                        <option value="d">d</option>
-                                                        <option value="e">e</option>
-                                                        <option value="f">f</option>
-                                                        <option value="g">g</option>
+                                                    <label for="<%=Utils.ARTISTASSELECCIONADOSNPUT%>">Filtra por artista</label>
+                                                    <select multiple="true" class="form-control" name="<%=Utils.ARTISTASSELECCIONADOSNPUT%>" id="<%=Utils.ARTISTASSELECCIONADOSNPUT%>" size="3">
+                                                        <%for (Artista a : artistas) {%>
+                                                        <option value="<%=a.getIdArtista()%>"><%=a.getNombre()%></option>
+                                                        <%}%>
                                                     </select>
                                                 </div>
                                             </fieldset>
@@ -144,6 +155,7 @@
                                     <div class="row justify-content-end">
                                         <div class="col-auto">
                                             <button type="submit" class="btn btn-outline-warning">Filtrar</button>
+                                            <input name="<%=Utils.OPCODE%>" value="<%=Utils.OP_FILTRAR%>" type="hidden"/>
                                         </div>
                                     </div>
                                 </form>
@@ -154,7 +166,7 @@
                     <div class="col-12 mt-2">
                         <div class="row my-2 justify-content-between">
                             <div class="col-3">
-                                <a class="btn btn-outline-warning" href="nuevoAlbum.jsp">Nueva cancion</a>
+                                <a class="btn btn-outline-warning" href="nuevoAlbum.jsp?<%=Utils.OPCODE%>=<%=Utils.OP_CREAR%>">Nuevo album</a>
                             </div>
 
                             <div class="col-3">
@@ -163,57 +175,45 @@
                             </div>
                         </div>
 
-                        <form id="cancionesForm" action="AlbumCRUDServlet" method="POST">
-                            <input id="idCancionInput" name="idAlbumInput" value="" type="hidden"/>
-                            <input id="accionInput" name="accionInput" value="" type="hidden"/>
-
-                            <table id="tablaCanciones" class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Nombre</th>
-                                        <th scope="col">Artista</th>
-                                        <th scope="col">asdf</th>
-                                        <th scope="col">Lanzamiento</th>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '3')">Ver</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('1', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('1', '2')">Eliminar</button></td>
-                                    </tr>
-                                </tbody>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '3')">Ver</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('2', '2')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('2', '2')">Eliminar</button></td>
-                                    </tr>
-                                </tbody>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarartista('1', '3')">Ver</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('3', '1')">Modificar</button></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('3', '2')">Eliminar</button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <form id="albumesForm" action="AlbumCRUDServlet" method="POST">
+                            <input id="<%=Utils.IDALBUMINPUT%>" name="<%=Utils.IDALBUMINPUT%>" value="" type="hidden"/>
+                            <input id="accionInput" name="<%=Utils.OPCODE%>" value="" type="hidden"/>
                         </form>
+
+                        <table id="tablaCanciones" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Artista</th>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Lanzamiento</th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+
+                            <%for(Album al : albumes) {%>
+                            <tbody>
+                                <tr class="table-active">
+                                    <td><%=al.getIdArtista().getNombre()%></td>
+                                    <td><%=al.getNombre()%></td>
+                                    <td><%=formatter.format(al.getFechaSalida())%></td>
+
+                                    <td><button class="btn btn-outline-warning" type="submit" form="albumesForm" onclick="seleccionarAlbum(<%=al.getIdAlbum()%>, <%=Utils.OP_LISTAR%>)"
+                                                title="Ver album"
+                                                style="border: none;"><span class="far fa-eye"/></button></td>
+
+                                    <td><button class="btn btn-outline-warning" type="submit" form="albumesForm" onclick="seleccionarAlbum(<%=al.getIdAlbum()%>, <%=Utils.OP_REDIRECCION_MODIFICAR%>)"
+                                                title="Modificar album"
+                                                style="border: none;"><span class="far fa-edit"/></button></td>
+
+                                    <td><button class="btn btn-outline-warning" type="submit" form="albumesForm" onclick="seleccionarAlbum(<%=al.getIdAlbum()%>, <%=Utils.OP_BORRAR%>)"
+                                                title="Eliminar album"
+                                                style="border: none;"><span class="fas fa-trash"/></button></td>
+                                </tr>
+                            </tbody>
+                            <%}%>
+                        </table>
                     </div>
 
                     <!-- FIN LISTADO ALBUMES -->
@@ -226,13 +226,12 @@
         </div>
 
         <script>
-            function seleccionarCancion(idAlbum, accion) {
-                var str = idAlbum.concat(accion);
-
-                window.alert(str);
+            function seleccionarAlbum(idAlbum, accion) {
                 $('#idAlbumInput').val(idAlbum);
                 $('#accionInput').val(accion);
             }
+
+            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 2 : 0%>
 
             function filtrar() {
                 var input, filtro, tabla, cuerpo, fila, columnas, x, i, j, valor;
@@ -249,6 +248,7 @@
                             valor = columnas[j].textContent || columnas[j].innerText;
                             if (valor.toUpperCase().indexOf(filtro) > -1) {
                                 fila[i].style.display = "";
+                                break;
                             } else {
                                 fila[i].style.display = "none";
                             }

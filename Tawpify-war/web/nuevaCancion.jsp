@@ -173,9 +173,9 @@
                             </fieldset>
 
                             <fieldset>
-                                <legend style="font-size: 1.2em">Artista</legend>
+                                <legend style="font-size: 1.2em">Artistas colaboradores</legend>
                                 <div class="form-group">
-                                    <label for="<%=Utils.ARTISTASSELECCIONADOSNPUT%>">Artistas colaboradores</label>
+                                    <label for="<%=Utils.ARTISTASSELECCIONADOSNPUT%>">Artistas</label>
                                     <select multiple="true" class="form-control" name="<%=Utils.ARTISTASSELECCIONADOSNPUT%>" id="<%=Utils.ARTISTASSELECCIONADOSNPUT%>" size="3">
                                         <%for (Artista a : artistas) {%>
                                         <option value="<%=a.getIdArtista()%>"

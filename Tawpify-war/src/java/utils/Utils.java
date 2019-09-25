@@ -18,6 +18,8 @@ public class Utils {
     public static final int OP_REDIRECCION_MODIFICAR = 7;
     public static final int OP_REGISTRAR = 8;
     public static final int OP_LOGIN = 9;
+    public static final int OP_CREAR_CANCION_ALBUM = 10;
+    public static final int OP_BORRAR_CANCION_ALBUM = 11;
 
     // Codigo operaciones
     public static final String OPCODE = "opcode";
