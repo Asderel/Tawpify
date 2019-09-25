@@ -24,6 +24,9 @@
             List<Album> albumes = (List) session.getAttribute("albumes");
 
             int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+            if(opcode == Utils.OP_REDIRECCION_MODIFICAR)
+                opcode = Utils.OP_MODIFICAR;
+
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         %>
 
@@ -144,32 +147,35 @@
                     <!-- FORMULARIO NUEVA CANCION -->
 
                     <div class="container">
-                        <form action="NuevaCancionServlet" id="cancionForm" >
+                        <form action="CancionCRUDServlet" id="cancionForm" method="POST">
+                            <input id="accionInput" name="<%=Utils.OPCODE%>" value="<%=opcode%>" type="hidden"/>
+                            <input id="idCancionInput" name="<%=Utils.IDCANCIONINPUT%>" value="<%=cancionSeleccionada != null ? cancionSeleccionada.getIdCancion() : ""%>" type="hidden"/>
+
                             <fieldset>
                                 <legend style="font-size: 1.2em">Informacion basica</legend>
                                 <div class="form-group">
                                     <label for="<%=Utils.NOMBREINPUT%>">Nombre</label>
                                     <input type="text" class="form-control" id="<%=Utils.NOMBREINPUT%>" placeholder="Nombre" name="<%=Utils.NOMBREINPUT%>"
-                                           value="<%=cancionSeleccionada != null ? cancionSeleccionada.getNombre() : "" %>"/>
+                                           value="<%=cancionSeleccionada != null ? cancionSeleccionada.getNombre() : ""%>"/>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="<%=Utils.FECHASALIDAINPUT%>">Fecha lanzamiento</label>
-                                    <input type="text" class="form-control" id="<%=Utils.FECHASALIDAINPUT%>" placeholder="Fecha lanzamiento" name="<%=Utils.FECHASALIDAINPUT%>"
-                                           <%=cancionSeleccionada != null ? formatter.format(cancionSeleccionada.getFechaSalida()) : Utils.PLACEHOLDER_FECHA%>/>
+                                    <input type="text" class="form-control" id="<%=Utils.FECHASALIDAINPUT%>" placeholder="<%=Utils.PLACEHOLDER_FECHA%>" name="<%=Utils.FECHASALIDAINPUT%>"
+                                           value="<%=cancionSeleccionada != null ? formatter.format(cancionSeleccionada.getFechaSalida()) : ""%>"/>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="<%=Utils.URLINPUT%>">URL</label>
                                     <input type="text" class="form-control" id="<%=Utils.URLINPUT%>" placeholder="URL de la cancion en Youtube" name="<%=Utils.URLINPUT%>"
-                                           value="<%=cancionSeleccionada != null ? cancionSeleccionada.getUrl(): "" %>"/>
+                                           value="<%=cancionSeleccionada != null ? cancionSeleccionada.getUrl() : ""%>"/>
                                 </div>
                             </fieldset>
 
                             <fieldset>
                                 <legend style="font-size: 1.2em">Artista</legend>
                                 <div class="form-group">
-                                    <label for="<%=Utils.ARTISTASSELECCIONADOSNPUT%>">Filtra por artista</label>
+                                    <label for="<%=Utils.ARTISTASSELECCIONADOSNPUT%>">Artistas colaboradores</label>
                                     <select multiple="true" class="form-control" name="<%=Utils.ARTISTASSELECCIONADOSNPUT%>" id="<%=Utils.ARTISTASSELECCIONADOSNPUT%>" size="3">
                                         <%for (Artista a : artistas) {%>
                                         <option value="<%=a.getIdArtista()%>"
@@ -184,11 +190,11 @@
                             <fieldset>
                                 <legend style="font-size: 1.2em">Album</legend>
                                 <div class="form-group">
-                                    <label for="<%=Utils.ALBUMSELECCIONADOINPUT%>">Filtra por album</label>
-                                    <select class="form-control" name="<%=Utils.ALBUMSELECCIONADOINPUT%>" id="<%=Utils.ALBUMSELECCIONADOINPUT%>" size="3">
+                                    <label for="<%=Utils.ALBUMSELECCIONADOINPUT%>">Album al que pertenece la cancion</label>
+                                    <select class="form-control" name="<%=Utils.ALBUMSELECCIONADOINPUT%>" id="<%=Utils.ALBUMSELECCIONADOINPUT%>">
                                         <%for (Album al : albumes) {%>
                                         <option value="<%=al.getIdAlbum()%>"
-                                                <%=cancionSeleccionada != null && cancionSeleccionada.getIdAlbum().getIdAlbum() == al.getIdAlbum() ? "selected" : "" %>>
+                                                <%=cancionSeleccionada != null && cancionSeleccionada.getIdAlbum().getIdAlbum() == al.getIdAlbum() ? "selected" : ""%>>
                                             <%=al.getNombre()%>
                                         </option>
                                         <%}%>

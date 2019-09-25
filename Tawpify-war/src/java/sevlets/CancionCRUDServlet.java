@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package sevlets;
 
 import entities.Album;
@@ -10,7 +5,6 @@ import entities.Artista;
 import entities.Cancion;
 import entities.ListaReproduccion;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -105,6 +99,7 @@ public class CancionCRUDServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd;
+        HttpSession session = request.getSession();
         int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
 
         switch (opcode) {
@@ -115,15 +110,29 @@ public class CancionCRUDServlet extends HttpServlet {
                 eliminarCancion(request);
                 break;
             case Utils.OP_CREAR:
-                cancionFacade.create(crearCancion(request));
+                cancionFacade.create(crearCancion(request, null));
+                session.removeAttribute("artistas");
+                session.removeAttribute("albumes");
                 break;
             case Utils.OP_FILTRAR:
-                cancionFacade.create(crearCancion(request));
+                filtrarCanciones(request);
+                break;
+            case Utils.OP_REDIRECCION_MODIFICAR:
+                Cancion cancionSeleccionada = cargarCancion(request);
+
+                request.setAttribute("cancionSeleccionada", cancionSeleccionada);
+                rd = getServletContext().getRequestDispatcher("/nuevaCancion.jsp");
+                rd.forward(request, response);
                 break;
         }
 
         List<Cancion> canciones = cancionFacade.findAll();
+        List<Artista> artistas = artistaFacade.findAll();
+        List<Album> albumes = albumFacade.findAll();
+
         request.setAttribute("canciones", canciones);
+        session.setAttribute("artistas", artistas);
+        session.setAttribute("albumes", albumes);
 
         rd = getServletContext().getRequestDispatcher("/canciones.jsp");
         rd.forward(request, response);
@@ -145,17 +154,18 @@ public class CancionCRUDServlet extends HttpServlet {
         return cancionFacade.find(idCancion);
     }
 
-    private Cancion crearCancion(HttpServletRequest request) {
-        Cancion c = new Cancion();
+    private Cancion crearCancion(HttpServletRequest request, Cancion cancion) {
+        Cancion c = cancion;
+        if (c == null) {
+            c = new Cancion();
+        }
+
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 
         try {
             Date fechaSalida = formatter.parse(request.getParameter(Utils.FECHASALIDAINPUT));
             String nombre = request.getParameter(Utils.NOMBREINPUT);
             String url = request.getParameter(Utils.URLINPUT);
-
-            int idArtista = Integer.parseInt(request.getParameter(Utils.ARTISTASELECCIONADOSNPUT));
-            Artista a = artistaFacade.find(idArtista);
 
             if (request.getParameterValues(Utils.ARTISTASSELECCIONADOSNPUT) != null) {
                 String idArtistas[] = request.getParameterValues(Utils.ARTISTASSELECCIONADOSNPUT);
@@ -170,9 +180,9 @@ public class CancionCRUDServlet extends HttpServlet {
 
             int idAlbum = Integer.parseInt(request.getParameter(Utils.ALBUMSELECCIONADOINPUT));
             Album al = albumFacade.find(idAlbum);
+            Artista a = al.getIdArtista();
 
             // SETTTER
-
             c.setNombre(nombre);
             c.setFechaSalida(fechaSalida);
             c.setUrl(url);
@@ -185,14 +195,9 @@ public class CancionCRUDServlet extends HttpServlet {
     }
 
     private Cancion modificarCancion(HttpServletRequest request) {
-        Cancion g = cargarCancion(request);
-
-         //TODO CON CUIDADO
-
-         eliminarCancion(request);
-         crearCancion(request);
-
-        return g;
+        Cancion c = cargarCancion(request);
+        crearCancion(request, c);
+        return c;
     }
 
     private void eliminarCancion(HttpServletRequest request) {
@@ -201,11 +206,11 @@ public class CancionCRUDServlet extends HttpServlet {
         cancionFacade.remove(c);
     }
 
-    private List<Cancion> filtrarCanciones(RequestDispatcher request) {
+    private List<Cancion> filtrarCanciones(HttpServletRequest request) {
 
         return null;
     }
 
-    private void incluirCancionEnLista(RequestDispatcher request) {
+    private void incluirCancionEnLista(HttpServletRequest request) {
     }
 }

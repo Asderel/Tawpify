@@ -4,7 +4,7 @@ public class Utils {
 
     public static final String NIL = "nil";
 
-    public static final String PLACEHOLDER_FECHA = "__/__/____";
+    public static final String PLACEHOLDER_FECHA = "__-__-____";
 
     // CODIGOS CRUD
     public static final int OP_CREAR = 1;
@@ -15,6 +15,7 @@ public class Utils {
     public static final int OP_FILTRAR = 6;
 
     // CODIGOS ACCIONES
+    public static final int OP_REDIRECCION_MODIFICAR = 7;
     public static final int OP_REGISTRAR = 8;
     public static final int OP_LOGIN = 9;
 

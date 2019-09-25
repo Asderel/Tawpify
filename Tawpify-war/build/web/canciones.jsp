@@ -27,8 +27,6 @@
             List<Artista> artistas = (List) session.getAttribute("artistas");
             List<Album> albumes = (List) session.getAttribute("albumes");
             List<ListaReproduccion> listasReproduccion = (List) request.getAttribute("listasReproduccion");
-
-            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
         %>
 
         <title>Canciones</title>
@@ -79,7 +77,7 @@
         <div class="container-fluid">
             <div id="contenedorContenido" class="row">
                 <form id="formRuta">
-                    <input id="accionInput" name="<%=Utils.OPCODE%>" value="<%=Utils.OP_LISTAR%>" type="hidden"/>
+                    <input name="<%=Utils.OPCODE%>" value="<%=Utils.OP_LISTAR%>" type="hidden"/>
                 </form>
 
                 <!-- PANEL LATERARL -->
@@ -172,7 +170,7 @@
                                     <div class="row justify-content-end">
                                         <div class="col-auto">
                                             <button type="submit" class="btn btn-outline-warning">Filtrar</button>
-                                            <input id="accionInput" name="<%=Utils.OPCODE%>" value="<%=Utils.OP_FILTRAR%>" type="hidden"/>
+                                            <input name="<%=Utils.OPCODE%>" value="<%=Utils.OP_FILTRAR%>" type="hidden"/>
                                         </div>
                                     </div>
                                 </form>
@@ -193,47 +191,47 @@
                         </div>
 
                         <form id="cancionesForm" action="CancionCRUDServlet" method="POST">
-                            <input id="idCancionInput" name="idCancionInput" value="" type="hidden"/>
-                            <input id="accionInput" name="accionInput" value="" type="hidden"/>
-
-                            <table id="tablaCanciones" class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th scope="col"></th>
-                                        <th scope="col">Nombre</th>
-                                        <th scope="col">Album</th>
-                                        <th scope="col">Artista</th>
-                                        <th scope="col">Lanzamiento</th>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <%for (Cancion c : canciones) {%>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <th scope="row"><a class="btn btn-outline-warning far fa-play-circle" target=_blank" href="https://www.youtube.com/watch?v=ODKTITUPusM&t"
-                                                           style="border: none; font-size: 1.5em"></a></th>
-                                        <td><%=c.getNombre()%></td>
-                                        <td><%=c.getIdAlbum().getNombre()%></td>
-                                        <td><%=c.getIdAlbum().getIdArtista().getNombre()%></td>
-                                        <td><%=formatter.format(c.getFechaSalida())%></td>
-
-                                        <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalIncluir" title="Incluir en lista de reproduccion"
-                                                    style="border: none;"><span class="fas fa-plus-circle"/></button></td>
-
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero(<%=c.getIdCancion()%>, <%=Utils.OP_MODIFICAR%>)"
-                                                    title="Modificar cancion"
-                                                    style="border: none;"><span class="far fa-edit"/></button></td>
-
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarGenero(<%=c.getIdCancion()%>, <%=Utils.OP_BORRAR%>)"
-                                                    title="Eliminar cancion"
-                                                    style="border: none;"><span class="fas fa-trash"/></button></td>
-                                    </tr>
-                                </tbody>
-                                <%}%>
-                            </table>
+                            <input id="idCancionInput" name="<%=Utils.IDCANCIONINPUT%>" value="" type="hidden"/>
+                            <input id="accionInput" name="<%=Utils.OPCODE%>" value="" type="hidden"/>
                         </form>
+
+                        <table id="tablaCanciones" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Album</th>
+                                    <th scope="col">Artista</th>
+                                    <th scope="col">Lanzamiento</th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <%for (Cancion c : canciones) {%>
+                            <tbody>
+                                <tr class="table-active">
+                                    <th scope="row"><a class="btn btn-outline-warning far fa-play-circle" target=_blank" href="<%=c.getUrl()%>"
+                                                       style="border: none; font-size: 1.5em"></a></th>
+                                    <td><%=c.getNombre()%></td>
+                                    <td><%=c.getIdAlbum().getNombre()%></td>
+                                    <td><%=c.getIdAlbum().getIdArtista().getNombre()%></td>
+                                    <td><%=formatter.format(c.getFechaSalida())%></td>
+
+                                    <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalIncluir" title="Incluir en lista de reproduccion"
+                                                style="border: none;"><span class="fas fa-plus-circle"/></button></td>
+
+                                    <td><button class="btn btn-outline-warning" type="submit" form="cancionesForm" onclick="seleccionarCancion(<%=c.getIdCancion()%>, <%=Utils.OP_REDIRECCION_MODIFICAR%>)"
+                                                title="Modificar cancion"
+                                                style="border: none;"><span class="far fa-edit"/></button></td>
+
+                                    <td><button class="btn btn-outline-warning" type="submit" form="cancionesForm" onclick="seleccionarCancion(<%=c.getIdCancion()%>, <%=Utils.OP_BORRAR%>)"
+                                                title="Eliminar cancion"
+                                                style="border: none;"><span class="fas fa-trash"/></button></td>
+                                </tr>
+                            </tbody>
+                            <%}%>
+                        </table>
                     </div>
 
                     <!-- FIN LISTADO CANCIONES -->
@@ -283,16 +281,15 @@
 
         <script>
             function seleccionarCancion(idCancion, accion) {
-                var str = idCancion.concat(accion);
-
-                window.alert(str);
                 $('#idCancionInput').val(idCancion);
                 $('#accionInput').val(accion);
+
+                console.log($('#idCancionInput').val());
+                console.log($('#accionInput').val());
             }
 
 
             var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 3 : 1%>
-            console.log(numFilasIngorar)
 
             function filtrar() {
                 // Declare variables
@@ -310,6 +307,7 @@
                             valor = columnas[j].textContent || columnas[j].innerText;
                             if (valor.toUpperCase().indexOf(filtro) > -1) {
                                 fila[i].style.display = "";
+                                break;
                             } else {
                                 fila[i].style.display = "none";
                             }
