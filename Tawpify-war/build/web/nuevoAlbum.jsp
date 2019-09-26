@@ -452,7 +452,7 @@
             }
 
             function incluirCancionLista(){
-                $('#<%=Utils.IDLISTAREPRODUCCIONINPUT%>').val($('#<%=Utils.LISTASELECCIONADAALBUMINPUT%>').val());
+                $('#<%=Utils.IDLISTAREPRODUCCIONINPUT%>').val($('#<%=Utils.LISTASELECCIONADAINPUT%>').val());
             }
 
             function incluirCancionAlbumLista(){

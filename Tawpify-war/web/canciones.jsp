@@ -20,6 +20,8 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
         <script src="https://kit.fontawesome.com/86da25765b.js" crossorigin="anonymous"></script>
 
+        <script src="js/canciones.js"></script>
+
         <%
             Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
@@ -187,7 +189,7 @@
 
                             <div class="col-3">
                                 <input type="text" class="form-control" id="filtroInput" aria-describedby="filtroInput" placeholder="Filtra en la tabla"
-                                       onkeyup="filtrar()">
+                                       onkeyup="filtrar(<%=usuarioConectado.getAdministrador() == 1 ? 3 : 1%>)">
                             </div>
                         </div>
 
@@ -315,52 +317,5 @@
         </div>
 
         <!-- FIN MODALES -->
-
-        <script>
-            function seleccionarCancion(idCancion, accion) {
-                $('#idCancionInput').val(idCancion);
-                $('#accionInput').val(accion);
-            }
-
-            function incluirCancionLista() {
-                $('#<%=Utils.IDLISTAREPRODUCCIONINPUT%>').val($('#<%=Utils.LISTASELECCIONADAINPUT%>').val());
-            }
-
-            function setupCancionCrear() {
-                $('#accionInput').val(<%=Utils.OP_REDIRECCION_CREAR_CANCION%>);
-                $('#<%=Utils.IDALBUMINPUT%>').val($('#idAlbumInputModal').val());
-            }
-
-            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 3 : 1%>
-
-            function filtrar() {
-                // Declare variables
-                var input, filtro, tabla, cuerpo, fila, columnas, x, i, j, valor;
-                input = document.getElementById("filtroInput");
-                filtro = input.value.toUpperCase();
-                tabla = document.getElementById("tablaCanciones");
-                cuerpo = tabla.getElementsByTagName('tbody');
-                for (x = 0; cuerpo.length; x++) {
-                    fila = cuerpo[x].getElementsByTagName('tr');
-                    for (i = 0; i < fila.length; i++) {
-                        columnas = fila[i].getElementsByTagName("td");
-                        for (j = 0; j < columnas.length - numFilasIngorar; j++) {
-                            valor = columnas[j].textContent || columnas[j].innerText;
-                            if (valor.toUpperCase().indexOf(filtro) > -1) {
-                                fila[i].style.display = "";
-                                break;
-                            } else {
-                                fila[i].style.display = "none";
-                            }
-                        }
-                    }
-                }
-            }
-
-            function goto(ruta) {
-                $('#formRuta').attr('action', ruta);
-                $('#formRuta').submit();
-            }
-        </script>
     </body>
 </html>

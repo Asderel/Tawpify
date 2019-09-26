@@ -68,7 +68,7 @@
         <div class="container-fluid">
             <div id="contenedorContenido" class="row">
                 <form id="formRuta">
-                    <input id="accionInput" name="<%=Utils.OPCODE%>" value="<%=Utils.OP_LISTAR%>" type="hidden"/>
+                    <input name="<%=Utils.OPCODE%>" value="<%=Utils.OP_LISTAR%>" type="hidden"/>
                 </form>
 
                 <!-- PANEL LATERARL -->
@@ -155,8 +155,11 @@
                                 <tr class="table-active">
                                     <td><%=g.getNombre()%></td>
                                     <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalModificarGenero"
-                                                onclick="seleccionarGenero(<%=g.getIdGenero()%>, <%=Utils.OP_MODIFICAR%>)">Modificar</button></td>
-                                    <td><button class="btn btn-outline-warning" form="generosForm" type="submit" onclick="seleccionarGenero(<%=g.getIdGenero()%>, <%=Utils.OP_BORRAR%>)">Eliminar</button></td>
+                                                title="Modificar genero"
+                                                style="border: none;" onclick="seleccionarGenero(<%=g.getIdGenero()%>, <%=Utils.OP_MODIFICAR%>)"><span class="far fa-edit"/></button></td>
+                                    <td><button class="btn btn-outline-warning" form="generosForm" type="submit"
+                                                title="Eliminar genero"
+                                                style="border: none;" onclick="seleccionarGenero(<%=g.getIdGenero()%>, <%=Utils.OP_BORRAR%>)"><span class="fas fa-trash"/></button></td>
                                 </tr>
                             </tbody>
                             <input id="nombreOculto_<%=g.getIdGenero()%>" type="hidden" value="<%=g.getNombre()%>">

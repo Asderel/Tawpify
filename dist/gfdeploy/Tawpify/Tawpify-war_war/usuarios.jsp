@@ -69,7 +69,7 @@
         <div class="container-fluid">
             <div id="contenedorContenido" class="row">
                 <form id="formRuta">
-                    <input id="accionInput" name="<%=Utils.OPCODE%>" value="<%=Utils.OP_LISTAR%>" type="hidden"/>
+                    <input name="<%=Utils.OPCODE%>" value="<%=Utils.OP_LISTAR%>" type="hidden"/>
                 </form>
 
                 <!-- PANEL LATERARL -->
@@ -163,7 +163,7 @@
                                     <td><%=u.getApodo()%></td>
                                     <td><%=u.getAdministrador() == 1 ? "Si" : "No"%></td>
                                     <td><button class="btn btn-outline-warning" form="usuariosForm" type="submit"
-                                                onclick="seleccionarUsuario(<%=u.getIdUsuario()%>, <%=Utils.OP_MODIFICAR%>)">Modificar</button></td>
+                                                onclick="seleccionarUsuario(<%=u.getIdUsuario()%>, <%=Utils.OP_REDIRECCION_MODIFICAR%>)">Modificar</button></td>
                                     <td><button class="btn btn-outline-warning" form="usuariosForm" type="submit"
                                                 onclick="seleccionarUsuario(<%=u.getIdUsuario()%>, <%=Utils.OP_BORRAR%>)">Eliminar</button></td>
                                 </tr>
