@@ -28,5 +28,4 @@ public class ArtistaFacade extends AbstractFacade<Artista> {
     public ArtistaFacade() {
         super(Artista.class);
     }
-
 }

@@ -79,7 +79,7 @@ public class CancionCRUDServlet extends HttpServlet {
         List<Album> albumes = albumFacade.findAll();
         List<ListaReproduccion> listasReproduccion = listaReproduccionFacade.findAll();
 
-        request.setAttribute("canciones", canciones);
+        session.setAttribute("canciones", canciones);
         session.setAttribute("artistas", artistas);
         session.setAttribute("albumes", albumes);
         request.setAttribute("listasReproduccion", listasReproduccion);
@@ -104,6 +104,7 @@ public class CancionCRUDServlet extends HttpServlet {
         int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
         Cancion cancionSeleccionada;
         List<Cancion> canciones = null;
+        List<Artista> artistas = artistaFacade.findAll();
 
         switch (opcode) {
             case Utils.OP_MODIFICAR:
@@ -130,21 +131,31 @@ public class CancionCRUDServlet extends HttpServlet {
             case Utils.OP_INCLUIR_CANCION_LISTA:
                 incluirCancionEnLista(request);
                 break;
+            case Utils.OP_REDIRECCION_CREAR_CANCION:
+                Album albumSeleccionado = albumFacade.find(Integer.parseInt(request.getParameter(Utils.IDALBUMINPUT)));
+                artistas.remove(albumSeleccionado.getIdArtista());
+
+                request.setAttribute("albumSeleccionado", albumSeleccionado);
+                session.setAttribute("artistas", artistas);
+                rd = getServletContext().getRequestDispatcher("/nuevaCancion.jsp");
+                rd.forward(request, response);
+                break;
         }
 
         if (opcode != Utils.OP_FILTRAR) {
             canciones = cancionFacade.findAll();
         }
 
-        List<Artista> artistas = artistaFacade.findAll();
         List<Album> albumes = albumFacade.findAll();
 
-        request.setAttribute("canciones", canciones);
+        session.setAttribute("canciones", canciones);
         session.setAttribute("artistas", artistas);
         session.setAttribute("albumes", albumes);
 
-        rd = getServletContext().getRequestDispatcher("/canciones.jsp");
-        rd.forward(request, response);
+        if (opcode != Utils.OP_REDIRECCION_CREAR_CANCION && opcode != Utils.OP_REDIRECCION_MODIFICAR) {
+            rd = getServletContext().getRequestDispatcher("/canciones.jsp");
+            rd.forward(request, response);
+        }
     }
 
     /**
@@ -187,9 +198,8 @@ public class CancionCRUDServlet extends HttpServlet {
                 c.setArtistaCollection(colaboradores);
             }
 
-            int idAlbum = Integer.parseInt(request.getParameter(Utils.ALBUMSELECCIONADOINPUT));
+            int idAlbum = Integer.parseInt(request.getParameter(Utils.IDALBUMINPUT));
             Album al = albumFacade.find(idAlbum);
-            Artista a = al.getIdArtista();
 
             // SETTTER
             c.setNombre(nombre);
@@ -217,8 +227,9 @@ public class CancionCRUDServlet extends HttpServlet {
 
     private List<Cancion> filtrarCanciones(HttpServletRequest request) {
         String[] idArtistas = request.getParameterValues(Utils.ARTISTASSELECCIONADOSNPUT) != null ? request.getParameterValues(Utils.ARTISTASSELECCIONADOSNPUT) : null;
-        Album album = request.getParameter(Utils.IDALBUMINPUT) != null ? albumFacade.find(Integer.parseInt(request.getParameter(Utils.IDALBUMINPUT))) : null;
+        String[] idAlbumes = request.getParameterValues(Utils.ALBUMSELECCIONADOINPUT) != null ? request.getParameterValues(Utils.ALBUMSELECCIONADOINPUT) : null;
         List<Artista> artistas = null;
+        List<Album> albumes = null;
 
         if (idArtistas != null) {
             artistas = new ArrayList();
@@ -227,7 +238,14 @@ public class CancionCRUDServlet extends HttpServlet {
             }
         }
 
-        return cancionFacade.filtrarCanciones(artistas, album);
+        if (idAlbumes != null) {
+            albumes = new ArrayList();
+            for (String al : idAlbumes) {
+                albumes.add(albumFacade.find(Integer.parseInt(al)));
+            }
+        }
+
+        return cancionFacade.filtrarCanciones(artistas, albumes);
     }
 
     private void incluirCancionEnLista(HttpServletRequest request) {

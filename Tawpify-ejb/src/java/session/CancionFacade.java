@@ -34,16 +34,16 @@ public class CancionFacade extends AbstractFacade<Cancion> {
         super(Cancion.class);
     }
 
-    public List<Cancion> filtrarCanciones(Collection<Artista> a, Album al) {
+    public List<Cancion> filtrarCanciones(Collection<Artista> a, Collection<Album> al) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT c FROM Cancion c");
 
         if(a != null && !a.isEmpty() && al != null) {
-            sb.append(" WHERE c.idAlbum = :al AND c.idAlbum.idArtista IN :a");
+            sb.append(" WHERE c.idAlbum IN :al OR c.idAlbum.idArtista IN :a");
         } else if(a != null && !a.isEmpty()) {
             sb.append(" WHERE c.idAlbum.idArtista IN :a");
-        }else if(al != null) {
-            sb.append(" WHERE c.idAlbum = :al");
+        }else if(al != null && !al.isEmpty()) {
+            sb.append(" WHERE c.idAlbum IN :al");
         }
 
         Query q = em.createQuery(sb.toString());
@@ -52,7 +52,7 @@ public class CancionFacade extends AbstractFacade<Cancion> {
             q.setParameter("al", al).setParameter("a", a);
         } else if(a != null && !a.isEmpty()) {
             q.setParameter("a", a);
-        }else if(al != null) {
+        }else if(al != null && !al.isEmpty()) {
             q.setParameter("al", al);
         }
 
