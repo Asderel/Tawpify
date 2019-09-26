@@ -5,10 +5,15 @@
  */
 package session;
 
+import entities.Album;
+import entities.Artista;
 import entities.Cancion;
+import java.util.Collection;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -27,6 +32,31 @@ public class CancionFacade extends AbstractFacade<Cancion> {
 
     public CancionFacade() {
         super(Cancion.class);
+    }
+
+    public List<Cancion> filtrarCanciones(Collection<Artista> a, Album al) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT c FROM Cancion c");
+
+        if(a != null && !a.isEmpty() && al != null) {
+            sb.append(" WHERE c.idAlbum = :al AND c.idAlbum.idArtista IN :a");
+        } else if(a != null && !a.isEmpty()) {
+            sb.append(" WHERE c.idAlbum.idArtista IN :a");
+        }else if(al != null) {
+            sb.append(" WHERE c.idAlbum = :al");
+        }
+
+        Query q = em.createQuery(sb.toString());
+
+        if(a != null && !a.isEmpty() && al != null) {
+            q.setParameter("al", al).setParameter("a", a);
+        } else if(a != null && !a.isEmpty()) {
+            q.setParameter("a", a);
+        }else if(al != null) {
+            q.setParameter("al", al);
+        }
+
+        return q.getResultList();
     }
 
 }

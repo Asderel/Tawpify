@@ -1,3 +1,4 @@
+<%@page import="java.util.ArrayList"%>
 <%@page import="entities.ListaReproduccion"%>
 <%@page import="entities.Album"%>
 <%@page import="entities.Artista"%>
@@ -144,7 +145,7 @@
                                                 <legend style="font-size: 1.2em">Selecciona diferentes artistas a la vez presionando 'CTRL'</legend>
                                                 <div class="form-group">
                                                     <label for="<%=Utils.ARTISTASSELECCIONADOSNPUT%>">Filtra por artista</label>
-                                                    <select multiple="true" class="form-control" name="<%=Utils.ARTISTASSELECCIONADOSNPUT%>" id="<%=Utils.ARTISTASSELECCIONADOSNPUT%>" size="3">
+                                                    <select multiple="true" class="form-control" name="<%=Utils.ARTISTASSELECCIONADOSNPUT%>" id="<%=Utils.ARTISTASSELECCIONADOSNPUT%>">
                                                         <%for (Artista a : artistas) {%>
                                                         <option value="<%=a.getIdArtista()%>"><%=a.getNombre()%></option>
                                                         <%}%>
@@ -157,7 +158,7 @@
                                                 <legend style="font-size: 1.2em">Selecciona diferentes albumes a la vez presionando 'CTRL'</legend>
                                                 <div class="form-group">
                                                     <label for="<%=Utils.ALBUMSELECCIONADOINPUT%>">Filtra por album</label>
-                                                    <select multiple="true" class="form-control" name="<%=Utils.ALBUMSELECCIONADOINPUT%>" id="<%=Utils.ALBUMSELECCIONADOINPUT%>" size="3">
+                                                    <select class="form-control" name="<%=Utils.ALBUMSELECCIONADOINPUT%>" id="<%=Utils.ALBUMSELECCIONADOINPUT%>">
                                                         <%for (Album al : albumes) {%>
                                                         <option value="<%=al.getIdAlbum()%>"><%=al.getNombre()%></option>
                                                         <%}%>
@@ -210,6 +211,7 @@
                                     <th scope="col"></th>
                                 </tr>
                             </thead>
+                            <%if(canciones != null && !canciones.isEmpty()) {%>
                             <%for (Cancion c : canciones) {%>
                             <tbody>
                                 <tr class="table-active">
@@ -233,6 +235,7 @@
                                                 style="border: none;"><span class="fas fa-trash"/></button></td>
                                 </tr>
                             </tbody>
+                            <%}%>
                             <%}%>
                         </table>
                     </div>

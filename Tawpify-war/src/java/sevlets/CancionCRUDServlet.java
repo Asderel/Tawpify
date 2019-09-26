@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -102,6 +103,7 @@ public class CancionCRUDServlet extends HttpServlet {
         HttpSession session = request.getSession();
         int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
         Cancion cancionSeleccionada;
+        List<Cancion> canciones = null;
 
         switch (opcode) {
             case Utils.OP_MODIFICAR:
@@ -116,7 +118,7 @@ public class CancionCRUDServlet extends HttpServlet {
                 session.removeAttribute("albumes");
                 break;
             case Utils.OP_FILTRAR:
-                filtrarCanciones(request);
+                canciones = filtrarCanciones(request);
                 break;
             case Utils.OP_REDIRECCION_MODIFICAR:
                 cancionSeleccionada = cargarCancion(request);
@@ -130,7 +132,10 @@ public class CancionCRUDServlet extends HttpServlet {
                 break;
         }
 
-        List<Cancion> canciones = cancionFacade.findAll();
+        if (opcode != Utils.OP_FILTRAR) {
+            canciones = cancionFacade.findAll();
+        }
+
         List<Artista> artistas = artistaFacade.findAll();
         List<Album> albumes = albumFacade.findAll();
 
@@ -211,8 +216,18 @@ public class CancionCRUDServlet extends HttpServlet {
     }
 
     private List<Cancion> filtrarCanciones(HttpServletRequest request) {
+        String[] idArtistas = request.getParameterValues(Utils.ARTISTASSELECCIONADOSNPUT) != null ? request.getParameterValues(Utils.ARTISTASSELECCIONADOSNPUT) : null;
+        Album album = request.getParameter(Utils.IDALBUMINPUT) != null ? albumFacade.find(Integer.parseInt(request.getParameter(Utils.IDALBUMINPUT))) : null;
+        List<Artista> artistas = null;
 
-        return null;
+        if (idArtistas != null) {
+            artistas = new ArrayList();
+            for (String a : idArtistas) {
+                artistas.add(artistaFacade.find(Integer.parseInt(a)));
+            }
+        }
+
+        return cancionFacade.filtrarCanciones(artistas, album);
     }
 
     private void incluirCancionEnLista(HttpServletRequest request) {

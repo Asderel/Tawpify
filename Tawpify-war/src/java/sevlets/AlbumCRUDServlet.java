@@ -110,7 +110,7 @@ public class AlbumCRUDServlet extends HttpServlet {
         Album albumSeleccionado = null;
 
         List<Artista> artistas;
-        List<Album> albumes;
+        List<Album> albumes = null;
         List<Genero> generos;
 
         switch (opcode) {
@@ -130,7 +130,7 @@ public class AlbumCRUDServlet extends HttpServlet {
                 session.removeAttribute("generos");
                 break;
             case Utils.OP_FILTRAR:
-                filtrarAlbumes(request);
+                albumes = filtrarAlbumes(request);
 
                 break;
             case Utils.OP_REDIRECCION_MODIFICAR:
@@ -195,8 +195,11 @@ public class AlbumCRUDServlet extends HttpServlet {
                 break;
         }
 
+        if (opcode != Utils.OP_FILTRAR) {
+            albumes = albumFacade.findAll();
+        }
+
         artistas = artistaFacade.findAll();
-        albumes = albumFacade.findAll();
         generos = generoFacade.findAll();
 
         session.setAttribute("artistas", artistas);
@@ -274,8 +277,16 @@ public class AlbumCRUDServlet extends HttpServlet {
     }
 
     private List<Album> filtrarAlbumes(HttpServletRequest request) {
+        String[] idArtistas = request.getParameterValues(Utils.ARTISTASSELECCIONADOSNPUT) != null ? request.getParameterValues(Utils.ARTISTASSELECCIONADOSNPUT) : null;
+        List<Artista> artistas = null;
 
-        return null;
+        if (idArtistas != null) {
+            artistas = new ArrayList();
+            for (String a : idArtistas) {
+                artistas.add(artistaFacade.find(Integer.parseInt(a)));
+            }
+        }
+        return albumFacade.filtrarAlbumes(artistas);
     }
 
     private void incluirCancionAlbum(HttpServletRequest request) {
