@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import session.UsuarioFacade;
 import utils.Utils;
 
@@ -72,20 +73,26 @@ public class UsuarioCRUDServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        boolean logout = false;
 
         RequestDispatcher rd = null;
         int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
 
         switch (opcode) {
-            case Utils.OP_MODIFICAR:
+            case Utils.OP_REDIRECCION_MODIFICAR:
                 Usuario usuarioSeleccionado = cargarUsuario(request);
                 request.setAttribute("usuarioSeleccionado", usuarioSeleccionado);
                 request.setAttribute("opcode", opcode);
                 rd = getServletContext().getRequestDispatcher("/login.jsp");
                 break;
             case Utils.OP_BORRAR:
-                eliminarUsuario(request);
-                rd = getServletContext().getRequestDispatcher("/usuarios.jsp");
+                logout = eliminarUsuario(request, session);
+                if (logout) {
+                    response.sendRedirect(Utils.APP_PATH + "/login.jsp");
+                } else {
+                    rd = getServletContext().getRequestDispatcher("/usuarios.jsp");
+                }
                 break;
             default:
                 // Venimos de la creacion / modificacion del ususario
@@ -93,10 +100,12 @@ public class UsuarioCRUDServlet extends HttpServlet {
                 break;
         }
 
-        List<Usuario> usuarios = usuarioFacade.findAll();
-        request.setAttribute("usuarios", usuarios);
+        if (!logout) {
+            List<Usuario> usuarios = usuarioFacade.findAll();
+            request.setAttribute("usuarios", usuarios);
 
-        rd.forward(request, response);
+            rd.forward(request, response);
+        }
     }
 
     /**
@@ -115,29 +124,16 @@ public class UsuarioCRUDServlet extends HttpServlet {
         return usuarioFacade.find(idUsuario);
     }
 
-    private Usuario modificarUsuario(HttpServletRequest request) {
-        Usuario u = cargarUsuario(request);
-
-        String nombre = request.getParameter(Utils.NOMBREINPUT);
-        String apodo = request.getParameter(Utils.APODOINPUT);
-        String email = request.getParameter(Utils.EMAILINPUT);
-        String pass = request.getParameter(Utils.CONTRASENAINPUT);
-        int administrador = Integer.parseInt(request.getParameter(Utils.ADMINISTRADORINPUT));
-
-        u.setNombre(nombre);
-        u.setApodo(apodo);
-        u.setEmail(email);
-        u.setContrasena(pass);
-        u.setAdministrador(administrador);
-
-        return u;
-    }
-
-    private void eliminarUsuario(HttpServletRequest request) {
+    private boolean eliminarUsuario(HttpServletRequest request, HttpSession session) {
         int idUsuario = Integer.parseInt(request.getParameter(Utils.IDUSUARIOINPUT));
+        boolean resp;
 
         Usuario u = usuarioFacade.find(idUsuario);
 
+        resp = session.getAttribute("usuarioConectado") != null ? u.getIdUsuario().equals(((Usuario) session.getAttribute("usuarioConectado")).getIdUsuario()) : false;
+
         usuarioFacade.remove(u);
+
+        return resp;
     }
 }

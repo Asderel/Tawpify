@@ -62,4 +62,22 @@ public class Utils {
     public static final String IDLISTAREPRODUCCIONINPUT = "idListaReproduccionInput";
     public static final String IDLISTAREPRODUCCIONALBUMINPUT = "idListaReproduccionAlbumInput";
     public static final String IDCANCIONESSELECCIONADASLISTA = "idCancionesSeleccionadasLista";
+
+    // ENRUTADOR
+    public static final String RUTA = "ruta";
+    public static final int RUTA_CANCIONES = 21;
+    public static final int RUTA_ALBUMES = 22;
+    public static final int RUTA_ARTISTAS = 23;
+    public static final int RUTA_GENEROS = 24;
+    public static final int RUTA_LISTAS = 25;
+    public static final int RUTA_USUARIOS = 26;
+
+    public static final String CANCIONES = "/canciones.jsp";
+    public static final String ALBUMES = "/albumes.jsp";
+    public static final String ARTISTAS = "/artistas.jsp";
+    public static final String GENEROS = "/generos.jsp";
+    public static final String LISTAS = "/listasReproduccion.jsp";
+    public static final String USUARIOS = "/usuarios.jsp";
+
+    public static final String APP_PATH = "/Tawpify-war";
 }

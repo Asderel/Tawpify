@@ -121,13 +121,6 @@ public class CancionCRUDServlet extends HttpServlet {
             case Utils.OP_FILTRAR:
                 canciones = filtrarCanciones(request);
                 break;
-            case Utils.OP_REDIRECCION_MODIFICAR:
-                cancionSeleccionada = cargarCancion(request);
-
-                request.setAttribute("cancionSeleccionada", cancionSeleccionada);
-                rd = getServletContext().getRequestDispatcher("/nuevaCancion.jsp");
-                rd.forward(request, response);
-                break;
             case Utils.OP_INCLUIR_CANCION_LISTA:
                 incluirCancionEnLista(request);
                 break;
@@ -137,6 +130,13 @@ public class CancionCRUDServlet extends HttpServlet {
 
                 request.setAttribute("albumSeleccionado", albumSeleccionado);
                 session.setAttribute("artistas", artistas);
+                rd = getServletContext().getRequestDispatcher("/nuevaCancion.jsp");
+                rd.forward(request, response);
+                break;
+            case Utils.OP_REDIRECCION_MODIFICAR:
+                cancionSeleccionada = cargarCancion(request);
+
+                request.setAttribute("cancionSeleccionada", cancionSeleccionada);
                 rd = getServletContext().getRequestDispatcher("/nuevaCancion.jsp");
                 rd.forward(request, response);
                 break;
@@ -153,7 +153,8 @@ public class CancionCRUDServlet extends HttpServlet {
         session.setAttribute("albumes", albumes);
 
         if (opcode != Utils.OP_REDIRECCION_CREAR_CANCION && opcode != Utils.OP_REDIRECCION_MODIFICAR) {
-            rd = getServletContext().getRequestDispatcher("/canciones.jsp");
+            request.setAttribute(Utils.RUTA, Utils.RUTA_CANCIONES);
+            rd = getServletContext().getRequestDispatcher("/EnrutadorServlet");
             rd.forward(request, response);
         }
     }
