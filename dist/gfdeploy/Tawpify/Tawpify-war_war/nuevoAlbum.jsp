@@ -172,7 +172,8 @@
                         <%}%>
 
                         <div class="row">
-                            <button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalIncluirAlbum">Incluir en lista</button>
+                            <button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalIncluirAlbum"
+                                    onclick="setupModalIncuirAlbumLista()">Incluir en lista...</button>
                         </div>
                         <%} else {%>
                         <h1 class="row" style="font-size: 2em">
@@ -219,6 +220,7 @@
                                 <input id="<%=Utils.NOMBREINPUT%>" name="<%=Utils.NOMBREINPUT%>" value="" type="hidden"/>
                                 <input id="<%=Utils.FECHASALIDAINPUT%>" name="<%=Utils.FECHASALIDAINPUT%>" value="" type="hidden"/>
                                 <input id="<%=Utils.URLINPUT%>" name="<%=Utils.URLINPUT%>" value="" type="hidden"/>
+                                <input id="<%=Utils.IDLISTAREPRODUCCIONINPUT%>" name="<%=Utils.IDLISTAREPRODUCCIONINPUT%>" value="" type="hidden"/>
                             </form>
 
                             <table id="tablaCanciones" class="table table-hover">
@@ -244,7 +246,8 @@
                                         <td><%=c.getIdAlbum().getIdArtista().getNombre()%></td>
                                         <td><%=formatter.format(c.getFechaSalida())%></td>
 
-                                        <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalIncluir" title="Incluir en lista de reproduccion"
+                                        <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalIncluirLista" title="Incluir en lista de reproduccion"
+                                                    onclick="seleccionarCancionBorrar(<%=c.getIdCancion()%>, <%=Utils.OP_INCLUIR_CANCION_LISTA%>)"
                                                     style="border: none;"><span class="fas fa-plus-circle"/></button></td>
 
                                         <td><button class="btn btn-outline-warning" type="button" form="cancionesForm" onclick="seleccionarCancion(<%=c.getIdCancion()%>, <%=Utils.OP_CREAR_CANCION_ALBUM%>)"
@@ -341,20 +344,20 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">¿En qué lista quieres incluirlo?</h5>
+                        <h5 class="modal-title">¿En qué lista quieres incluirla?</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form method="POST" action="AlbumCRUDServlet">
+                    <form method="POST" action="CancionCRUDServlet">
                         <div class="modal-body">
 
                             <fieldset>
-                                <legend style="font-size: 1.2em">Incluir el álbum completo en la lista de reproduccion...</legend>
+                                <legend style="font-size: 1.2em">Incluir cancion en la lista de reproduccion...</legend>
                                 <div class="form-group">
-                                    <select class="form-control" name="<%=Utils.LISTASELECCIONADAINPUT%>" id="<%=Utils.LISTASELECCIONADAINPUT%>" name="<%=Utils.LISTASELECCIONADAINPUT%>">
+                                    <select class="form-control" name="<%=Utils.LISTASELECCIONADAALBUMINPUT%>" id="<%=Utils.LISTASELECCIONADAALBUMINPUT%>">
                                         <%for (ListaReproduccion l : listasReproduccion) {%>
-                                        <option value="<%=l.getNombre()%>"><%=l.getNombre()%></option>
+                                        <option value="<%=l.getIdListaReproduccion()%>"><%=l.getNombre()%></option>
                                         <%}%>
                                     </select>
                                 </div>
@@ -362,14 +365,14 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-outline-warning">Incluir</button>
+                            <button type="submit" form="cancionesForm" onclick="incluirCancionAlbumLista()" class="btn btn-outline-warning">Incluir</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
 
-        <div id="modalIncluirCancion" class="modal fade">
+        <div id="modalIncluirLista" class="modal fade">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -384,9 +387,9 @@
                             <fieldset>
                                 <legend style="font-size: 1.2em">Incluir cancion en la lista de reproduccion...</legend>
                                 <div class="form-group">
-                                    <select class="form-control" name="<%=Utils.LISTASELECCIONADAINPUT%>" id="<%=Utils.LISTASELECCIONADAINPUT%>" name="<%=Utils.LISTASELECCIONADAINPUT%>">
+                                    <select class="form-control" name="<%=Utils.LISTASELECCIONADAINPUT%>" id="<%=Utils.LISTASELECCIONADAINPUT%>">
                                         <%for (ListaReproduccion l : listasReproduccion) {%>
-                                        <option value="<%=l.getNombre()%>"><%=l.getNombre()%></option>
+                                        <option value="<%=l.getIdListaReproduccion()%>"><%=l.getNombre()%></option>
                                         <%}%>
                                     </select>
                                 </div>
@@ -394,7 +397,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-outline-warning">Incluir</button>
+                            <button type="submit" form="cancionesForm" onclick="incluirCancionLista()" class="btn btn-outline-warning">Incluir</button>
                         </div>
                     </form>
                 </div>
@@ -448,10 +451,19 @@
                 $('#formRuta').submit();
             }
 
+            function incluirCancionLista(){
+                $('#<%=Utils.IDLISTAREPRODUCCIONINPUT%>').val($('#<%=Utils.LISTASELECCIONADAALBUMINPUT%>').val());
+            }
+
+            function incluirCancionAlbumLista(){
+                $('#<%=Utils.IDLISTAREPRODUCCIONINPUT%>').val($('#<%=Utils.LISTASELECCIONADAALBUMINPUT%>').val());
+            }
+
             function seleccionarCancionBorrar(idCancion, accion) {
                 $('#idCancionInput').val(idCancion);
                 $('#accionInput').val(accion);
             }
+
             function seleccionarCancion(idCancion, accion) {
                 $('#idCancionInput').val(idCancion);
                 $('#accionInput').val(accion);
@@ -471,6 +483,10 @@
 
             function setupModalCrearCancion() {
                 $('#accionInput').val(<%=Utils.OP_CREAR_CANCION_ALBUM%>);
+            }
+
+            function setupModalIncuirAlbumLista() {
+                $('#accionInput').val(<%=Utils.OP_INCLUIR_ALBUM_LISTA%>);
             }
 
             var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 3 : 2%>

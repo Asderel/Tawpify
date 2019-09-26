@@ -22,6 +22,7 @@ public class Utils {
     public static final int OP_BORRAR_CANCION_ALBUM = 11;
     public static final int OP_BORRAR_CANCION_LISTA = 12;
     public static final int OP_INCLUIR_CANCION_LISTA = 13;
+    public static final int OP_INCLUIR_ALBUM_LISTA = 14;
 
     // Codigo operaciones
     public static final String OPCODE = "opcode";
@@ -47,6 +48,7 @@ public class Utils {
     public static final String ARTISTASSELECCIONADOSNPUT = "artistasSeleccionadosInput";
     public static final String ALBUMSELECCIONADOINPUT = "albumSeleccionadoInput";
     public static final String LISTASELECCIONADAINPUT = "listaSeleccionadaInput";
+    public static final String LISTASELECCIONADAALBUMINPUT = "listaSeleccionadaAlbumInput";
 
     // Input Album
     public static final String IDALBUMINPUT = "idAlbumInput";
@@ -57,5 +59,6 @@ public class Utils {
 
     // Input ListaReproduccion
     public static final String IDLISTAREPRODUCCIONINPUT = "idListaReproduccionInput";
+    public static final String IDLISTAREPRODUCCIONALBUMINPUT = "idListaReproduccionAlbumInput";
     public static final String IDCANCIONESSELECCIONADASLISTA = "idCancionesSeleccionadasLista";
 }

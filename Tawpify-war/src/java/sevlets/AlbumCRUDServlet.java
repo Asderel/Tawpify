@@ -153,7 +153,6 @@ public class AlbumCRUDServlet extends HttpServlet {
 //                artistas = artistaFacade.findAll();
 //                albumes = albumFacade.findAll();
 //                generos = generoFacade.findAll();
-
                 session.removeAttribute("artistas");
                 session.removeAttribute("albumes");
                 session.removeAttribute("generos");
@@ -161,7 +160,6 @@ public class AlbumCRUDServlet extends HttpServlet {
 //                session.setAttribute("artistas", artistas);
 //                session.setAttribute("albumes", albumes);
 //                session.setAttribute("generos", generos);
-
                 albumSeleccionado = cargarAlbum(request);
                 session.removeAttribute("albumSeleccionado");
                 session.setAttribute("albumSeleccionado", albumSeleccionado);
@@ -175,7 +173,6 @@ public class AlbumCRUDServlet extends HttpServlet {
 //                artistas = artistaFacade.findAll();
 //                albumes = albumFacade.findAll();
 //                generos = generoFacade.findAll();
-
                 session.removeAttribute("artistas");
                 session.removeAttribute("albumes");
                 session.removeAttribute("generos");
@@ -183,13 +180,18 @@ public class AlbumCRUDServlet extends HttpServlet {
 //                session.setAttribute("artistas", artistas);
 //                session.setAttribute("albumes", albumes);
 //                session.setAttribute("generos", generos);
-
                 albumSeleccionado = cargarAlbum(request);
                 session.removeAttribute("albumSeleccionado");
                 session.setAttribute("albumSeleccionado", albumSeleccionado);
 
 //                rd = getServletContext().getRequestDispatcher("/nuevoAlbum.jsp");
 //                rd.forward(request, response);
+                break;
+            case Utils.OP_INCLUIR_CANCION_LISTA:
+                incluirCancionEnLista(request, false);
+                break;
+            case Utils.OP_INCLUIR_ALBUM_LISTA:
+                incluirCancionEnLista(request, true);
                 break;
         }
 
@@ -276,9 +278,6 @@ public class AlbumCRUDServlet extends HttpServlet {
         return null;
     }
 
-    private void incluirAlbumEnLista(HttpServletRequest request) {
-    }
-
     private void incluirCancionAlbum(HttpServletRequest request) {
         Album albumSeleccionado = cargarAlbum(request);
 
@@ -324,6 +323,28 @@ public class AlbumCRUDServlet extends HttpServlet {
 
         if (idCancion != 0) {
             cancionFacade.remove(cancionFacade.find(idCancion));
+        }
+    }
+
+    private void incluirCancionEnLista(HttpServletRequest request, boolean album) {
+        ListaReproduccion l = listaReproduccionFacade.find(Integer.parseInt(request.getParameter(Utils.IDLISTAREPRODUCCIONINPUT)));
+
+        if (!album) {
+            Cancion c = cancionFacade.find(Integer.parseInt(request.getParameter(Utils.IDCANCIONINPUT)));
+
+            if (!c.getListaReproduccionCollection().contains(l)) {
+                c.getListaReproduccionCollection().add(l);
+                cancionFacade.edit(c);
+            }
+        } else {
+            Album a = albumFacade.find(Integer.parseInt(request.getParameter(Utils.IDALBUMINPUT)));
+
+            for (Cancion cancion : a.getCancionCollection()) {
+                if (!cancion.getListaReproduccionCollection().contains(l)) {
+                    cancion.getListaReproduccionCollection().add(l);
+                    cancionFacade.edit(cancion);
+                }
+            }
         }
     }
 }
