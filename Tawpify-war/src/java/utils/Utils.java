@@ -21,6 +21,7 @@ public class Utils {
     public static final int OP_CREAR_CANCION_ALBUM = 10;
     public static final int OP_BORRAR_CANCION_ALBUM = 11;
     public static final int OP_BORRAR_CANCION_LISTA = 12;
+    public static final int OP_INCLUIR_CANCION_LISTA = 13;
 
     // Codigo operaciones
     public static final String OPCODE = "opcode";

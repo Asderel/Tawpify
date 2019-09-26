@@ -101,6 +101,7 @@ public class CancionCRUDServlet extends HttpServlet {
         RequestDispatcher rd;
         HttpSession session = request.getSession();
         int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+        Cancion cancionSeleccionada;
 
         switch (opcode) {
             case Utils.OP_MODIFICAR:
@@ -118,11 +119,14 @@ public class CancionCRUDServlet extends HttpServlet {
                 filtrarCanciones(request);
                 break;
             case Utils.OP_REDIRECCION_MODIFICAR:
-                Cancion cancionSeleccionada = cargarCancion(request);
+                cancionSeleccionada = cargarCancion(request);
 
                 request.setAttribute("cancionSeleccionada", cancionSeleccionada);
                 rd = getServletContext().getRequestDispatcher("/nuevaCancion.jsp");
                 rd.forward(request, response);
+                break;
+            case Utils.OP_INCLUIR_CANCION_LISTA:
+                incluirCancionEnLista(request);
                 break;
         }
 
@@ -212,5 +216,12 @@ public class CancionCRUDServlet extends HttpServlet {
     }
 
     private void incluirCancionEnLista(HttpServletRequest request) {
+        Cancion c = cargarCancion(request);
+        ListaReproduccion l = listaReproduccionFacade.find(Integer.parseInt(request.getParameter(Utils.IDLISTAREPRODUCCIONINPUT)));
+
+        if (!c.getListaReproduccionCollection().contains(l)) {
+            c.getListaReproduccionCollection().add(l);
+            cancionFacade.edit(c);
+        }
     }
 }
