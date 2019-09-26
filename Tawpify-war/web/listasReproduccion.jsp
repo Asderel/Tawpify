@@ -95,7 +95,7 @@
                                 <td><a href="#" class="nav-link" onclick="goto('GeneroCRUDServlet')">Generos</a></td>
                             </tr>
                             <tr class="table">
-                                <td><a href="#" class="nav-link" onclick="goto('ListaReproducionCRUDServlet')">Listas de reproduccion</a></td>
+                                <td><a href="#" class="nav-link" onclick="goto('ListaReproduccionCRUDServlet')">Listas de reproduccion</a></td>
                             </tr>
 
                             <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
@@ -166,7 +166,7 @@
                                     <td><%=l.getNombre()%></td>
                                     <td><%=formatter.format(l.getFechaCreacion())%></td>
 
-                                    <td><button class="btn btn-outline-warning" type="submit"
+                                    <td><button class="btn btn-outline-warning" type="submit" form="listaForm"
                                                 onclick="seleccionarLista(<%=l.getIdListaReproduccion()%>, <%=Utils.OP_LISTAR%>)"
                                                 title="Ver lista de reproduccion"
                                                 style="border: none;"><span class="far fa-eye"/></button></td>
@@ -183,7 +183,7 @@
                                 </tr>
                             </tbody>
                             <input id="nombreOculto_<%=l.getIdListaReproduccion()%>" type="hidden" value="<%=l.getNombre()%>">
-                            <input id="fechaOculta_<%=l.getIdListaReproduccion()%>" type="hidden" value="<%=l.getFechaCreacion()%>">
+                            <input id="fechaOculta_<%=l.getIdListaReproduccion()%>" type="hidden" value="<%=formatter.format(l.getFechaCreacion())%>">
                             <%}%>
                         </table>
                     </div>
@@ -245,12 +245,12 @@
                             <fieldset>
                                 <legend style="font-size: 1.2em">Datos</legend>
                                 <div class="form-group">
-                                    <label for="<%=Utils.NOMBREINPUT%>">Nombre</label>
+                                    <label for="<%=Utils.NOMBREINPUT%>ModalModificarLista">Nombre</label>
                                     <input id="<%=Utils.NOMBREINPUT%>ModalModificarLista" type="text" class="form-control"/>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="<%=Utils.FECHASALIDAINPUT%>">Fecha Creacion</label>
+                                    <label for="<%=Utils.FECHASALIDAINPUT%>ModalModificarLista">Fecha Creacion</label>
                                     <input id="<%=Utils.FECHASALIDAINPUT%>ModalModificarLista" type="text" class="form-control" placeholder="<%=Utils.PLACEHOLDER_FECHA%>"/>
                                 </div>
                             </fieldset>
@@ -271,8 +271,8 @@
                 $('#idListaReproduccionInput').val(idLista);
                 $('#accionInput').val(accion);
 
-                $('#nombreInputnombreModalLista').val($('#nombreOculto_' + idLista).val());
-                $('#fechaInputModalModificarLista').val($('#fechaOculta_' + idLista).val());
+                $('#nombreInputModalModificarLista').val($('#nombreOculto_' + idLista).val());
+                $('#fechaSalidaInputModalModificarLista').val($('#fechaOculta_' + idLista).val());
             }
 
             function crearLista() {
@@ -281,7 +281,7 @@
 
             function modificarLista() {
                 $('#<%=Utils.NOMBREINPUT%>').val($('#nombreInputModalModificarLista').val());
-                $('#<%=Utils.FECHASALIDAINPUT%>').val($('#fechaInputModalModificarLista').val());
+                $('#<%=Utils.FECHASALIDAINPUT%>').val($('#fechaSalidaInputModalModificarLista').val());
             }
 
             function setupModalCrearLista() {

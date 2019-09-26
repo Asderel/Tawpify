@@ -98,20 +98,24 @@ public class ListaReproduccionCRUDServlet extends HttpServlet {
 
         switch (opcode) {
             case Utils.OP_MODIFICAR:
-                listaReproduccionFacade.edit(modificarListaReproduccion(request, u));
 
+                listaReproduccionFacade.edit(modificarListaReproduccion(request, u));
                 break;
             case Utils.OP_BORRAR:
-                eliminarListaReproduccion(request);
 
+                eliminarListaReproduccion(request);
                 break;
             case Utils.OP_CREAR:
+
                 listaReproduccionFacade.create(crearListaReproduccion(request, null, u));
-
                 break;
-            case Utils.OP_FILTRAR:
-                filtrarListasReproduccion(request);
+            case Utils.OP_BORRAR_CANCION_LISTA:
 
+                listaSeleccionada = eliminarCancionLista(request);
+
+                session.setAttribute("listaSeleccionada", listaSeleccionada);
+                rd = getServletContext().getRequestDispatcher("/listaReproduccion.jsp");
+                rd.forward(request, response);
                 break;
             case Utils.OP_LISTAR:
                 listaSeleccionada = cargarListaReproduccion(request);
@@ -191,9 +195,15 @@ public class ListaReproduccionCRUDServlet extends HttpServlet {
         listaReproduccionFacade.remove(l);
     }
 
-    private List<ListaReproduccion> filtrarListasReproduccion(HttpServletRequest request) {
+    private ListaReproduccion eliminarCancionLista(HttpServletRequest request) {
+        ListaReproduccion l = cargarListaReproduccion(request);
+        Cancion cancion = cancionFacade.find(Integer.parseInt(request.getParameter(Utils.IDCANCIONINPUT)));
 
-        return null;
+        cancion.getListaReproduccionCollection().remove(l);
+        l.getCancionCollection().remove(cancion);
+
+        cancionFacade.edit(cancion);
+
+        return l;
     }
-
 }

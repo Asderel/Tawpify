@@ -92,7 +92,7 @@
                                 <td><a href="#" class="nav-link" onclick="goto('GeneroCRUDServlet')">Generos</a></td>
                             </tr>
                             <tr class="table">
-                                <td><a href="#" class="nav-link" onclick="goto('ListaReproducionCRUDServlet')">Listas de reproduccion</a></td>
+                                <td><a href="#" class="nav-link" onclick="goto('ListaReproduccionCRUDServlet')">Listas de reproduccion</a></td>
                             </tr>
 
                             <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>

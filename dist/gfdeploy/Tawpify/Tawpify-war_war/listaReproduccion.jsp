@@ -1,3 +1,7 @@
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="entities.Cancion"%>
+<%@page import="utils.Utils"%>
+<%@page import="entities.ListaReproduccion"%>
 <%@page import="entities.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -15,6 +19,9 @@
 
         <%
             Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
+
+            ListaReproduccion listaSeleccionada = session.getAttribute("listaSeleccionada") != null ? (ListaReproduccion) session.getAttribute("listaSeleccionada") : null;
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         %>
 
         <title>Lista reproduccion</title>
@@ -64,6 +71,9 @@
 
         <div class="container-fluid">
             <div id="contenedorContenido" class="row">
+                <form id="formRuta">
+                    <input name="<%=Utils.OPCODE%>" value="<%=Utils.OP_LISTAR%>" type="hidden"/>
+                </form>
 
                 <!-- PANEL LATERARL -->
 
@@ -86,7 +96,7 @@
                                 <td><a href="#" class="nav-link" onclick="goto('GeneroCRUDServlet')">Generos</a></td>
                             </tr>
                             <tr class="table">
-                                <td><a href="#" class="nav-link" onclick="goto('ListaReproducionCRUDServlet')">Listas de reproduccion</a></td>
+                                <td><a href="#" class="nav-link" onclick="goto('ListaReproduccionCRUDServlet')">Listas de reproduccion</a></td>
                             </tr>
 
                             <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
@@ -109,17 +119,19 @@
                     <!-- JUMBOTRON -->
 
                     <div class="jumbotron" style="padding: 1rem 2rem">
-                        <h1 class="row" style="font-size: 2em">Lista ARAPAHOE</h1>
+                        <h1 class="row" style="font-size: 2em">
+                            <span>
+                                <%=listaSeleccionada.getNombre().toUpperCase()%>
+                            </span>
+                        </h1>
                         <p class="row" style="font-size: 1em">
-                            Canciones 25 (ANAL)
+                            <span class="mr-3">
+                                Canciones:
+                            </span>
+                            <span>
+                                <%=listaSeleccionada.getCancionCollection().size()%>
+                            </span>
                         </p>
-                        <div class="row">
-                            <form method="POST" action="ListaReproduccionCRUDServlet">
-                                <button class="btn btn-outline-warning" type="submit">Eliminar lista</button>
-                                <input id="accionEliminarInput" name="accionInput" value="2" type="hidden"/>
-                            </form>
-                        </div>
-
                     </div>
 
                     <!-- FIN JUMBOTRON -->
@@ -128,10 +140,6 @@
 
                     <div class="col-12 mt-2">
                         <div class="row my-2 justify-content-end">
-                            <!--                            <div class="col-3">
-                                                            <a class="btn btn-outline-warning" href="nuevaCancion.jsp?idAlbum=1">Incluir nueva cancion</a>
-                                                        </div>-->
-
                             <div class="col-3">
                                 <input type="text" class="form-control" id="filtroInput" aria-describedby="filtroInput" placeholder="Filtra en la tabla"
                                        onkeyup="filtrar()">
@@ -139,52 +147,40 @@
                         </div>
 
                         <form id="cancionesForm" action="ListaReproduccionCRUDServlet" method="POST">
-                            <input id="idCancionInput" name="idCancionInput" value="" type="hidden"/>
-                            <input id="accionInput" name="accionInput" value="" type="hidden"/>
-
-                            <table id="tablaCanciones" class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Nombre</th>
-                                        <th scope="col">Artista</th>
-                                        <th scope="col">Album</th>
-                                        <th scope="col">Lanzamiento</th>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td>a</td>
-                                        <td><a class="btn btn-outline-warning" target=_blank" href="https://www.youtube.com/watch?v=ODKTITUPusM&t">Escuchar</a></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('1', '2')">Eliminar</button></td>
-                                    </tr>
-                                </tbody>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td>b</td>
-                                        <td><a class="btn btn-outline-warning" target=_blank" href="https://www.youtube.com/watch?v=ODKTITUPusM&t">Escuchar</a></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('2', '2')">Eliminar</button></td>
-                                    </tr>
-                                </tbody>
-                                <tbody>
-                                    <tr class="table-active">
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td>c</td>
-                                        <td><a class="btn btn-outline-warning" target=_blank" href="https://www.youtube.com/watch?v=ODKTITUPusM&t">Escuchar</a></td>
-                                        <td><button class="btn btn-outline-warning" type="submit" onclick="seleccionarCancion('3', '2')">Eliminar</button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <input id="<%=Utils.IDCANCIONINPUT%>" name="<%=Utils.IDCANCIONINPUT%>" value="" type="hidden"/>
+                            <input id="<%=Utils.IDLISTAREPRODUCCIONINPUT%>" name="<%=Utils.IDLISTAREPRODUCCIONINPUT%>" value="<%=listaSeleccionada.getIdListaReproduccion()%>" type="hidden"/>
+                            <input id="accionInput" name="<%=Utils.OPCODE%>" value="" type="hidden"/>
                         </form>
+
+                        <table id="tablaCanciones" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Album</th>
+                                    <th scope="col">Artista</th>
+                                    <th scope="col">Lanzamiento</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <%for (Cancion c : listaSeleccionada.getCancionCollection()) {%>
+                            <tbody>
+                                <tr class="table-active">
+                                    <th scope="row"><a class="btn btn-outline-warning far fa-play-circle" target=_blank" href="<%=c.getUrl()%>"
+                                                       style="border: none; font-size: 1.5em"></a></th>
+                                    <td><%=c.getNombre()%></td>
+                                    <td><%=c.getIdAlbum().getNombre()%></td>
+                                    <td><%=c.getIdAlbum().getIdArtista().getNombre()%></td>
+                                    <td><%=formatter.format(c.getFechaSalida())%></td>
+
+                                    <td><button class="btn btn-outline-warning" type="submit" form="cancionesForm" onclick="seleccionarCancion(<%=c.getIdCancion()%>, <%=Utils.OP_BORRAR_CANCION_LISTA%>)"
+                                                title="Eliminar cancion"
+                                                style="border: none;"><span class="far fa-times-circle"/></button></td>
+                                </tr>
+                            </tbody>
+                           <%}%>
+                        </table>
+
                     </div>
 
                     <!-- FIN LISTADO CANCIONES -->
@@ -198,12 +194,11 @@
 
         <script>
             function seleccionarCancion(idCancion, accion) {
-                var str = idCancion.concat(accion);
-
-                window.alert(str);
                 $('#idCancionInput').val(idCancion);
                 $('#accionInput').val(accion);
             }
+
+            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 1 : 1%>
 
             function filtrar() {
                 var input, filtro, tabla, cuerpo, fila, columnas, x, i, j, valor;
@@ -216,10 +211,11 @@
                     fila = cuerpo[x].getElementsByTagName('tr');
                     for (i = 0; i < fila.length; i++) {
                         columnas = fila[i].getElementsByTagName("td");
-                        for (j = 0; j < columnas.length - 2; j++) {
+                        for (j = 1; j < columnas.length - numFilasIngorar; j++) {
                             valor = columnas[j].textContent || columnas[j].innerText;
                             if (valor.toUpperCase().indexOf(filtro) > -1) {
                                 fila[i].style.display = "";
+                                break;
                             } else {
                                 fila[i].style.display = "none";
                             }
