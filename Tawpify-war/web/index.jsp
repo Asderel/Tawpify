@@ -104,7 +104,7 @@
                         <p class="row" style="font-size: 1em">
 
                             <%if (usuarioConectado != null) {%>
-                            Su gestor de música preferido
+                            Tu gestor de música preferido
                             <%} else {%>
                             Registrate o accede para empezar a disfrutar de la mejor musica
                             <%}%>
