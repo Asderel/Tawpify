@@ -202,6 +202,7 @@
                             valor = columnas[j].textContent || columnas[j].innerText;
                             if (valor.toUpperCase().indexOf(filtro) > -1) {
                                 fila[i].style.display = "";
+                                break;
                             } else {
                                 fila[i].style.display = "none";
                             }

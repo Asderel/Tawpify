@@ -146,8 +146,8 @@ public class LoginServlet extends HttpServlet {
         String apodo = request.getParameter(Utils.APODOINPUT);
         String email = request.getParameter(Utils.EMAILINPUT);
         String pass = request.getParameter(Utils.CONTRASENAINPUT);
-        int administrador = request.getParameter(Utils.ADMINISTRADORINPUT) == null || request.getParameter(Utils.ADMINISTRADORINPUT).equalsIgnoreCase("")
-                ? 0 : Integer.parseInt(request.getParameter(Utils.ADMINISTRADORINPUT));
+        int administrador = request.getParameter(Utils.ADMINISTRADORINPUT) == null || request.getParameter(Utils.ADMINISTRADORINPUT).equalsIgnoreCase("") || request.getParameter(Utils.ADMINISTRADORINPUT).equalsIgnoreCase("off")
+                ? 0 : 1;
 
         u.setNombre(nombre);
         u.setApodo(apodo);

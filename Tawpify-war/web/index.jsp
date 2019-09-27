@@ -65,6 +65,7 @@
                     <input id="accionInput" name="<%=Utils.OPCODE%>" value="<%=Utils.OP_LISTAR%>" type="hidden"/>
                 </form>
 
+                <%if (usuarioConectado != null) {%>
                 <div id="panelLateral" class="col-2">
 
                     <%if (usuarioConectado != null) {%>
@@ -97,8 +98,9 @@
                     <%}%>
 
                 </div>
+                <%}%>
 
-                <div id="contenido" class="col-10">
+                <div id="contenido" class="<%=usuarioConectado != null ? "col-10" : "col-12"%>">
                     <div class="jumbotron" style="padding: 1rem 2rem">
                         <h1 class="row" style="font-size: 2em">Bienvenido de nuevo a Tawpify</h1>
                         <p class="row" style="font-size: 1em">

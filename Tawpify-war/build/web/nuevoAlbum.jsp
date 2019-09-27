@@ -133,7 +133,7 @@
                     <!-- JUMBOTRON -->
 
                     <div class="jumbotron" style="padding: 1rem 2rem">
-                        <%if (albumSeleccionado != null && opcode != Utils.OP_MODIFICAR) {%>
+                        <%if (albumSeleccionado != null && opcode != Utils.OP_MODIFICAR && opcode != Utils.OP_CREAR) {%>
                         <h1 class="row" style="font-size: 2em">
                             <span class="mr-3">
                                 Album
@@ -176,6 +176,7 @@
                                     onclick="setupModalIncuirAlbumLista()">Incluir en lista...</button>
                         </div>
                         <%} else {%>
+                        <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
                         <h1 class="row" style="font-size: 2em">
                             <%if (albumSeleccionado != null) {%>
                             Modificar album
@@ -191,6 +192,7 @@
                             <%}%>
                         </p>
                         <%}%>
+                        <%}%>
                     </div>
 
                     <!-- FIN JUMBOTRON -->
@@ -201,10 +203,12 @@
                     <div class="container-fluid">
 
                         <div class="col-12 mt-2">
-                            <div class="row my-2 justify-content-between">
+                            <div class="row my-2 <%=usuarioConectado != null && usuarioConectado.getAdministrador() == 1 ? "justify-content-between" : "justify-content-end"%>">
+                                <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
                                 <div class="col-3">
                                     <button class="btn btn-outline-warning" type="button" onclick="setupModalCrearCancion()" data-toggle="modal" data-target="#modalNuevaCancion">Incluir cancion</button>
                                 </div>
+                                <%}%>
 
                                 <div class="col-3">
                                     <input type="text" class="form-control" id="filtroInput" aria-describedby="filtroInput" placeholder="Filtra en la tabla"
@@ -228,12 +232,12 @@
                                     <tr>
                                         <th scope="col"></th>
                                         <th scope="col">Nombre</th>
-                                        <th scope="col">Album</th>
-                                        <th scope="col">Artista</th>
                                         <th scope="col">Lanzamiento</th>
                                         <th scope="col"></th>
+                                            <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
                                         <th scope="col"></th>
                                         <th scope="col"></th>
+                                            <%}%>
                                     </tr>
                                 </thead>
                                 <%for (Cancion c : albumSeleccionado.getCancionCollection()) {%>
@@ -242,26 +246,27 @@
                                         <th scope="row"><a class="btn btn-outline-warning far fa-play-circle" target=_blank" href="<%=c.getUrl()%>"
                                                            style="border: none; font-size: 1.5em"></a></th>
                                         <td><%=c.getNombre()%></td>
-                                        <td><%=c.getIdAlbum().getNombre()%></td>
-                                        <td><%=c.getIdAlbum().getIdArtista().getNombre()%></td>
                                         <td><%=formatter.format(c.getFechaSalida())%></td>
 
                                         <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalIncluirLista" title="Incluir en lista de reproduccion"
                                                     onclick="seleccionarCancionBorrar(<%=c.getIdCancion()%>, <%=Utils.OP_INCLUIR_CANCION_LISTA%>)"
                                                     style="border: none;"><span class="fas fa-plus-circle"/></button></td>
 
-                                        <td><button class="btn btn-outline-warning" type="button" form="cancionesForm" onclick="seleccionarCancion(<%=c.getIdCancion()%>, <%=Utils.OP_CREAR_CANCION_ALBUM%>)"
+                                        <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
+                                        <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalNuevaCancion" title="Modificar cancion"
+                                                    onclick="seleccionarCancion(<%=c.getIdCancion()%>, <%=Utils.OP_CREAR_CANCION_ALBUM%>)"
                                                     title="Modificar cancion"
                                                     style="border: none;"><span class="far fa-edit"/></button></td>
 
                                         <td><button class="btn btn-outline-warning" type="submit" form="cancionesForm" onclick="seleccionarCancionBorrar(<%=c.getIdCancion()%>, <%=Utils.OP_BORRAR_CANCION_ALBUM%>)"
                                                     title="Eliminar cancion"
                                                     style="border: none;"><span class="fas fa-trash"/></button></td>
+                                            <%}%>
                                     </tr>
                                 </tbody>
-                                <input id="nombreOculto_<%=c.getNombre()%>" type="hidden" value="<%=c.getNombre()%>">
-                                <input id="fechaOculta_<%=c.getFechaSalida()%>" type="hidden" value="<%=c.getFechaSalida()%>">
-                                <input id="urlOculta_<%=c.getUrl()%>" type="hidden" value="<%=c.getUrl()%>">
+                                <input id="nombreOculto_<%=c.getIdCancion()%>" type="hidden" value="<%=c.getNombre()%>">
+                                <input id="fechaOculta_<%=c.getIdCancion()%>" type="hidden" value="<%=formatter.format(c.getFechaSalida())%>">
+                                <input id="urlOculta_<%=c.getIdCancion()%>" type="hidden" value="<%=c.getUrl()%>">
                                 <%}%>
                             </table>
                         </div>
@@ -269,7 +274,7 @@
 
                     <!-- FIN VER ALBUM -->
 
-                    <%} else {%>
+                    <%} else if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
 
                     <!-- CREAR/MODIFICAR ALBUM -->
 
@@ -451,11 +456,11 @@
                 $('#formRuta').submit();
             }
 
-            function incluirCancionLista(){
+            function incluirCancionLista() {
                 $('#<%=Utils.IDLISTAREPRODUCCIONINPUT%>').val($('#<%=Utils.LISTASELECCIONADAINPUT%>').val());
             }
 
-            function incluirCancionAlbumLista(){
+            function incluirCancionAlbumLista() {
                 $('#<%=Utils.IDLISTAREPRODUCCIONINPUT%>').val($('#<%=Utils.LISTASELECCIONADAALBUMINPUT%>').val());
             }
 
@@ -489,7 +494,7 @@
                 $('#accionInput').val(<%=Utils.OP_INCLUIR_ALBUM_LISTA%>);
             }
 
-            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 3 : 2%>
+            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 3 : 0%>
 
             function filtrar() {
                 var input, filtro, tabla, cuerpo, fila, columnas, x, i, j, valor;

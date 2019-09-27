@@ -126,10 +126,13 @@
                     <!-- LISTADO GENEROS -->
 
                     <div class="col-12 mt-2">
-                        <div class="row my-2 justify-content-between">
+                        <div class="row my-2 <%=usuarioConectado != null && usuarioConectado.getAdministrador() == 1 ? "justify-content-between" : "justify-content-end"%>">
+                            <%if (usuarioConectado.getAdministrador() == 1) {%>
                             <div class="col-3">
                                 <button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalCrearGenero">Nuevo genero</button>
                             </div>
+                            <%}%>
+
                             <div class="col-3">
                                 <input type="text" class="form-control" id="filtroInput" aria-describedby="filtroInput" placeholder="Filtra en la tabla"
                                        onkeyup="filtrar()">
@@ -146,20 +149,24 @@
                             <thead>
                                 <tr>
                                     <th scope="col">Nombre</th>
+                                        <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
                                     <th scope="col"></th>
                                     <th scope="col"></th>
+                                        <%}%>
                                 </tr>
                             </thead>
                             <%for (Genero g : generos) {%>
                             <tbody>
                                 <tr class="table-active">
                                     <td><%=g.getNombre()%></td>
+                                    <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
                                     <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalModificarGenero"
                                                 title="Modificar genero"
                                                 style="border: none;" onclick="seleccionarGenero(<%=g.getIdGenero()%>, <%=Utils.OP_MODIFICAR%>)"><span class="far fa-edit"/></button></td>
                                     <td><button class="btn btn-outline-warning" form="generosForm" type="submit"
                                                 title="Eliminar genero"
                                                 style="border: none;" onclick="seleccionarGenero(<%=g.getIdGenero()%>, <%=Utils.OP_BORRAR%>)"><span class="fas fa-trash"/></button></td>
+                                        <%}%>
                                 </tr>
                             </tbody>
                             <input id="nombreOculto_<%=g.getIdGenero()%>" type="hidden" value="<%=g.getNombre()%>">

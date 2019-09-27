@@ -89,7 +89,8 @@ public class UsuarioCRUDServlet extends HttpServlet {
             case Utils.OP_BORRAR:
                 logout = eliminarUsuario(request, session);
                 if (logout) {
-                    response.sendRedirect(Utils.APP_PATH + "/login.jsp");
+                    response.sendRedirect(Utils.APP_PATH + "/index.jsp");
+                    session.removeAttribute("usuarioConectado");
                 } else {
                     rd = getServletContext().getRequestDispatcher("/usuarios.jsp");
                 }

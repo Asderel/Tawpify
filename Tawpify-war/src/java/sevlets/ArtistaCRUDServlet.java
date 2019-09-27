@@ -6,9 +6,7 @@
 package sevlets;
 
 import entities.Artista;
-import entities.Artista;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
@@ -81,7 +79,7 @@ public class ArtistaCRUDServlet extends HttpServlet {
 
         switch (opcode) {
             case Utils.OP_MODIFICAR:
-//                artistaFacade.edit(modificarArtista(request));
+                artistaFacade.edit(modificarArtista(request));
                 break;
             case Utils.OP_BORRAR:
                 eliminarArtista(request);
@@ -125,7 +123,12 @@ public class ArtistaCRUDServlet extends HttpServlet {
     }
 
     private Artista modificarArtista(HttpServletRequest request) {
-        return null;
+        Artista g = artistaFacade.find(Integer.parseInt(request.getParameter(Utils.IDARTISTAINPUT)));
+
+        String nombre = request.getParameter(Utils.NOMBREINPUT);
+        g.setNombre(nombre);
+
+        return g;
     }
 
     private void eliminarArtista(HttpServletRequest request) {

@@ -34,25 +34,34 @@ public class CancionFacade extends AbstractFacade<Cancion> {
         super(Cancion.class);
     }
 
+    public List<Cancion> selectCancionesOrdenadas() {
+        Query q = em.createQuery("SELECT c FROM Cancion c ORDER BY c.idAlbum.nombre, c.idCancion ASC");
+
+        return q.getResultList();
+    }
+
     public List<Cancion> filtrarCanciones(Collection<Artista> a, Collection<Album> al) {
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT c FROM Cancion c");
+        sb.append("SELECT c FROM Cancion c LEFT JOIN c.artistaCollection ac");
+        Collection<Artista> b = a;
 
-        if(a != null && !a.isEmpty() && al != null) {
-            sb.append(" WHERE c.idAlbum IN :al OR c.idAlbum.idArtista IN :a");
-        } else if(a != null && !a.isEmpty()) {
-            sb.append(" WHERE c.idAlbum.idArtista IN :a");
-        }else if(al != null && !al.isEmpty()) {
+        if (a != null && !a.isEmpty() && al != null && !al.isEmpty()) {
+            sb.append(" WHERE c.idAlbum IN :al OR c.idAlbum.idArtista IN :a OR ac IN :b");
+        } else if (a != null && !a.isEmpty()) {
+            sb.append(" WHERE c.idAlbum.idArtista IN :a OR ac IN :b");
+        } else if (al != null && !al.isEmpty()) {
             sb.append(" WHERE c.idAlbum IN :al");
         }
 
+        sb.append(" GROUP BY c.idCancion ORDER BY c.idAlbum.nombre, c.idCancion ASC");
+
         Query q = em.createQuery(sb.toString());
 
-        if(a != null && !a.isEmpty() && al != null) {
-            q.setParameter("al", al).setParameter("a", a);
-        } else if(a != null && !a.isEmpty()) {
-            q.setParameter("a", a);
-        }else if(al != null && !al.isEmpty()) {
+        if (a != null && !a.isEmpty() && al != null && !al.isEmpty()) {
+            q.setParameter("al", al).setParameter("a", a).setParameter("b", b);
+        } else if (a != null && !a.isEmpty()) {
+            q.setParameter("a", a).setParameter("b", b);
+        } else if (al != null && !al.isEmpty()) {
             q.setParameter("al", al);
         }
 
