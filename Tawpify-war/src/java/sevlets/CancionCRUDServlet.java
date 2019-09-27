@@ -75,7 +75,7 @@ public class CancionCRUDServlet extends HttpServlet {
         HttpSession session = request.getSession();
         int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
 
-        List<Cancion> canciones = cancionFacade.findAll();
+        List<Cancion> canciones = cancionFacade.selectCancionesOrdenadas();
         List<Artista> artistas = artistaFacade.findAll();
         List<Album> albumes = albumFacade.findAll();
         List<ListaReproduccion> listasReproduccion = listaReproduccionFacade.findAll();
@@ -147,7 +147,7 @@ public class CancionCRUDServlet extends HttpServlet {
         }
 
         if (opcode != Utils.OP_FILTRAR) {
-            canciones = cancionFacade.findAll();
+            canciones = cancionFacade.selectCancionesOrdenadas();
         }
 
         List<Album> albumes = albumFacade.findAll();

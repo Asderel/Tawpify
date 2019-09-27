@@ -56,9 +56,8 @@ public class CancionFacade extends AbstractFacade<Cancion> {
         sb.append(" GROUP BY c.idCancion ORDER BY c.idAlbum.nombre, c.idCancion ASC");
 
         Query q = em.createQuery(sb.toString());
-//        Query q = em.createQuery("SELECT c FROM Cancion c LEFT JOIN c.artistaCollection ac WHERE ac IN ");
 
-        if (a != null && !a.isEmpty() && al != null) {
+        if (a != null && !a.isEmpty() && al != null && !al.isEmpty()) {
             q.setParameter("al", al).setParameter("a", a).setParameter("b", b);
         } else if (a != null && !a.isEmpty()) {
             q.setParameter("a", a).setParameter("b", b);
