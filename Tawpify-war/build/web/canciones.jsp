@@ -29,7 +29,7 @@
             List<Cancion> canciones = (List) session.getAttribute("canciones");
             List<Artista> artistas = (List) session.getAttribute("artistas");
             List<Album> albumes = (List) session.getAttribute("albumes");
-            List<ListaReproduccion> listasReproduccion = (List) request.getAttribute("listasReproduccion");
+            List<ListaReproduccion> listasReproduccion = (List) session.getAttribute("listasReproduccion");
         %>
 
         <title>Canciones</title>

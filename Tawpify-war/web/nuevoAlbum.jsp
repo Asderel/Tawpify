@@ -133,7 +133,7 @@
                     <!-- JUMBOTRON -->
 
                     <div class="jumbotron" style="padding: 1rem 2rem">
-                        <%if (albumSeleccionado != null && opcode != Utils.OP_MODIFICAR) {%>
+                        <%if (albumSeleccionado != null && opcode != Utils.OP_MODIFICAR && opcode != Utils.OP_CREAR) {%>
                         <h1 class="row" style="font-size: 2em">
                             <span class="mr-3">
                                 Album
@@ -228,8 +228,6 @@
                                     <tr>
                                         <th scope="col"></th>
                                         <th scope="col">Nombre</th>
-                                        <th scope="col">Album</th>
-                                        <th scope="col">Artista</th>
                                         <th scope="col">Lanzamiento</th>
                                         <th scope="col"></th>
                                         <th scope="col"></th>
@@ -242,15 +240,14 @@
                                         <th scope="row"><a class="btn btn-outline-warning far fa-play-circle" target=_blank" href="<%=c.getUrl()%>"
                                                            style="border: none; font-size: 1.5em"></a></th>
                                         <td><%=c.getNombre()%></td>
-                                        <td><%=c.getIdAlbum().getNombre()%></td>
-                                        <td><%=c.getIdAlbum().getIdArtista().getNombre()%></td>
                                         <td><%=formatter.format(c.getFechaSalida())%></td>
 
                                         <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalIncluirLista" title="Incluir en lista de reproduccion"
                                                     onclick="seleccionarCancionBorrar(<%=c.getIdCancion()%>, <%=Utils.OP_INCLUIR_CANCION_LISTA%>)"
                                                     style="border: none;"><span class="fas fa-plus-circle"/></button></td>
 
-                                        <td><button class="btn btn-outline-warning" type="button" form="cancionesForm" onclick="seleccionarCancion(<%=c.getIdCancion()%>, <%=Utils.OP_CREAR_CANCION_ALBUM%>)"
+                                        <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalNuevaCancion" title="Modificar cancion"
+                                                    onclick="seleccionarCancion(<%=c.getIdCancion()%>, <%=Utils.OP_CREAR_CANCION_ALBUM%>)"
                                                     title="Modificar cancion"
                                                     style="border: none;"><span class="far fa-edit"/></button></td>
 
@@ -259,9 +256,9 @@
                                                     style="border: none;"><span class="fas fa-trash"/></button></td>
                                     </tr>
                                 </tbody>
-                                <input id="nombreOculto_<%=c.getNombre()%>" type="hidden" value="<%=c.getNombre()%>">
-                                <input id="fechaOculta_<%=c.getFechaSalida()%>" type="hidden" value="<%=c.getFechaSalida()%>">
-                                <input id="urlOculta_<%=c.getUrl()%>" type="hidden" value="<%=c.getUrl()%>">
+                                <input id="nombreOculto_<%=c.getIdCancion()%>" type="hidden" value="<%=c.getNombre()%>">
+                                <input id="fechaOculta_<%=c.getIdCancion()%>" type="hidden" value="<%=formatter.format(c.getFechaSalida())%>">
+                                <input id="urlOculta_<%=c.getIdCancion()%>" type="hidden" value="<%=c.getUrl()%>">
                                 <%}%>
                             </table>
                         </div>

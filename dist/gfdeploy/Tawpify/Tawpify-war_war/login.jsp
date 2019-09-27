@@ -121,8 +121,10 @@
                             Registrate en Tawpify
                             <%} else if(opcode == Utils.OP_REDIRECCION_MODIFICAR) {%>
                             Modifica el usuario
-                            <%} else {%>
-                            Accede aTawpify
+                            <%} else if(opcode == Utils.OP_CREAR){%>
+                            Registra un nuevo usuario
+                            <%}else {%>
+                            Accede a Tawpify
                             <%}%>
                         </h1>
                         <p class="row" style="font-size: 1em">

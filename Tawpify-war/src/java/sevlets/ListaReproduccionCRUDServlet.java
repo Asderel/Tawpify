@@ -203,6 +203,7 @@ public class ListaReproduccionCRUDServlet extends HttpServlet {
         l.getCancionCollection().remove(cancion);
 
         cancionFacade.edit(cancion);
+        listaReproduccionFacade.edit(l);
 
         return l;
     }

@@ -116,7 +116,7 @@ public class AlbumCRUDServlet extends HttpServlet {
         switch (opcode) {
             case Utils.OP_MODIFICAR:
                 albumFacade.edit(modificarAlbum(request));
-
+                session.removeAttribute("albumSeleccionado");
                 break;
             case Utils.OP_BORRAR:
                 eliminarAlbum(request);
@@ -128,6 +128,7 @@ public class AlbumCRUDServlet extends HttpServlet {
                 session.removeAttribute("artistas");
                 session.removeAttribute("albumes");
                 session.removeAttribute("generos");
+                session.removeAttribute("albumSeleccionado");
                 break;
             case Utils.OP_FILTRAR:
                 albumes = filtrarAlbumes(request);
@@ -291,14 +292,24 @@ public class AlbumCRUDServlet extends HttpServlet {
 
     private void incluirCancionAlbum(HttpServletRequest request) {
         Album albumSeleccionado = cargarAlbum(request);
+        Cancion cAux;
 
         int idCancion = request.getParameter(Utils.IDCANCIONINPUT) != null && !request.getParameter(Utils.IDCANCIONINPUT).isEmpty()
                 ? Integer.parseInt(request.getParameter(Utils.IDCANCIONINPUT)) : 0;
 
         if (idCancion != 0) {
-            cancionFacade.edit(crearCancionAlbum(idCancion, albumSeleccionado, request));
+            cAux = crearCancionAlbum(idCancion, albumSeleccionado, request);
+            albumSeleccionado.getCancionCollection().remove(cancionFacade.find(idCancion));
+
+            cancionFacade.edit(cAux);
+            albumSeleccionado.getCancionCollection().add(cAux);
+            albumFacade.edit(albumSeleccionado);
         } else {
-            cancionFacade.create(crearCancionAlbum(idCancion, albumSeleccionado, request));
+            cAux = crearCancionAlbum(idCancion, albumSeleccionado, request);
+            cancionFacade.create(cAux);
+
+            albumSeleccionado.getCancionCollection().add(cAux);
+            albumFacade.edit(albumSeleccionado);
         }
     }
 
@@ -310,7 +321,7 @@ public class AlbumCRUDServlet extends HttpServlet {
             Date fechaSalida = formatter.parse(request.getParameter(Utils.FECHASALIDAINPUT));
 
             if (idCancion != 0) {
-                cancionFacade.find(idCancion);
+                c = cancionFacade.find(idCancion);
             }
 
             String nombre = request.getParameter(Utils.NOMBREINPUT);
@@ -329,11 +340,15 @@ public class AlbumCRUDServlet extends HttpServlet {
     }
 
     private void eliminarCancionAlbum(HttpServletRequest request) {
+        Album albumSeleccionado = cargarAlbum(request);
         int idCancion = request.getParameter(Utils.IDCANCIONINPUT) != null && !request.getParameter(Utils.IDCANCIONINPUT).isEmpty()
                 ? Integer.parseInt(request.getParameter(Utils.IDCANCIONINPUT)) : 0;
 
         if (idCancion != 0) {
-            cancionFacade.remove(cancionFacade.find(idCancion));
+            Cancion cAux = cancionFacade.find(idCancion);
+            cancionFacade.remove(cAux);
+            albumSeleccionado.getCancionCollection().remove(cAux);
+            albumFacade.edit(albumSeleccionado);
         }
     }
 
@@ -346,6 +361,9 @@ public class AlbumCRUDServlet extends HttpServlet {
             if (!c.getListaReproduccionCollection().contains(l)) {
                 c.getListaReproduccionCollection().add(l);
                 cancionFacade.edit(c);
+
+                l.getCancionCollection().add(c);
+                listaReproduccionFacade.edit(l);
             }
         } else {
             Album a = albumFacade.find(Integer.parseInt(request.getParameter(Utils.IDALBUMINPUT)));
@@ -354,6 +372,9 @@ public class AlbumCRUDServlet extends HttpServlet {
                 if (!cancion.getListaReproduccionCollection().contains(l)) {
                     cancion.getListaReproduccionCollection().add(l);
                     cancionFacade.edit(cancion);
+
+                    l.getCancionCollection().add(cancion);
+                    listaReproduccionFacade.edit(l);
                 }
             }
         }

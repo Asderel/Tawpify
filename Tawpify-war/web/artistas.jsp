@@ -129,7 +129,7 @@
                     <div class="col-12 mt-2">
                         <div class="row my-2 justify-content-between">
                             <div class="col-3">
-                                <a class="btn btn-outline-warning" href="nuevoArtista.jsp?<%=Utils.OPCODE%>=<%=Utils.OP_CREAR%>">Nuevo Artista</a>
+                                <button class="btn btn-outline-warning" data-toggle="modal" data-target="#modalCrearArtista">Nuevo Artista</button>
                             </div>
 
                             <div class="col-3">
@@ -141,6 +141,7 @@
                         <form id="artistasForm" action="ArtistaCRUDServlet" method="POST">
                             <input id="idArtistaInput" name="<%=Utils.IDARTISTAINPUT%>" value="" type="hidden"/>
                             <input id="accionInput" name="<%=Utils.OPCODE%>" value="" type="hidden"/>
+                            <input id="nombreInput" name="<%=Utils.NOMBREINPUT%>" value="" type="hidden"/>
                         </form>
 
                         <table id="tablaArtistas" class="table table-hover">
@@ -148,17 +149,22 @@
                                 <tr>
                                     <th scope="col">Nombre</th>
                                     <th scope="col"></th>
+                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             <%for (Artista a : artistas) {%>
                             <tbody>
                                 <tr class="table-active">
                                     <td><%=a.getNombre()%></td>
+                                    <td><button class="btn btn-outline-warning" type="button" onclick="seleccionarArtista(<%=a.getIdArtista()%>, <%=Utils.OP_MODIFICAR%>)"
+                                                title="Modificar artista" data-toggle="modal" data-target="#modalModificarArtista"
+                                                style="border: none;"><span class="far fa-edit"/></button></td>
                                     <td><button class="btn btn-outline-warning" type="submit" form="artistasForm" onclick="seleccionarArtista(<%=a.getIdArtista()%>, <%=Utils.OP_BORRAR%>)"
                                                 title="Eliminar artista"
                                                 style="border: none;"><span class="fas fa-trash"/></button></td>
                                 </tr>
                             </tbody>
+                            <input id="nombreOculto_<%=a.getIdArtista()%>" type="hidden" value="<%=a.getNombre()%>">
                             <%}%>
                         </table>
                     </div>
@@ -172,10 +178,82 @@
             </div>
         </div>
 
+        <!-- MODALES -->
+
+        <div id="modalCrearArtista" class="modal fade">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            Crear un nuevo artista
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <fieldset>
+                            <legend style="font-size: 1.2em">Datos</legend>
+                            <div class="form-group">
+                                <label for="<%=Utils.NOMBREINPUT%>ModalCrearArtista">Nombre</label>
+                                <input type="text" class="form-control" id="<%=Utils.NOMBREINPUT%>ModalCrearArtista" placeholder="Nombre"/>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" form="artistasForm" onclick="setupCrearArtista()" class="btn btn-outline-warning">Listo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="modalModificarArtista" class="modal fade">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            Modificar el artista seleccionado
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <fieldset>
+                            <legend style="font-size: 1.2em">Datos</legend>
+                            <div class="form-group">
+                                <label for="<%=Utils.NOMBREINPUT%>ModificarArtista">Nombre</label>
+                                <input id="nombreInputModalModificarArtista" type="text" class="form-control" placeholder="Nombre" value=""/>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" form="artistasForm" onclick="setupModificarArtista()" class="btn btn-outline-warning">Listo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FIN MODALES -->
+
         <script>
             function seleccionarArtista(idArtista, accion) {
                 $('#idArtistaInput').val(idArtista);
                 $('#accionInput').val(accion);
+                $('#nombreInputModalModificarArtista').val($('#nombreOculto_' + idArtista).val());
+            }
+
+            function setupModificarArtista() {
+                $('#nombreInput').val($('#nombreInputModalModificarArtista').val());
+            }
+
+            function setupCrearArtista() {
+                $('#nombreInput').val($('#nombreInputModalCrearArtista').val());
+                $('#accionInput').val(<%=Utils.OP_CREAR%>);
             }
 
             var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 1 : 0%>
