@@ -176,6 +176,7 @@
                                     onclick="setupModalIncuirAlbumLista()">Incluir en lista...</button>
                         </div>
                         <%} else {%>
+                        <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
                         <h1 class="row" style="font-size: 2em">
                             <%if (albumSeleccionado != null) {%>
                             Modificar album
@@ -191,6 +192,7 @@
                             <%}%>
                         </p>
                         <%}%>
+                        <%}%>
                     </div>
 
                     <!-- FIN JUMBOTRON -->
@@ -201,10 +203,12 @@
                     <div class="container-fluid">
 
                         <div class="col-12 mt-2">
-                            <div class="row my-2 justify-content-between">
+                            <div class="row my-2 <%=usuarioConectado != null && usuarioConectado.getAdministrador() == 1 ? "justify-content-between" : "justify-content-end"%>">
+                                <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
                                 <div class="col-3">
                                     <button class="btn btn-outline-warning" type="button" onclick="setupModalCrearCancion()" data-toggle="modal" data-target="#modalNuevaCancion">Incluir cancion</button>
                                 </div>
+                                <%}%>
 
                                 <div class="col-3">
                                     <input type="text" class="form-control" id="filtroInput" aria-describedby="filtroInput" placeholder="Filtra en la tabla"
@@ -230,8 +234,10 @@
                                         <th scope="col">Nombre</th>
                                         <th scope="col">Lanzamiento</th>
                                         <th scope="col"></th>
+                                            <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
                                         <th scope="col"></th>
                                         <th scope="col"></th>
+                                            <%}%>
                                     </tr>
                                 </thead>
                                 <%for (Cancion c : albumSeleccionado.getCancionCollection()) {%>
@@ -246,6 +252,7 @@
                                                     onclick="seleccionarCancionBorrar(<%=c.getIdCancion()%>, <%=Utils.OP_INCLUIR_CANCION_LISTA%>)"
                                                     style="border: none;"><span class="fas fa-plus-circle"/></button></td>
 
+                                        <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
                                         <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalNuevaCancion" title="Modificar cancion"
                                                     onclick="seleccionarCancion(<%=c.getIdCancion()%>, <%=Utils.OP_CREAR_CANCION_ALBUM%>)"
                                                     title="Modificar cancion"
@@ -254,6 +261,7 @@
                                         <td><button class="btn btn-outline-warning" type="submit" form="cancionesForm" onclick="seleccionarCancionBorrar(<%=c.getIdCancion()%>, <%=Utils.OP_BORRAR_CANCION_ALBUM%>)"
                                                     title="Eliminar cancion"
                                                     style="border: none;"><span class="fas fa-trash"/></button></td>
+                                            <%}%>
                                     </tr>
                                 </tbody>
                                 <input id="nombreOculto_<%=c.getIdCancion()%>" type="hidden" value="<%=c.getNombre()%>">
@@ -266,7 +274,7 @@
 
                     <!-- FIN VER ALBUM -->
 
-                    <%} else {%>
+                    <%} else if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
 
                     <!-- CREAR/MODIFICAR ALBUM -->
 
@@ -448,11 +456,11 @@
                 $('#formRuta').submit();
             }
 
-            function incluirCancionLista(){
+            function incluirCancionLista() {
                 $('#<%=Utils.IDLISTAREPRODUCCIONINPUT%>').val($('#<%=Utils.LISTASELECCIONADAINPUT%>').val());
             }
 
-            function incluirCancionAlbumLista(){
+            function incluirCancionAlbumLista() {
                 $('#<%=Utils.IDLISTAREPRODUCCIONINPUT%>').val($('#<%=Utils.LISTASELECCIONADAALBUMINPUT%>').val());
             }
 
@@ -486,7 +494,7 @@
                 $('#accionInput').val(<%=Utils.OP_INCLUIR_ALBUM_LISTA%>);
             }
 
-            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 3 : 2%>
+            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 3 : 0%>
 
             function filtrar() {
                 var input, filtro, tabla, cuerpo, fila, columnas, x, i, j, valor;

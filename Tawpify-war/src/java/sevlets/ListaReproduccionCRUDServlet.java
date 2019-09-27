@@ -66,8 +66,10 @@ public class ListaReproduccionCRUDServlet extends HttpServlet {
         int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
 
         Usuario u = (Usuario) session.getAttribute("usuarioConectado");
+        List<ListaReproduccion> listasReproduccion;
 
-        List<ListaReproduccion> listasReproduccion = cargarListasReproduccion(u);
+        listasReproduccion = cargarListasReproduccion(u);
+
         List<Cancion> canciones = cancionFacade.findAll();
 
         session.setAttribute("listasReproduccion", listasReproduccion);
@@ -152,8 +154,8 @@ public class ListaReproduccionCRUDServlet extends HttpServlet {
 
     private List<ListaReproduccion> cargarListasReproduccion(Usuario usuario) {
         return usuario.getAdministrador() == 1
-                ? listaReproduccionFacade.selectListasReproduccionByUsuario(usuario)
-                : listaReproduccionFacade.findAll();
+                ? listaReproduccionFacade.findAll()
+                : listaReproduccionFacade.selectListasReproduccionByUsuario(usuario);
     }
 
     private ListaReproduccion crearListaReproduccion(HttpServletRequest request, ListaReproduccion lista, Usuario usuario) {

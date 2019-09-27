@@ -127,10 +127,12 @@
                     <!-- LISTADO ARTISTAS -->
 
                     <div class="col-12 mt-2">
-                        <div class="row my-2 justify-content-between">
+                        <div class="row my-2 <%=usuarioConectado != null && usuarioConectado.getAdministrador() == 1 ? "justify-content-between" : "justify-content-end"%>">
+                            <%if (usuarioConectado.getAdministrador() == 1) {%>
                             <div class="col-3">
                                 <button class="btn btn-outline-warning" data-toggle="modal" data-target="#modalCrearArtista">Nuevo Artista</button>
                             </div>
+                            <%}%>
 
                             <div class="col-3">
                                 <input type="text" class="form-control" id="filtroInputArtistas" aria-describedby="filtroInputArtistas" placeholder="Filtra en la tabla"
@@ -148,20 +150,24 @@
                             <thead>
                                 <tr>
                                     <th scope="col">Nombre</th>
+                                        <%if (usuarioConectado.getAdministrador() == 1) {%>
                                     <th scope="col"></th>
                                     <th scope="col"></th>
+                                        <%}%>
                                 </tr>
                             </thead>
                             <%for (Artista a : artistas) {%>
                             <tbody>
                                 <tr class="table-active">
                                     <td><%=a.getNombre()%></td>
+                                    <%if (usuarioConectado.getAdministrador() == 1) {%>
                                     <td><button class="btn btn-outline-warning" type="button" onclick="seleccionarArtista(<%=a.getIdArtista()%>, <%=Utils.OP_MODIFICAR%>)"
                                                 title="Modificar artista" data-toggle="modal" data-target="#modalModificarArtista"
                                                 style="border: none;"><span class="far fa-edit"/></button></td>
                                     <td><button class="btn btn-outline-warning" type="submit" form="artistasForm" onclick="seleccionarArtista(<%=a.getIdArtista()%>, <%=Utils.OP_BORRAR%>)"
                                                 title="Eliminar artista"
                                                 style="border: none;"><span class="fas fa-trash"/></button></td>
+                                        <%}%>
                                 </tr>
                             </tbody>
                             <input id="nombreOculto_<%=a.getIdArtista()%>" type="hidden" value="<%=a.getNombre()%>">
@@ -256,7 +262,7 @@
                 $('#accionInput').val(<%=Utils.OP_CREAR%>);
             }
 
-            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 1 : 0%>
+            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 2 : 0%>
 
             function filtrar(filtro, tabla) {
                 var input, filtro, tabla, cuerpo, fila, columnas, x, i, j, valor;

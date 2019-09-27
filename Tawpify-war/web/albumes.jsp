@@ -164,10 +164,12 @@
                     </div>
 
                     <div class="col-12 mt-2">
-                        <div class="row my-2 justify-content-between">
+                        <div class="row my-2 <%=usuarioConectado != null && usuarioConectado.getAdministrador() == 1 ? "justify-content-between" : "justify-content-end"%>">
+                            <%if (usuarioConectado.getAdministrador() == 1) {%>
                             <div class="col-3">
                                 <a class="btn btn-outline-warning" href="nuevoAlbum.jsp?<%=Utils.OPCODE%>=<%=Utils.OP_CREAR%>">Nuevo album</a>
                             </div>
+                            <%}%>
 
                             <div class="col-3">
                                 <input type="text" class="form-control" id="filtroInput" aria-describedby="filtroInput" placeholder="Filtra en la tabla"
@@ -187,12 +189,14 @@
                                     <th scope="col">Nombre</th>
                                     <th scope="col">Lanzamiento</th>
                                     <th scope="col"></th>
+                                        <%if (usuarioConectado.getAdministrador() == 1) {%>
                                     <th scope="col"></th>
                                     <th scope="col"></th>
+                                        <%}%>
                                 </tr>
                             </thead>
 
-                            <%for(Album al : albumes) {%>
+                            <%for (Album al : albumes) {%>
                             <tbody>
                                 <tr class="table-active">
                                     <td><%=al.getIdArtista().getNombre()%></td>
@@ -203,6 +207,7 @@
                                                 title="Ver album"
                                                 style="border: none;"><span class="far fa-eye"/></button></td>
 
+                                    <%if (usuarioConectado.getAdministrador() == 1) {%>
                                     <td><button class="btn btn-outline-warning" type="submit" form="albumesForm" onclick="seleccionarAlbum(<%=al.getIdAlbum()%>, <%=Utils.OP_REDIRECCION_MODIFICAR%>)"
                                                 title="Modificar album"
                                                 style="border: none;"><span class="far fa-edit"/></button></td>
@@ -210,6 +215,7 @@
                                     <td><button class="btn btn-outline-warning" type="submit" form="albumesForm" onclick="seleccionarAlbum(<%=al.getIdAlbum()%>, <%=Utils.OP_BORRAR%>)"
                                                 title="Eliminar album"
                                                 style="border: none;"><span class="fas fa-trash"/></button></td>
+                                        <%}%>
                                 </tr>
                             </tbody>
                             <%}%>
@@ -231,7 +237,7 @@
                 $('#accionInput').val(accion);
             }
 
-            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 2 : 0%>
+            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 3 : 0%>
 
             function filtrar() {
                 var input, filtro, tabla, cuerpo, fila, columnas, x, i, j, valor;

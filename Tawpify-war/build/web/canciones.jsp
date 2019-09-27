@@ -182,14 +182,17 @@
                     </div>
 
                     <div class="col-12 mt-2">
-                        <div class="row my-2 justify-content-between">
+                        <div class="row my-2 <%=usuarioConectado != null && usuarioConectado.getAdministrador() == 1 ? "justify-content-between" : "justify-content-end"%>" >
+
+                            <%if (usuarioConectado.getAdministrador() == 1) {%>
                             <div class="col-3">
                                 <button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalAlbum" title="Crear cancion">Nueva cancion</button>
                             </div>
+                            <%}%>
 
                             <div class="col-3">
                                 <input type="text" class="form-control" id="filtroInput" aria-describedby="filtroInput" placeholder="Filtra en la tabla"
-                                       onkeyup="filtrar(<%=usuarioConectado.getAdministrador() == 1 ? 3 : 1%>)">
+                                       onkeyup="filtrar(<%=usuarioConectado.getAdministrador() == 1 ? 3 : 0%>)">
                             </div>
                         </div>
 
@@ -210,8 +213,10 @@
                                     <th scope="col">Artista</th>
                                     <th scope="col">Lanzamiento</th>
                                     <th scope="col"></th>
+                                        <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
                                     <th scope="col"></th>
                                     <th scope="col"></th>
+                                        <%}%>
                                 </tr>
                             </thead>
                             <%for (Cancion c : canciones) {%>
@@ -228,6 +233,7 @@
                                                 onclick="seleccionarCancion(<%=c.getIdCancion()%>, <%=Utils.OP_INCLUIR_CANCION_LISTA%>)"
                                                 style="border: none;"><span class="fas fa-plus-circle"/></button></td>
 
+                                    <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
                                     <td><button class="btn btn-outline-warning" type="submit" form="cancionesForm" onclick="seleccionarCancion(<%=c.getIdCancion()%>, <%=Utils.OP_REDIRECCION_MODIFICAR%>)"
                                                 title="Modificar cancion"
                                                 style="border: none;"><span class="far fa-edit"/></button></td>
@@ -235,6 +241,7 @@
                                     <td><button class="btn btn-outline-warning" type="submit" form="cancionesForm" onclick="seleccionarCancion(<%=c.getIdCancion()%>, <%=Utils.OP_BORRAR%>)"
                                                 title="Eliminar cancion"
                                                 style="border: none;"><span class="fas fa-trash"/></button></td>
+                                        <%}%>
                                 </tr>
                             </tbody>
                             <%}%>
