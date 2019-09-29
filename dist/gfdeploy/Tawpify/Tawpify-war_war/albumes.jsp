@@ -209,7 +209,7 @@
 
 
                                         <div class="row p-2" style="border-top: solid 1px #444">
-                                            <div class="col-4" style="text-align: center">
+                                            <div class="<%=usuarioConectado.getAdministrador() == 1 ? "col-4" : "col-12" %>" style="text-align: center">
                                                 <button class="btn btn-outline-warning" type="submit" form="albumesForm" onclick="seleccionarAlbum(<%=al.getIdAlbum()%>, <%=Utils.OP_LISTAR%>)"
                                                         title="Ver album"
                                                         style="border: none;"><span class="far fa-eye"/></button>

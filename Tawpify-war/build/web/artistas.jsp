@@ -152,8 +152,8 @@
                             <div data-aos="zoom-in" class="col-md-3 col-sm-12">
                                 <div id="card-<%=a.getIdArtista()%>" class="card border-warning mb-3">
                                     <div id="cabeceraCard-<%=a.getIdArtista()%>" class="card-header"><%=a.getNombre()%></div>
+                                    <%if (usuarioConectado.getAdministrador() == 1) {%>
                                     <div class="card-body">
-                                        <%if (usuarioConectado.getAdministrador() == 1) {%>
                                         <div class="row p-0">
                                             <div class="col-6" style="text-align: center">
                                                 <button class="btn btn-outline-warning" type="button" onclick="seleccionarArtista(<%=a.getIdArtista()%>, <%=Utils.OP_MODIFICAR%>)"
@@ -166,8 +166,8 @@
                                                         style="border: none;"><span class="fas fa-trash"/></button>
                                             </div>
                                         </div>
-                                        <%}%>
                                     </div>
+                                    <%}%>
                                 </div>
                             </div>
                             <%}%>

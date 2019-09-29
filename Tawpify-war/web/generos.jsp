@@ -18,7 +18,7 @@
 
         <%
             Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
-            List<Genero> generos = (List) request.getAttribute("generos");
+            List<Genero> generos = (List) session.getAttribute("generos");
         %>
 
         <title>Generos</title>

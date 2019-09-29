@@ -55,12 +55,11 @@ public class GeneroCRUDServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-
-            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+            HttpSession session = request.getSession();
 
             List<Genero> generos = generoFacade.findAll();
 
-            request.setAttribute("generos", generos);
+            session.setAttribute("generos", generos);
 
             RequestDispatcher rd = getServletContext().getRequestDispatcher("/generos.jsp");
             rd.forward(request, response);
@@ -87,6 +86,7 @@ public class GeneroCRUDServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            HttpSession session = request.getSession();
 
             RequestDispatcher rd;
             int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
@@ -104,7 +104,7 @@ public class GeneroCRUDServlet extends HttpServlet {
             }
 
             List<Genero> generos = generoFacade.findAll();
-            request.setAttribute("generos", generos);
+            session.setAttribute("generos", generos);
 
             rd = getServletContext().getRequestDispatcher("/generos.jsp");
             rd.forward(request, response);
