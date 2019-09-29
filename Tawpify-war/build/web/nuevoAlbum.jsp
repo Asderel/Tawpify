@@ -14,11 +14,13 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/all.css">
+        <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-        <script src="https://kit.fontawesome.com/86da25765b.js" crossorigin="anonymous"></script>
+
 
         <%
             Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
@@ -242,7 +244,7 @@
                                 </thead>
                                 <%for (Cancion c : albumSeleccionado.getCancionCollection()) {%>
                                 <tbody>
-                                    <tr class="table-active">
+                                    <tr data-aos="zoom-in" class="table-active">
                                         <th scope="row"><a class="btn btn-outline-warning far fa-play-circle" target=_blank" href="<%=c.getUrl()%>"
                                                            style="border: none; font-size: 1.5em"></a></th>
                                         <td><%=c.getNombre()%></td>
@@ -450,75 +452,78 @@
 
         <!-- FIN MODALES -->
 
+        <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
         <script>
-            function goto(ruta) {
-                $('#formRuta').attr('action', ruta);
-                $('#formRuta').submit();
-            }
+                                AOS.init();
 
-            function incluirCancionLista() {
-                $('#<%=Utils.IDLISTAREPRODUCCIONINPUT%>').val($('#<%=Utils.LISTASELECCIONADAINPUT%>').val());
-            }
+                                function goto(ruta) {
+                                    $('#formRuta').attr('action', ruta);
+                                    $('#formRuta').submit();
+                                }
 
-            function incluirCancionAlbumLista() {
-                $('#<%=Utils.IDLISTAREPRODUCCIONINPUT%>').val($('#<%=Utils.LISTASELECCIONADAALBUMINPUT%>').val());
-            }
+                                function incluirCancionLista() {
+                                    $('#<%=Utils.IDLISTAREPRODUCCIONINPUT%>').val($('#<%=Utils.LISTASELECCIONADAINPUT%>').val());
+                                }
 
-            function seleccionarCancionBorrar(idCancion, accion) {
-                $('#idCancionInput').val(idCancion);
-                $('#accionInput').val(accion);
-            }
+                                function incluirCancionAlbumLista() {
+                                    $('#<%=Utils.IDLISTAREPRODUCCIONINPUT%>').val($('#<%=Utils.LISTASELECCIONADAALBUMINPUT%>').val());
+                                }
 
-            function seleccionarCancion(idCancion, accion) {
-                $('#idCancionInput').val(idCancion);
-                $('#accionInput').val(accion);
+                                function seleccionarCancionBorrar(idCancion, accion) {
+                                    $('#idCancionInput').val(idCancion);
+                                    $('#accionInput').val(accion);
+                                }
 
-                // Seteo para el modal
-                $('#nombreModalCancion').val($('#nombreOculto_' + idCancion).val());
-                $('#fechaModalCancion').val($('#fechaOculta_' + idCancion).val());
-                $('#urlModalCancion').val($('#urlOculta_' + idCancion).val());
-                $('#accionInput').val(<%=Utils.OP_CREAR_CANCION_ALBUM%>);
-            }
+                                function seleccionarCancion(idCancion, accion) {
+                                    $('#idCancionInput').val(idCancion);
+                                    $('#accionInput').val(accion);
 
-            function setupModalCancion() {
-                $('#<%=Utils.NOMBREINPUT%>').val($('#nombreModalCancion').val());
-                $('#<%=Utils.FECHASALIDAINPUT%>').val($('#fechaModalCancion').val());
-                $('#<%=Utils.URLINPUT%>').val($('#urlModalCancion').val());
-            }
+                                    // Seteo para el modal
+                                    $('#nombreModalCancion').val($('#nombreOculto_' + idCancion).val());
+                                    $('#fechaModalCancion').val($('#fechaOculta_' + idCancion).val());
+                                    $('#urlModalCancion').val($('#urlOculta_' + idCancion).val());
+                                    $('#accionInput').val(<%=Utils.OP_CREAR_CANCION_ALBUM%>);
+                                }
 
-            function setupModalCrearCancion() {
-                $('#accionInput').val(<%=Utils.OP_CREAR_CANCION_ALBUM%>);
-            }
+                                function setupModalCancion() {
+                                    $('#<%=Utils.NOMBREINPUT%>').val($('#nombreModalCancion').val());
+                                    $('#<%=Utils.FECHASALIDAINPUT%>').val($('#fechaModalCancion').val());
+                                    $('#<%=Utils.URLINPUT%>').val($('#urlModalCancion').val());
+                                }
 
-            function setupModalIncuirAlbumLista() {
-                $('#accionInput').val(<%=Utils.OP_INCLUIR_ALBUM_LISTA%>);
-            }
+                                function setupModalCrearCancion() {
+                                    $('#accionInput').val(<%=Utils.OP_CREAR_CANCION_ALBUM%>);
+                                }
 
-            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 3 : 0%>
+                                function setupModalIncuirAlbumLista() {
+                                    $('#accionInput').val(<%=Utils.OP_INCLUIR_ALBUM_LISTA%>);
+                                }
 
-            function filtrar() {
-                var input, filtro, tabla, cuerpo, fila, columnas, x, i, j, valor;
-                input = document.getElementById("filtroInput");
-                filtro = input.value.toUpperCase();
-                tabla = document.getElementById("tablaCanciones");
-                cuerpo = tabla.getElementsByTagName('tbody');
+                                var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 3 : 0%>
 
-                for (x = 0; cuerpo.length; x++) {
-                    fila = cuerpo[x].getElementsByTagName('tr');
-                    for (i = 0; i < fila.length; i++) {
-                        columnas = fila[i].getElementsByTagName("td");
-                        for (j = 0; j < columnas.length - numFilasIngorar; j++) {
-                            valor = columnas[j].textContent || columnas[j].innerText;
-                            if (valor.toUpperCase().indexOf(filtro) > -1) {
-                                fila[i].style.display = "";
-                                break;
-                            } else {
-                                fila[i].style.display = "none";
-                            }
-                        }
-                    }
-                }
-            }
+                                function filtrar() {
+                                    var input, filtro, tabla, cuerpo, fila, columnas, x, i, j, valor;
+                                    input = document.getElementById("filtroInput");
+                                    filtro = input.value.toUpperCase();
+                                    tabla = document.getElementById("tablaCanciones");
+                                    cuerpo = tabla.getElementsByTagName('tbody');
+
+                                    for (x = 0; cuerpo.length; x++) {
+                                        fila = cuerpo[x].getElementsByTagName('tr');
+                                        for (i = 0; i < fila.length; i++) {
+                                            columnas = fila[i].getElementsByTagName("td");
+                                            for (j = 0; j < columnas.length - numFilasIngorar; j++) {
+                                                valor = columnas[j].textContent || columnas[j].innerText;
+                                                if (valor.toUpperCase().indexOf(filtro) > -1) {
+                                                    fila[i].style.display = "";
+                                                    break;
+                                                } else {
+                                                    fila[i].style.display = "none";
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
         </script>
     </body>
 </html>

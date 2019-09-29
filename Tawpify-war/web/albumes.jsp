@@ -12,11 +12,13 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/all.css">
+        <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-        <script src="https://kit.fontawesome.com/86da25765b.js" crossorigin="anonymous"></script>
+
 
         <%
             Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
@@ -24,7 +26,6 @@
 
             List<Artista> artistas = (List) session.getAttribute("artistas");
             List<Album> albumes = (List) session.getAttribute("albumes");
-            List<ListaReproduccion> listasReproduccion = (List) request.getAttribute("listasReproduccion");
         %>
 
         <title>Albumes</title>
@@ -173,7 +174,7 @@
 
                             <div class="col-3">
                                 <input type="text" class="form-control" id="filtroInput" aria-describedby="filtroInput" placeholder="Filtra en la tabla"
-                                       onkeyup="filtrar()">
+                                       onkeyup="filtrar('filtroInput', 'card-')">
                             </div>
                         </div>
 
@@ -182,44 +183,55 @@
                             <input id="accionInput" name="<%=Utils.OPCODE%>" value="" type="hidden"/>
                         </form>
 
-                        <table id="tablaCanciones" class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Artista</th>
-                                    <th scope="col">Nombre</th>
-                                    <th scope="col">Lanzamiento</th>
-                                    <th scope="col"></th>
-                                        <%if (usuarioConectado.getAdministrador() == 1) {%>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
-                                        <%}%>
-                                </tr>
-                            </thead>
-
+                        <div class="row">
                             <%for (Album al : albumes) {%>
-                            <tbody>
-                                <tr class="table-active">
-                                    <td><%=al.getIdArtista().getNombre()%></td>
-                                    <td><%=al.getNombre()%></td>
-                                    <td><%=formatter.format(al.getFechaSalida())%></td>
+                            <div data-aos="zoom-in" class="col-md-3 col-sm-12">
+                                <div id="card-<%=al.getIdAlbum()%>" class="card border-warning mb-3">
+                                    <div id="cabeceraCard-<%=al.getIdAlbum()%>" class="card-header"><%=al.getNombre()%></div>
+                                    <div class="card-body pb-0">
+                                        <p class="row pl-3">
+                                            <span class="mr-3">
+                                                Artista:
+                                            </span>
+                                            <span id="contenidoCard1-<%=al.getIdAlbum()%>" class ml-3>
+                                                <%=al.getIdArtista().getNombre()%>
+                                            </span>
+                                        </p>
 
-                                    <td><button class="btn btn-outline-warning" type="submit" form="albumesForm" onclick="seleccionarAlbum(<%=al.getIdAlbum()%>, <%=Utils.OP_LISTAR%>)"
-                                                title="Ver album"
-                                                style="border: none;"><span class="far fa-eye"/></button></td>
+                                        <p class="row pl-3">
+                                            <span class="mr-3">
+                                                Fecha salida:
+                                            </span>
+                                            <span id="contenidoCard2-<%=al.getIdAlbum()%>">
+                                                <%=formatter.format(al.getFechaSalida())%>
+                                            </span>
+                                        </p>
 
-                                    <%if (usuarioConectado.getAdministrador() == 1) {%>
-                                    <td><button class="btn btn-outline-warning" type="submit" form="albumesForm" onclick="seleccionarAlbum(<%=al.getIdAlbum()%>, <%=Utils.OP_REDIRECCION_MODIFICAR%>)"
-                                                title="Modificar album"
-                                                style="border: none;"><span class="far fa-edit"/></button></td>
 
-                                    <td><button class="btn btn-outline-warning" type="submit" form="albumesForm" onclick="seleccionarAlbum(<%=al.getIdAlbum()%>, <%=Utils.OP_BORRAR%>)"
-                                                title="Eliminar album"
-                                                style="border: none;"><span class="fas fa-trash"/></button></td>
-                                        <%}%>
-                                </tr>
-                            </tbody>
+                                        <div class="row p-2" style="border-top: solid 1px #444">
+                                            <div class="col-4" style="text-align: center">
+                                                <button class="btn btn-outline-warning" type="submit" form="albumesForm" onclick="seleccionarAlbum(<%=al.getIdAlbum()%>, <%=Utils.OP_LISTAR%>)"
+                                                        title="Ver album"
+                                                        style="border: none;"><span class="far fa-eye"/></button>
+                                            </div>
+                                            <%if (usuarioConectado.getAdministrador() == 1) {%>
+                                            <div class="col-4" style="text-align: center">
+                                                <button class="btn btn-outline-warning" type="submit" form="albumesForm" onclick="seleccionarAlbum(<%=al.getIdAlbum()%>, <%=Utils.OP_REDIRECCION_MODIFICAR%>)"
+                                                        title="Modificar album"
+                                                        style="border: none;"><span class="far fa-edit"/></button>
+                                            </div>
+                                            <div class="col-4" style="text-align: center">
+                                                <button class="btn btn-outline-warning" type="submit" form="albumesForm" onclick="seleccionarAlbum(<%=al.getIdAlbum()%>, <%=Utils.OP_BORRAR%>)"
+                                                        title="Eliminar album"
+                                                        style="border: none;"><span class="fas fa-trash"/></button>
+                                            </div>
+                                            <%}%>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <%}%>
-                        </table>
+                        </div>
                     </div>
 
                     <!-- FIN LISTADO ALBUMES -->
@@ -231,42 +243,47 @@
             </div>
         </div>
 
+        <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
         <script>
-            function seleccionarAlbum(idAlbum, accion) {
-                $('#idAlbumInput').val(idAlbum);
-                $('#accionInput').val(accion);
-            }
+                                                    AOS.init();
 
-            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 3 : 0%>
+                                                    function seleccionarAlbum(idAlbum, accion) {
+                                                        $('#idAlbumInput').val(idAlbum);
+                                                        $('#accionInput').val(accion);
+                                                    }
 
-            function filtrar() {
-                var input, filtro, tabla, cuerpo, fila, columnas, x, i, j, valor;
-                input = document.getElementById("filtroInput");
-                filtro = input.value.toUpperCase();
-                tabla = document.getElementById("tablaCanciones");
-                cuerpo = tabla.getElementsByTagName('tbody');
 
-                for (x = 0; cuerpo.length; x++) {
-                    fila = cuerpo[x].getElementsByTagName('tr');
-                    for (i = 0; i < fila.length; i++) {
-                        columnas = fila[i].getElementsByTagName("td");
-                        for (j = 0; j < columnas.length - 3; j++) {
-                            valor = columnas[j].textContent || columnas[j].innerText;
-                            if (valor.toUpperCase().indexOf(filtro) > -1) {
-                                fila[i].style.display = "";
-                                break;
-                            } else {
-                                fila[i].style.display = "none";
-                            }
-                        }
-                    }
-                }
-            }
+                                                    function filtrar(filtroInput, tabla) {
+                                                        var input, filtro, encontrado;
+                                                        input = document.getElementById(filtroInput);
+                                                        filtro = input.value.toUpperCase();
+                                                        elementos = $('[id^=' + tabla + ']');
 
-            function goto(ruta) {
-                $('#formRuta').attr('action', ruta);
-                $('#formRuta').submit();
-            }
+                                                        elementos.each(function () {
+                                                            var encontrado;
+                                                            var contenido = $(this).find('[id^=contenidoCard]');
+
+                                                            contenido.each(function () {
+                                                                if ($(this).text().toUpperCase().indexOf(filtro) > -1) {
+                                                                    encontrado = true;
+                                                                    return false;
+                                                                } else {
+                                                                    encontrado = false;
+                                                                }
+                                                            });
+
+                                                            if (encontrado) {
+                                                                $(this).parent().show();
+                                                            } else {
+                                                                $(this).parent().hide();
+                                                            }
+                                                        });
+                                                    }
+
+                                                    function goto(ruta) {
+                                                        $('#formRuta').attr('action', ruta);
+                                                        $('#formRuta').submit();
+                                                    }
         </script>
     </body>
 </html>
