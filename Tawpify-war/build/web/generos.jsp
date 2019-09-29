@@ -158,7 +158,7 @@
                             </thead>
                             <%for (Genero g : generos) {%>
                             <tbody>
-                                <tr data-aos="zoom-in" class="table-active">
+                                <tr data-aos="fade-in" class="table-active">
                                     <td><%=g.getNombre()%></td>
                                     <%if (usuarioConectado != null && usuarioConectado.getAdministrador() == 1) {%>
                                     <td><button class="btn btn-outline-warning" type="button" data-toggle="modal" data-target="#modalModificarGenero"

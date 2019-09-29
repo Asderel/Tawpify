@@ -18,6 +18,8 @@
 
         <%
             Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
+
+            String mensajeError = request.getAttribute("mensajeError") != null ? request.getAttribute("mensajeError").toString() : null;
         %>
     </head>
     <body>
@@ -113,6 +115,21 @@
 
                         </p>
                     </div>
+
+                    <%if (mensajeError != null && !mensajeError.isEmpty()) {%>
+                    <div class="row" style="padding: 1rem 2rem">
+                        <div class="alert alert-dismissible fade show alert-danger col-12" role="alert">
+                            <button type="button" onclick="cerrarModal($(this))" class="close" data-dismiss="alert">&times;</button>
+                            <h4 class="alert-heading">
+                                Parece que ha habido algun error
+                            </h4>
+
+                            <p>
+                                <%=mensajeError%>
+                            </p>
+                        </div>
+                    </div>
+                    <%}%>
                 </div>
             </div>
         </div>
@@ -120,6 +137,10 @@
             function goto(ruta) {
                 $('#formRuta').attr('action', ruta);
                 $('#formRuta').submit();
+            }
+
+            function cerrarModal(element) {
+                element.parent().hide();
             }
         </script>
     </body>

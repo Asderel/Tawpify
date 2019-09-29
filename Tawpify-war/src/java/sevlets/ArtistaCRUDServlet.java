@@ -15,6 +15,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import session.ArtistaFacade;
 import utils.Utils;
 
@@ -53,14 +54,25 @@ public class ArtistaCRUDServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
 
-        List<Artista> artistas = artistaFacade.findAll();
+        try {
+            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
 
-        request.setAttribute("artistas", artistas);
+            List<Artista> artistas = artistaFacade.findAll();
 
-        RequestDispatcher rd = getServletContext().getRequestDispatcher("/artistas.jsp");
-        rd.forward(request, response);
+            request.setAttribute("artistas", artistas);
+
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/artistas.jsp");
+            rd.forward(request, response);
+
+        } catch (Exception e) {
+            HttpSession session = request.getSession();
+            session.setAttribute("mensajeError", "Ooops. Algo ha ido mal prueba a intentarlo de nuevo");
+            request.setAttribute(Utils.RUTA, Utils.RUTA_ERROR);
+
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/EnrutadorServlet");
+            rd.forward(request, response);
+        }
     }
 
     /**
@@ -74,26 +86,37 @@ public class ArtistaCRUDServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher rd;
-        int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+        try {
 
-        switch (opcode) {
-            case Utils.OP_MODIFICAR:
-                artistaFacade.edit(modificarArtista(request));
-                break;
-            case Utils.OP_BORRAR:
-                eliminarArtista(request);
-                break;
-            case Utils.OP_CREAR:
-                artistaFacade.create(crearArtista(request));
-                break;
+            RequestDispatcher rd;
+            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+
+            switch (opcode) {
+                case Utils.OP_MODIFICAR:
+                    artistaFacade.edit(modificarArtista(request));
+                    break;
+                case Utils.OP_BORRAR:
+                    eliminarArtista(request);
+                    break;
+                case Utils.OP_CREAR:
+                    artistaFacade.create(crearArtista(request));
+                    break;
+            }
+
+            List<Artista> artistas = artistaFacade.findAll();
+            request.setAttribute("artistas", artistas);
+
+            rd = getServletContext().getRequestDispatcher("/artistas.jsp");
+            rd.forward(request, response);
+
+        } catch (Exception e) {
+            HttpSession session = request.getSession();
+            session.setAttribute("mensajeError", "Ooops. Algo ha ido mal prueba a intentarlo de nuevo");
+            request.setAttribute(Utils.RUTA, Utils.RUTA_ERROR);
+
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/EnrutadorServlet");
+            rd.forward(request, response);
         }
-
-        List<Artista> artistas = artistaFacade.findAll();
-        request.setAttribute("artistas", artistas);
-
-        rd = getServletContext().getRequestDispatcher("/artistas.jsp");
-        rd.forward(request, response);
     }
 
     /**
@@ -106,14 +129,13 @@ public class ArtistaCRUDServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-
-    private Artista cargarArtista(HttpServletRequest request) {
+    private Artista cargarArtista(HttpServletRequest request) throws Exception {
         int idArtista = Integer.parseInt(request.getParameter(Utils.IDARTISTAINPUT));
 
         return artistaFacade.find(idArtista);
     }
 
-    private Artista crearArtista(HttpServletRequest request) {
+    private Artista crearArtista(HttpServletRequest request) throws Exception {
         Artista g = new Artista();
 
         String nombre = request.getParameter(Utils.NOMBREINPUT);
@@ -122,7 +144,7 @@ public class ArtistaCRUDServlet extends HttpServlet {
         return g;
     }
 
-    private Artista modificarArtista(HttpServletRequest request) {
+    private Artista modificarArtista(HttpServletRequest request) throws Exception {
         Artista g = artistaFacade.find(Integer.parseInt(request.getParameter(Utils.IDARTISTAINPUT)));
 
         String nombre = request.getParameter(Utils.NOMBREINPUT);
@@ -131,7 +153,7 @@ public class ArtistaCRUDServlet extends HttpServlet {
         return g;
     }
 
-    private void eliminarArtista(HttpServletRequest request) {
+    private void eliminarArtista(HttpServletRequest request) throws Exception {
         Artista u = cargarArtista(request);
 
         artistaFacade.remove(u);

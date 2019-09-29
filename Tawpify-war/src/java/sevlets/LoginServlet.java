@@ -76,39 +76,49 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        RequestDispatcher rd;
+        try {
 
-        Usuario u;
-        int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+            HttpSession session = request.getSession();
+            RequestDispatcher rd;
 
-        switch (opcode) {
-            case Utils.OP_LOGIN:
-                u = logUsuario(request);
-                session.setAttribute("usuarioConectado", u);
-                rd = getServletContext().getRequestDispatcher("/index.jsp");
-                rd.forward(request, response);
-                break;
-            case Utils.OP_REGISTRAR:
-                u = crearUsuario(request);
-                usuarioFacade.create(u);
-                session.setAttribute("usuarioConectado", u);
-                rd = getServletContext().getRequestDispatcher("/index.jsp");
-                rd.forward(request, response);
-                break;
-            case Utils.OP_MODIFICAR:
-                usuarioFacade.edit(modificarUsuario(request));
-                rd = getServletContext().getRequestDispatcher("/UsuarioCRUDServlet");
-                rd.forward(request, response);
-                break;
-            case Utils.OP_CREAR:
-                usuarioFacade.create(crearUsuarioAdministracion(request));
-                rd = getServletContext().getRequestDispatcher("/UsuarioCRUDServlet");
-                rd.forward(request, response);
-                break;
-            default:
-                response.sendRedirect(Utils.APP_PATH + "/login.jsp");
-                break;
+            Usuario u;
+            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+
+            switch (opcode) {
+                case Utils.OP_LOGIN:
+                    u = logUsuario(request);
+                    session.setAttribute("usuarioConectado", u);
+                    rd = getServletContext().getRequestDispatcher("/index.jsp");
+                    rd.forward(request, response);
+                    break;
+                case Utils.OP_REGISTRAR:
+                    u = crearUsuario(request);
+                    usuarioFacade.create(u);
+                    session.setAttribute("usuarioConectado", u);
+                    rd = getServletContext().getRequestDispatcher("/index.jsp");
+                    rd.forward(request, response);
+                    break;
+                case Utils.OP_MODIFICAR:
+                    usuarioFacade.edit(modificarUsuario(request));
+                    rd = getServletContext().getRequestDispatcher("/UsuarioCRUDServlet");
+                    rd.forward(request, response);
+                    break;
+                case Utils.OP_CREAR:
+                    usuarioFacade.create(crearUsuarioAdministracion(request));
+                    rd = getServletContext().getRequestDispatcher("/UsuarioCRUDServlet");
+                    rd.forward(request, response);
+                    break;
+                default:
+                    response.sendRedirect(Utils.APP_PATH + "/login.jsp");
+                    break;
+            }
+        } catch (Exception e) {
+            HttpSession session = request.getSession();
+            session.setAttribute("mensajeError", "Ooops. Algo ha ido mal prueba a intentarlo de nuevo");
+            request.setAttribute(Utils.RUTA, Utils.RUTA_ERROR);
+
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/EnrutadorServlet");
+            rd.forward(request, response);
         }
     }
 

@@ -7,11 +7,13 @@ package sevlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import utils.Utils;
 
 /**
@@ -33,6 +35,7 @@ public class EnrutadorServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int ruta = Integer.parseInt(request.getAttribute(Utils.RUTA).toString());
+        HttpSession session = request.getSession();
 
         switch (ruta) {
             case Utils.RUTA_CANCIONES:
@@ -52,6 +55,28 @@ public class EnrutadorServlet extends HttpServlet {
                 break;
             case Utils.RUTA_USUARIOS:
                 response.sendRedirect(Utils.APP_PATH + Utils.USUARIOS);
+                break;
+            case Utils.RUTA_ERROR:
+                session.removeAttribute("artistas");
+                session.removeAttribute("albumes");
+                session.removeAttribute("canciones");
+                session.removeAttribute("listasReproduccion");
+                session.removeAttribute("generos");
+                session.removeAttribute("usuarios");
+
+                session.removeAttribute("cancionSeleccionada");
+                session.removeAttribute("albumSeleccionado");
+                session.removeAttribute("albumesSeleccionados");
+                session.removeAttribute("artistaSeleccionado");
+                session.removeAttribute("artistaSeleccionados");
+                session.removeAttribute("listaSeleccionada");
+
+                String mensajeError = session.getAttribute("mensajeError").toString();
+                session.removeAttribute("mensajeError");
+
+                request.setAttribute("mensajeError", mensajeError);
+                RequestDispatcher rd = request.getRequestDispatcher(Utils.ERROR);
+                rd.forward(request, response);
                 break;
         }
     }

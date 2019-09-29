@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -72,21 +71,32 @@ public class CancionCRUDServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+        try {
 
-        List<Cancion> canciones = cancionFacade.selectCancionesOrdenadas();
-        List<Artista> artistas = artistaFacade.findAll();
-        List<Album> albumes = albumFacade.findAll();
-        List<ListaReproduccion> listasReproduccion = listaReproduccionFacade.findAll();
+            HttpSession session = request.getSession();
+            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
 
-        session.setAttribute("canciones", canciones);
-        session.setAttribute("artistas", artistas);
-        session.setAttribute("albumes", albumes);
-        session.setAttribute("listasReproduccion", listasReproduccion);
+            List<Cancion> canciones = cancionFacade.selectCancionesOrdenadas();
+            List<Artista> artistas = artistaFacade.findAll();
+            List<Album> albumes = albumFacade.findAll();
+            List<ListaReproduccion> listasReproduccion = listaReproduccionFacade.findAll();
 
-        RequestDispatcher rd = getServletContext().getRequestDispatcher("/canciones.jsp");
-        rd.forward(request, response);
+            session.setAttribute("canciones", canciones);
+            session.setAttribute("artistas", artistas);
+            session.setAttribute("albumes", albumes);
+            session.setAttribute("listasReproduccion", listasReproduccion);
+
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/canciones.jsp");
+            rd.forward(request, response);
+
+        } catch (Exception e) {
+            HttpSession session = request.getSession();
+            session.setAttribute("mensajeError", "Ooops. Algo ha ido mal prueba a intentarlo de nuevo");
+            request.setAttribute(Utils.RUTA, Utils.RUTA_ERROR);
+
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/EnrutadorServlet");
+            rd.forward(request, response);
+        }
     }
 
     /**
@@ -100,67 +110,78 @@ public class CancionCRUDServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher rd;
-        HttpSession session = request.getSession();
-        int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
-        Cancion cancionSeleccionada;
-        List<Cancion> canciones = new ArrayList<>();
-        List<Artista> artistas = artistaFacade.findAll();
 
-        switch (opcode) {
-            case Utils.OP_MODIFICAR:
-                modificarCancion(request);
-                break;
-            case Utils.OP_BORRAR:
-                eliminarCancion(request);
-                break;
-            case Utils.OP_CREAR:
+        try {
+            RequestDispatcher rd;
+            HttpSession session = request.getSession();
+            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+            Cancion cancionSeleccionada;
+            List<Cancion> canciones = new ArrayList<>();
+            List<Artista> artistas = artistaFacade.findAll();
 
-                crearCancion(request, null);
-                session.removeAttribute("artistas");
-                session.removeAttribute("albumes");
-                break;
-            case Utils.OP_FILTRAR:
-                canciones = filtrarCanciones(request);
-                break;
-            case Utils.OP_INCLUIR_CANCION_LISTA:
-                incluirCancionEnLista(request);
-                break;
-            case Utils.OP_REDIRECCION_CREAR_CANCION:
-                Album albumSeleccionado = albumFacade.find(Integer.parseInt(request.getParameter(Utils.IDALBUMINPUT)));
-                artistas.remove(albumSeleccionado.getIdArtista());
+            switch (opcode) {
+                case Utils.OP_MODIFICAR:
+                    modificarCancion(request);
+                    break;
+                case Utils.OP_BORRAR:
+                    eliminarCancion(request);
+                    break;
+                case Utils.OP_CREAR:
 
-                request.setAttribute("albumSeleccionado", albumSeleccionado);
-                session.setAttribute("artistas", artistas);
-                rd = getServletContext().getRequestDispatcher("/nuevaCancion.jsp");
+                    crearCancion(request, null);
+                    session.removeAttribute("artistas");
+                    session.removeAttribute("albumes");
+                    break;
+                case Utils.OP_FILTRAR:
+                    canciones = filtrarCanciones(request);
+                    break;
+                case Utils.OP_INCLUIR_CANCION_LISTA:
+                    incluirCancionEnLista(request);
+                    break;
+                case Utils.OP_REDIRECCION_CREAR_CANCION:
+                    Album albumSeleccionado = albumFacade.find(Integer.parseInt(request.getParameter(Utils.IDALBUMINPUT)));
+                    artistas.remove(albumSeleccionado.getIdArtista());
+
+                    request.setAttribute("albumSeleccionado", albumSeleccionado);
+                    session.setAttribute("artistas", artistas);
+                    rd = getServletContext().getRequestDispatcher("/nuevaCancion.jsp");
+                    rd.forward(request, response);
+                    break;
+                case Utils.OP_REDIRECCION_MODIFICAR:
+                    cancionSeleccionada = cargarCancion(request);
+                    artistas.remove(cancionSeleccionada.getIdAlbum().getIdArtista());
+
+                    request.setAttribute("cancionSeleccionada", cancionSeleccionada);
+                    session.setAttribute("artistas", artistas);
+                    rd = getServletContext().getRequestDispatcher("/nuevaCancion.jsp");
+                    rd.forward(request, response);
+                    break;
+            }
+
+            if (opcode != Utils.OP_FILTRAR) {
+                canciones = cancionFacade.selectCancionesOrdenadas();
+            }
+
+            List<Album> albumes = albumFacade.findAll();
+            List<ListaReproduccion> listasReproduccion = listaReproduccionFacade.findAll();
+
+            session.setAttribute("canciones", canciones);
+            session.setAttribute("artistas", artistas);
+            session.setAttribute("albumes", albumes);
+            session.setAttribute("listasReproduccion", listasReproduccion);
+
+            if (opcode != Utils.OP_REDIRECCION_CREAR_CANCION && opcode != Utils.OP_REDIRECCION_MODIFICAR) {
+                request.setAttribute(Utils.RUTA, Utils.RUTA_ERROR);
+                rd = getServletContext().getRequestDispatcher("/EnrutadorServlet");
                 rd.forward(request, response);
-                break;
-            case Utils.OP_REDIRECCION_MODIFICAR:
-                cancionSeleccionada = cargarCancion(request);
-                artistas.remove(cancionSeleccionada.getIdAlbum().getIdArtista());
+            }
 
-                request.setAttribute("cancionSeleccionada", cancionSeleccionada);
-                session.setAttribute("artistas", artistas);
-                rd = getServletContext().getRequestDispatcher("/nuevaCancion.jsp");
-                rd.forward(request, response);
-                break;
-        }
-
-        if (opcode != Utils.OP_FILTRAR) {
-            canciones = cancionFacade.selectCancionesOrdenadas();
-        }
-
-        List<Album> albumes = albumFacade.findAll();
-        List<ListaReproduccion> listasReproduccion = listaReproduccionFacade.findAll();
-
-        session.setAttribute("canciones", canciones);
-        session.setAttribute("artistas", artistas);
-        session.setAttribute("albumes", albumes);
-        session.setAttribute("listasReproduccion", listasReproduccion);
-
-        if (opcode != Utils.OP_REDIRECCION_CREAR_CANCION && opcode != Utils.OP_REDIRECCION_MODIFICAR) {
+        } catch (Exception e) {
+            HttpSession session = request.getSession();
+            session.setAttribute("mensajeError", "Ooops. Algo ha ido mal prueba a intentarlo de nuevo");
             request.setAttribute(Utils.RUTA, Utils.RUTA_CANCIONES);
-            rd = getServletContext().getRequestDispatcher("/EnrutadorServlet");
+
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/EnrutadorServlet");
             rd.forward(request, response);
         }
     }
@@ -175,13 +196,13 @@ public class CancionCRUDServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private Cancion cargarCancion(HttpServletRequest request) {
+    private Cancion cargarCancion(HttpServletRequest request) throws Exception {
         int idCancion = Integer.parseInt(request.getParameter(Utils.IDCANCIONINPUT));
 
         return cancionFacade.find(idCancion);
     }
 
-    private Cancion crearCancion(HttpServletRequest request, Cancion cancion) {
+    private Cancion crearCancion(HttpServletRequest request, Cancion cancion) throws Exception {
         Cancion c = cancion;
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -249,19 +270,19 @@ public class CancionCRUDServlet extends HttpServlet {
         return c;
     }
 
-    private Cancion modificarCancion(HttpServletRequest request) {
+    private Cancion modificarCancion(HttpServletRequest request) throws Exception {
         Cancion c = cargarCancion(request);
         crearCancion(request, c);
         return c;
     }
 
-    private void eliminarCancion(HttpServletRequest request) {
+    private void eliminarCancion(HttpServletRequest request) throws Exception {
         Cancion c = cargarCancion(request);
 
         cancionFacade.remove(c);
     }
 
-    private List<Cancion> filtrarCanciones(HttpServletRequest request) {
+    private List<Cancion> filtrarCanciones(HttpServletRequest request) throws Exception {
         String[] idArtistas = request.getParameterValues(Utils.ARTISTASSELECCIONADOSNPUT) != null ? request.getParameterValues(Utils.ARTISTASSELECCIONADOSNPUT) : null;
         String[] idAlbumes = request.getParameterValues(Utils.ALBUMSELECCIONADOINPUT) != null ? request.getParameterValues(Utils.ALBUMSELECCIONADOINPUT) : null;
         List<Artista> artistas = null;
@@ -284,7 +305,7 @@ public class CancionCRUDServlet extends HttpServlet {
         return cancionFacade.filtrarCanciones(artistas, albumes);
     }
 
-    private void incluirCancionEnLista(HttpServletRequest request) {
+    private void incluirCancionEnLista(HttpServletRequest request) throws Exception {
         Cancion c = cargarCancion(request);
         ListaReproduccion l = listaReproduccionFacade.find(Integer.parseInt(request.getParameter(Utils.IDLISTAREPRODUCCIONINPUT)));
 

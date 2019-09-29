@@ -62,21 +62,32 @@ public class ListaReproduccionCRUDServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+        try {
 
-        Usuario u = (Usuario) session.getAttribute("usuarioConectado");
-        List<ListaReproduccion> listasReproduccion;
+            HttpSession session = request.getSession();
+            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
 
-        listasReproduccion = cargarListasReproduccion(u);
+            Usuario u = (Usuario) session.getAttribute("usuarioConectado");
+            List<ListaReproduccion> listasReproduccion;
 
-        List<Cancion> canciones = cancionFacade.findAll();
+            listasReproduccion = cargarListasReproduccion(u);
 
-        session.setAttribute("listasReproduccion", listasReproduccion);
-        session.setAttribute("canciones", canciones);
+            List<Cancion> canciones = cancionFacade.findAll();
 
-        RequestDispatcher rd = getServletContext().getRequestDispatcher("/listasReproduccion.jsp");
-        rd.forward(request, response);
+            session.setAttribute("listasReproduccion", listasReproduccion);
+            session.setAttribute("canciones", canciones);
+
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/listasReproduccion.jsp");
+            rd.forward(request, response);
+
+        } catch (Exception e) {
+            HttpSession session = request.getSession();
+            session.setAttribute("mensajeError", "Ooops. Algo ha ido mal prueba a intentarlo de nuevo");
+            request.setAttribute(Utils.RUTA, Utils.RUTA_ERROR);
+
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/EnrutadorServlet");
+            rd.forward(request, response);
+        }
     }
 
     /**
@@ -90,50 +101,61 @@ public class ListaReproduccionCRUDServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher rd;
-        HttpSession session = request.getSession();
-        Usuario u = (Usuario) session.getAttribute("usuarioConectado");
-        int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
-        ListaReproduccion listaSeleccionada = null;
+        try {
 
-        List<ListaReproduccion> listasReproduccion;
+            RequestDispatcher rd;
+            HttpSession session = request.getSession();
+            Usuario u = (Usuario) session.getAttribute("usuarioConectado");
+            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+            ListaReproduccion listaSeleccionada = null;
 
-        switch (opcode) {
-            case Utils.OP_MODIFICAR:
+            List<ListaReproduccion> listasReproduccion;
 
-                listaReproduccionFacade.edit(modificarListaReproduccion(request, u));
-                break;
-            case Utils.OP_BORRAR:
+            switch (opcode) {
+                case Utils.OP_MODIFICAR:
 
-                eliminarListaReproduccion(request);
-                break;
-            case Utils.OP_CREAR:
+                    listaReproduccionFacade.edit(modificarListaReproduccion(request, u));
+                    break;
+                case Utils.OP_BORRAR:
 
-                listaReproduccionFacade.create(crearListaReproduccion(request, null, u));
-                break;
-            case Utils.OP_BORRAR_CANCION_LISTA:
+                    eliminarListaReproduccion(request);
+                    break;
+                case Utils.OP_CREAR:
 
-                listaSeleccionada = eliminarCancionLista(request);
+                    listaReproduccionFacade.create(crearListaReproduccion(request, null, u));
+                    break;
+                case Utils.OP_BORRAR_CANCION_LISTA:
 
-                session.setAttribute("listaSeleccionada", listaSeleccionada);
-                rd = getServletContext().getRequestDispatcher("/listaReproduccion.jsp");
-                rd.forward(request, response);
-                break;
-            case Utils.OP_LISTAR:
-                listaSeleccionada = cargarListaReproduccion(request);
+                    listaSeleccionada = eliminarCancionLista(request);
 
-                session.setAttribute("listaSeleccionada", listaSeleccionada);
-                rd = getServletContext().getRequestDispatcher("/listaReproduccion.jsp");
-                rd.forward(request, response);
-                break;
+                    session.setAttribute("listaSeleccionada", listaSeleccionada);
+                    rd = getServletContext().getRequestDispatcher("/listaReproduccion.jsp");
+                    rd.forward(request, response);
+                    break;
+                case Utils.OP_LISTAR:
+                    listaSeleccionada = cargarListaReproduccion(request);
+
+                    session.setAttribute("listaSeleccionada", listaSeleccionada);
+                    rd = getServletContext().getRequestDispatcher("/listaReproduccion.jsp");
+                    rd.forward(request, response);
+                    break;
+            }
+
+            listasReproduccion = cargarListasReproduccion(u);
+
+            session.setAttribute("listasReproduccion", listasReproduccion);
+
+            rd = getServletContext().getRequestDispatcher("/listasReproduccion.jsp");
+            rd.forward(request, response);
+
+        } catch (Exception e) {
+            HttpSession session = request.getSession();
+            session.setAttribute("mensajeError", "Ooops. Algo ha ido mal prueba a intentarlo de nuevo");
+            request.setAttribute(Utils.RUTA, Utils.RUTA_ERROR);
+
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/EnrutadorServlet");
+            rd.forward(request, response);
         }
-
-        listasReproduccion = cargarListasReproduccion(u);
-
-        session.setAttribute("listasReproduccion", listasReproduccion);
-
-        rd = getServletContext().getRequestDispatcher("/listasReproduccion.jsp");
-        rd.forward(request, response);
     }
 
     /**
@@ -146,19 +168,19 @@ public class ListaReproduccionCRUDServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private ListaReproduccion cargarListaReproduccion(HttpServletRequest request) {
+    private ListaReproduccion cargarListaReproduccion(HttpServletRequest request) throws Exception {
         int idAlbum = Integer.parseInt(request.getParameter(Utils.IDLISTAREPRODUCCIONINPUT));
 
         return listaReproduccionFacade.find(idAlbum);
     }
 
-    private List<ListaReproduccion> cargarListasReproduccion(Usuario usuario) {
+    private List<ListaReproduccion> cargarListasReproduccion(Usuario usuario) throws Exception {
         return usuario.getAdministrador() == 1
                 ? listaReproduccionFacade.findAll()
                 : listaReproduccionFacade.selectListasReproduccionByUsuario(usuario);
     }
 
-    private ListaReproduccion crearListaReproduccion(HttpServletRequest request, ListaReproduccion lista, Usuario usuario) {
+    private ListaReproduccion crearListaReproduccion(HttpServletRequest request, ListaReproduccion lista, Usuario usuario) throws Exception {
         ListaReproduccion l = lista;
         Date fechaSalida;
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
@@ -185,19 +207,19 @@ public class ListaReproduccionCRUDServlet extends HttpServlet {
         return l;
     }
 
-    private ListaReproduccion modificarListaReproduccion(HttpServletRequest request, Usuario u) {
+    private ListaReproduccion modificarListaReproduccion(HttpServletRequest request, Usuario u) throws Exception {
         ListaReproduccion l = cargarListaReproduccion(request);
         crearListaReproduccion(request, l, u);
         return l;
     }
 
-    private void eliminarListaReproduccion(HttpServletRequest request) {
+    private void eliminarListaReproduccion(HttpServletRequest request) throws Exception {
         ListaReproduccion l = cargarListaReproduccion(request);
 
         listaReproduccionFacade.remove(l);
     }
 
-    private ListaReproduccion eliminarCancionLista(HttpServletRequest request) {
+    private ListaReproduccion eliminarCancionLista(HttpServletRequest request) throws Exception {
         ListaReproduccion l = cargarListaReproduccion(request);
         Cancion cancion = cancionFacade.find(Integer.parseInt(request.getParameter(Utils.IDCANCIONINPUT)));
 

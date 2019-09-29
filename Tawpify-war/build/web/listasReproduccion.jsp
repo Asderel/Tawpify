@@ -163,7 +163,7 @@
 
                             <% for (ListaReproduccion l : listasReproduccion) {%>
                             <tbody>
-                                <tr data-aos="zoom-in" class="table-active">
+                                <tr data-aos="fade-in" class="table-active">
                                     <td><%=l.getNombre()%></td>
                                     <td><%=formatter.format(l.getFechaCreacion())%></td>
 

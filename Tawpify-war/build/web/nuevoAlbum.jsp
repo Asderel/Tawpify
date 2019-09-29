@@ -244,7 +244,7 @@
                                 </thead>
                                 <%for (Cancion c : albumSeleccionado.getCancionCollection()) {%>
                                 <tbody>
-                                    <tr data-aos="zoom-in" class="table-active">
+                                    <tr data-aos="fade-in" class="table-active">
                                         <th scope="row"><a class="btn btn-outline-warning far fa-play-circle" target=_blank" href="<%=c.getUrl()%>"
                                                            style="border: none; font-size: 1.5em"></a></th>
                                         <td><%=c.getNombre()%></td>

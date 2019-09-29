@@ -15,6 +15,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import session.GeneroFacade;
 import utils.Utils;
 
@@ -53,14 +54,25 @@ public class GeneroCRUDServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+        try {
 
-        List<Genero> generos = generoFacade.findAll();
+            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
 
-        request.setAttribute("generos", generos);
+            List<Genero> generos = generoFacade.findAll();
 
-        RequestDispatcher rd = getServletContext().getRequestDispatcher("/generos.jsp");
-        rd.forward(request, response);
+            request.setAttribute("generos", generos);
+
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/generos.jsp");
+            rd.forward(request, response);
+
+        } catch (Exception e) {
+            HttpSession session = request.getSession();
+            session.setAttribute("mensajeError", "Ooops. Algo ha ido mal prueba a intentarlo de nuevo");
+            request.setAttribute(Utils.RUTA, Utils.RUTA_ERROR);
+
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/EnrutadorServlet");
+            rd.forward(request, response);
+        }
     }
 
     /**
@@ -74,27 +86,37 @@ public class GeneroCRUDServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        try {
 
-        RequestDispatcher rd;
-        int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+            RequestDispatcher rd;
+            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
 
-        switch (opcode) {
-            case Utils.OP_MODIFICAR:
-                generoFacade.edit(modificarGenero(request));
-                break;
-            case Utils.OP_BORRAR:
-                eliminarGenero(request);
-                break;
-            case Utils.OP_CREAR:
-                generoFacade.create(crearGenero(request));
-                break;
+            switch (opcode) {
+                case Utils.OP_MODIFICAR:
+                    generoFacade.edit(modificarGenero(request));
+                    break;
+                case Utils.OP_BORRAR:
+                    eliminarGenero(request);
+                    break;
+                case Utils.OP_CREAR:
+                    generoFacade.create(crearGenero(request));
+                    break;
+            }
+
+            List<Genero> generos = generoFacade.findAll();
+            request.setAttribute("generos", generos);
+
+            rd = getServletContext().getRequestDispatcher("/generos.jsp");
+            rd.forward(request, response);
+
+        } catch (Exception e) {
+            HttpSession session = request.getSession();
+            session.setAttribute("mensajeError", "Ooops. Algo ha ido mal prueba a intentarlo de nuevo");
+            request.setAttribute(Utils.RUTA, Utils.RUTA_ERROR);
+
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/EnrutadorServlet");
+            rd.forward(request, response);
         }
-
-        List<Genero> generos = generoFacade.findAll();
-        request.setAttribute("generos", generos);
-
-        rd = getServletContext().getRequestDispatcher("/generos.jsp");
-        rd.forward(request, response);
     }
 
     /**
@@ -107,13 +129,13 @@ public class GeneroCRUDServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private Genero cargarGenero(HttpServletRequest request) {
+    private Genero cargarGenero(HttpServletRequest request) throws Exception {
         int idGenero = Integer.parseInt(request.getParameter(Utils.IDGENEROINPUT));
 
         return generoFacade.find(idGenero);
     }
 
-    private Genero crearGenero(HttpServletRequest request) {
+    private Genero crearGenero(HttpServletRequest request) throws Exception {
         Genero g = new Genero();
 
         String nombre = request.getParameter(Utils.NOMBREINPUT);
@@ -122,7 +144,7 @@ public class GeneroCRUDServlet extends HttpServlet {
         return g;
     }
 
-    private Genero modificarGenero(HttpServletRequest request) {
+    private Genero modificarGenero(HttpServletRequest request) throws Exception {
         Genero g = cargarGenero(request);
 
         String nombre = request.getParameter(Utils.NOMBREINPUT);
@@ -132,7 +154,7 @@ public class GeneroCRUDServlet extends HttpServlet {
         return g;
     }
 
-    private void eliminarGenero(HttpServletRequest request) {
+    private void eliminarGenero(HttpServletRequest request) throws Exception {
         Genero u = cargarGenero(request);
 
         generoFacade.remove(u);

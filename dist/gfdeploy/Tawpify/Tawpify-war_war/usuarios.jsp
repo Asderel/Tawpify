@@ -157,7 +157,7 @@
 
                             <% for (Usuario u : usuarios) {%>
                             <tbody>
-                                <tr data-aos="zoom-in" class="table-active">
+                                <tr data-aos="fade-in" class="table-active">
                                     <td><%=u.getNombre()%></td>
                                     <td><%=u.getEmail()%></td>
                                     <td><%=u.getApodo()%></td>

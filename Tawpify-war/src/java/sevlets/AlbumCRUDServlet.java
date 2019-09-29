@@ -76,21 +76,32 @@ public class AlbumCRUDServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
 
-        List<Artista> artistas = artistaFacade.findAll();
-        List<Album> albumes = albumFacade.findAll();
-        List<Genero> generos = generoFacade.findAll();
-        List<ListaReproduccion> listasReproduccion = listaReproduccionFacade.findAll();
+        try {
+            HttpSession session = request.getSession();
+            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
 
-        session.setAttribute("artistas", artistas);
-        session.setAttribute("albumes", albumes);
-        session.setAttribute("generos", generos);
-        session.setAttribute("listasReproduccion", listasReproduccion);
+            List<Artista> artistas = artistaFacade.findAll();
+            List<Album> albumes = albumFacade.findAll();
+            List<Genero> generos = generoFacade.findAll();
+            List<ListaReproduccion> listasReproduccion = listaReproduccionFacade.findAll();
 
-        RequestDispatcher rd = getServletContext().getRequestDispatcher("/albumes.jsp");
-        rd.forward(request, response);
+            session.setAttribute("artistas", artistas);
+            session.setAttribute("albumes", albumes);
+            session.setAttribute("generos", generos);
+            session.setAttribute("listasReproduccion", listasReproduccion);
+
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/albumes.jsp");
+            rd.forward(request, response);
+
+        } catch (Exception e) {
+            HttpSession session = request.getSession();
+            session.setAttribute("mensajeError", "Ooops. Algo ha ido mal prueba a intentarlo de nuevo");
+            request.setAttribute(Utils.RUTA, Utils.RUTA_ERROR);
+
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/EnrutadorServlet");
+            rd.forward(request, response);
+        }
     }
 
     /**
@@ -104,112 +115,122 @@ public class AlbumCRUDServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher rd;
-        HttpSession session = request.getSession();
-        int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
-        Album albumSeleccionado = null;
+        try {
 
-        List<Artista> artistas;
-        List<Album> albumes = null;
-        List<Genero> generos;
+            RequestDispatcher rd;
+            HttpSession session = request.getSession();
+            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+            Album albumSeleccionado = null;
 
-        switch (opcode) {
-            case Utils.OP_MODIFICAR:
-                albumFacade.edit(modificarAlbum(request));
-                session.removeAttribute("albumSeleccionado");
-                break;
-            case Utils.OP_BORRAR:
-                eliminarAlbum(request);
+            List<Artista> artistas;
+            List<Album> albumes = null;
+            List<Genero> generos;
 
-                break;
-            case Utils.OP_CREAR:
-                albumFacade.create(crearAlbum(request, null));
+            switch (opcode) {
+                case Utils.OP_MODIFICAR:
+                    albumFacade.edit(modificarAlbum(request));
+                    session.removeAttribute("albumSeleccionado");
+                    break;
+                case Utils.OP_BORRAR:
+                    eliminarAlbum(request);
 
-                session.removeAttribute("artistas");
-                session.removeAttribute("albumes");
-                session.removeAttribute("generos");
-                session.removeAttribute("albumSeleccionado");
-                break;
-            case Utils.OP_FILTRAR:
-                albumes = filtrarAlbumes(request);
+                    break;
+                case Utils.OP_CREAR:
+                    albumFacade.create(crearAlbum(request, null));
 
-                break;
-            case Utils.OP_REDIRECCION_MODIFICAR:
-                albumSeleccionado = cargarAlbum(request);
+                    session.removeAttribute("artistas");
+                    session.removeAttribute("albumes");
+                    session.removeAttribute("generos");
+                    session.removeAttribute("albumSeleccionado");
+                    break;
+                case Utils.OP_FILTRAR:
+                    albumes = filtrarAlbumes(request);
 
-                session.setAttribute("albumSeleccionado", albumSeleccionado);
-                rd = getServletContext().getRequestDispatcher("/nuevoAlbum.jsp");
-                rd.forward(request, response);
-                break;
-            case Utils.OP_LISTAR:
-                albumSeleccionado = cargarAlbum(request);
+                    break;
+                case Utils.OP_REDIRECCION_MODIFICAR:
+                    albumSeleccionado = cargarAlbum(request);
 
-                session.setAttribute("albumSeleccionado", albumSeleccionado);
-                rd = getServletContext().getRequestDispatcher("/nuevoAlbum.jsp");
-                rd.forward(request, response);
-                break;
-            case Utils.OP_CREAR_CANCION_ALBUM:
-                incluirCancionAlbum(request);
+                    session.setAttribute("albumSeleccionado", albumSeleccionado);
+                    rd = getServletContext().getRequestDispatcher("/nuevoAlbum.jsp");
+                    rd.forward(request, response);
+                    break;
+                case Utils.OP_LISTAR:
+                    albumSeleccionado = cargarAlbum(request);
 
-//                artistas = artistaFacade.findAll();
-//                albumes = albumFacade.findAll();
-//                generos = generoFacade.findAll();
-                session.removeAttribute("artistas");
-                session.removeAttribute("albumes");
-                session.removeAttribute("generos");
-
-//                session.setAttribute("artistas", artistas);
-//                session.setAttribute("albumes", albumes);
-//                session.setAttribute("generos", generos);
-                albumSeleccionado = cargarAlbum(request);
-                session.removeAttribute("albumSeleccionado");
-                session.setAttribute("albumSeleccionado", albumSeleccionado);
-
-//                rd = getServletContext().getRequestDispatcher("/nuevoAlbum.jsp");
-//                rd.forward(request, response);
-                break;
-            case Utils.OP_BORRAR_CANCION_ALBUM:
-                eliminarCancionAlbum(request);
+                    session.setAttribute("albumSeleccionado", albumSeleccionado);
+                    rd = getServletContext().getRequestDispatcher("/nuevoAlbum.jsp");
+                    rd.forward(request, response);
+                    break;
+                case Utils.OP_CREAR_CANCION_ALBUM:
+                    incluirCancionAlbum(request);
 
 //                artistas = artistaFacade.findAll();
 //                albumes = albumFacade.findAll();
 //                generos = generoFacade.findAll();
-                session.removeAttribute("artistas");
-                session.removeAttribute("albumes");
-                session.removeAttribute("generos");
+                    session.removeAttribute("artistas");
+                    session.removeAttribute("albumes");
+                    session.removeAttribute("generos");
 
 //                session.setAttribute("artistas", artistas);
 //                session.setAttribute("albumes", albumes);
 //                session.setAttribute("generos", generos);
-                albumSeleccionado = cargarAlbum(request);
-                session.removeAttribute("albumSeleccionado");
-                session.setAttribute("albumSeleccionado", albumSeleccionado);
+                    albumSeleccionado = cargarAlbum(request);
+                    session.removeAttribute("albumSeleccionado");
+                    session.setAttribute("albumSeleccionado", albumSeleccionado);
 
 //                rd = getServletContext().getRequestDispatcher("/nuevoAlbum.jsp");
 //                rd.forward(request, response);
-                break;
-            case Utils.OP_INCLUIR_CANCION_LISTA:
-                incluirCancionEnLista(request, false);
-                break;
-            case Utils.OP_INCLUIR_ALBUM_LISTA:
-                incluirCancionEnLista(request, true);
-                break;
+                    break;
+                case Utils.OP_BORRAR_CANCION_ALBUM:
+                    eliminarCancionAlbum(request);
+
+//                artistas = artistaFacade.findAll();
+//                albumes = albumFacade.findAll();
+//                generos = generoFacade.findAll();
+                    session.removeAttribute("artistas");
+                    session.removeAttribute("albumes");
+                    session.removeAttribute("generos");
+
+//                session.setAttribute("artistas", artistas);
+//                session.setAttribute("albumes", albumes);
+//                session.setAttribute("generos", generos);
+                    albumSeleccionado = cargarAlbum(request);
+                    session.removeAttribute("albumSeleccionado");
+                    session.setAttribute("albumSeleccionado", albumSeleccionado);
+
+//                rd = getServletContext().getRequestDispatcher("/nuevoAlbum.jsp");
+//                rd.forward(request, response);
+                    break;
+                case Utils.OP_INCLUIR_CANCION_LISTA:
+                    incluirCancionEnLista(request, false);
+                    break;
+                case Utils.OP_INCLUIR_ALBUM_LISTA:
+                    incluirCancionEnLista(request, true);
+                    break;
+            }
+
+            if (opcode != Utils.OP_FILTRAR) {
+                albumes = albumFacade.findAll();
+            }
+
+            artistas = artistaFacade.findAll();
+            generos = generoFacade.findAll();
+
+            session.setAttribute("artistas", artistas);
+            session.setAttribute("albumes", albumes);
+            session.setAttribute("generos", generos);
+
+            rd = getServletContext().getRequestDispatcher("/albumes.jsp");
+            rd.forward(request, response);
+
+        } catch (Exception e) {
+            HttpSession session = request.getSession();
+            session.setAttribute("mensajeError", "Ooops. Algo ha ido mal prueba a intentarlo de nuevo");
+            request.setAttribute(Utils.RUTA, Utils.RUTA_ERROR);
+            
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/EnrutadorServlet");
+            rd.forward(request, response);
         }
-
-        if (opcode != Utils.OP_FILTRAR) {
-            albumes = albumFacade.findAll();
-        }
-
-        artistas = artistaFacade.findAll();
-        generos = generoFacade.findAll();
-
-        session.setAttribute("artistas", artistas);
-        session.setAttribute("albumes", albumes);
-        session.setAttribute("generos", generos);
-
-        rd = getServletContext().getRequestDispatcher("/albumes.jsp");
-        rd.forward(request, response);
-
     }
 
     /**
@@ -222,13 +243,13 @@ public class AlbumCRUDServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private Album cargarAlbum(HttpServletRequest request) {
+    private Album cargarAlbum(HttpServletRequest request) throws Exception {
         int idAlbum = Integer.parseInt(request.getParameter(Utils.IDALBUMINPUT));
 
         return albumFacade.find(idAlbum);
     }
 
-    private Album crearAlbum(HttpServletRequest request, Album album) {
+    private Album crearAlbum(HttpServletRequest request, Album album) throws Exception {
         Album al = album;
         if (al == null) {
             al = new Album();
@@ -265,19 +286,19 @@ public class AlbumCRUDServlet extends HttpServlet {
         return al;
     }
 
-    private Album modificarAlbum(HttpServletRequest request) {
+    private Album modificarAlbum(HttpServletRequest request) throws Exception {
         Album al = cargarAlbum(request);
         crearAlbum(request, al);
         return al;
     }
 
-    private void eliminarAlbum(HttpServletRequest request) {
+    private void eliminarAlbum(HttpServletRequest request) throws Exception {
         Album al = cargarAlbum(request);
 
         albumFacade.remove(al);
     }
 
-    private List<Album> filtrarAlbumes(HttpServletRequest request) {
+    private List<Album> filtrarAlbumes(HttpServletRequest request) throws Exception {
         String[] idArtistas = request.getParameterValues(Utils.ARTISTASSELECCIONADOSNPUT) != null ? request.getParameterValues(Utils.ARTISTASSELECCIONADOSNPUT) : null;
         List<Artista> artistas = null;
 
@@ -290,7 +311,7 @@ public class AlbumCRUDServlet extends HttpServlet {
         return albumFacade.filtrarAlbumes(artistas);
     }
 
-    private void incluirCancionAlbum(HttpServletRequest request) {
+    private void incluirCancionAlbum(HttpServletRequest request) throws Exception {
         Album albumSeleccionado = cargarAlbum(request);
         Cancion cAux;
 
@@ -313,7 +334,7 @@ public class AlbumCRUDServlet extends HttpServlet {
         }
     }
 
-    private Cancion crearCancionAlbum(int idCancion, Album albumSeleccionado, HttpServletRequest request) {
+    private Cancion crearCancionAlbum(int idCancion, Album albumSeleccionado, HttpServletRequest request) throws Exception {
         Cancion c = new Cancion();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -339,7 +360,7 @@ public class AlbumCRUDServlet extends HttpServlet {
         return c;
     }
 
-    private void eliminarCancionAlbum(HttpServletRequest request) {
+    private void eliminarCancionAlbum(HttpServletRequest request) throws Exception {
         Album albumSeleccionado = cargarAlbum(request);
         int idCancion = request.getParameter(Utils.IDCANCIONINPUT) != null && !request.getParameter(Utils.IDCANCIONINPUT).isEmpty()
                 ? Integer.parseInt(request.getParameter(Utils.IDCANCIONINPUT)) : 0;
@@ -352,7 +373,7 @@ public class AlbumCRUDServlet extends HttpServlet {
         }
     }
 
-    private void incluirCancionEnLista(HttpServletRequest request, boolean album) {
+    private void incluirCancionEnLista(HttpServletRequest request, boolean album) throws Exception {
         ListaReproduccion l = listaReproduccionFacade.find(Integer.parseInt(request.getParameter(Utils.IDLISTAREPRODUCCIONINPUT)));
 
         if (!album) {

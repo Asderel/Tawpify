@@ -72,6 +72,7 @@ public class Utils {
     public static final int RUTA_GENEROS = 24;
     public static final int RUTA_LISTAS = 25;
     public static final int RUTA_USUARIOS = 26;
+    public static final int RUTA_ERROR = 27;
 
     public static final String CANCIONES = "/canciones.jsp";
     public static final String ALBUMES = "/albumes.jsp";
@@ -79,6 +80,7 @@ public class Utils {
     public static final String GENEROS = "/generos.jsp";
     public static final String LISTAS = "/listasReproduccion.jsp";
     public static final String USUARIOS = "/usuarios.jsp";
+    public static final String ERROR = "/index.jsp";
 
     public static final String APP_PATH = "/Tawpify-war";
 }

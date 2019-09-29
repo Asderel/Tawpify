@@ -50,16 +50,26 @@ public class UsuarioCRUDServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+        try {
+            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
 
 //        if (opcode == Utils.OP_LISTAR) {
-        List<Usuario> usuarios = usuarioFacade.findAll();
+            List<Usuario> usuarios = usuarioFacade.findAll();
 
-        request.setAttribute("usuarios", usuarios);
+            request.setAttribute("usuarios", usuarios);
 //        }
 
-        RequestDispatcher rd = getServletContext().getRequestDispatcher("/usuarios.jsp");
-        rd.forward(request, response);
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/usuarios.jsp");
+            rd.forward(request, response);
+
+        } catch (Exception e) {
+            HttpSession session = request.getSession();
+            session.setAttribute("mensajeError", "Ooops. Algo ha ido mal prueba a intentarlo de nuevo");
+            request.setAttribute(Utils.RUTA, Utils.RUTA_ERROR);
+
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/EnrutadorServlet");
+            rd.forward(request, response);
+        }
     }
 
     /**
@@ -73,38 +83,49 @@ public class UsuarioCRUDServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        boolean logout = false;
+        try {
 
-        RequestDispatcher rd = null;
-        int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+            HttpSession session = request.getSession();
+            boolean logout = false;
 
-        switch (opcode) {
-            case Utils.OP_REDIRECCION_MODIFICAR:
-                Usuario usuarioSeleccionado = cargarUsuario(request);
-                request.setAttribute("usuarioSeleccionado", usuarioSeleccionado);
-                request.setAttribute("opcode", opcode);
-                rd = getServletContext().getRequestDispatcher("/login.jsp");
-                break;
-            case Utils.OP_BORRAR:
-                logout = eliminarUsuario(request, session);
-                if (logout) {
-                    response.sendRedirect(Utils.APP_PATH + "/index.jsp");
-                    session.removeAttribute("usuarioConectado");
-                } else {
+            RequestDispatcher rd = null;
+            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+
+            switch (opcode) {
+                case Utils.OP_REDIRECCION_MODIFICAR:
+                    Usuario usuarioSeleccionado = cargarUsuario(request);
+                    request.setAttribute("usuarioSeleccionado", usuarioSeleccionado);
+                    request.setAttribute("opcode", opcode);
+                    rd = getServletContext().getRequestDispatcher("/login.jsp");
+                    break;
+                case Utils.OP_BORRAR:
+                    logout = eliminarUsuario(request, session);
+                    if (logout) {
+                        response.sendRedirect(Utils.APP_PATH + "/index.jsp");
+                        session.removeAttribute("usuarioConectado");
+                    } else {
+                        rd = getServletContext().getRequestDispatcher("/usuarios.jsp");
+                    }
+                    break;
+                default:
+                    // Venimos de la creacion / modificacion del ususario
                     rd = getServletContext().getRequestDispatcher("/usuarios.jsp");
-                }
-                break;
-            default:
-                // Venimos de la creacion / modificacion del ususario
-                rd = getServletContext().getRequestDispatcher("/usuarios.jsp");
-                break;
-        }
+                    break;
+            }
 
-        if (!logout) {
-            List<Usuario> usuarios = usuarioFacade.findAll();
-            request.setAttribute("usuarios", usuarios);
+            if (!logout) {
+                List<Usuario> usuarios = usuarioFacade.findAll();
+                request.setAttribute("usuarios", usuarios);
 
+                rd.forward(request, response);
+            }
+
+        } catch (Exception e) {
+            HttpSession session = request.getSession();
+            session.setAttribute("mensajeError", "Ooops. Algo ha ido mal prueba a intentarlo de nuevo");
+            request.setAttribute(Utils.RUTA, Utils.RUTA_ERROR);
+
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/EnrutadorServlet");
             rd.forward(request, response);
         }
     }
@@ -119,13 +140,13 @@ public class UsuarioCRUDServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private Usuario cargarUsuario(HttpServletRequest request) {
+    private Usuario cargarUsuario(HttpServletRequest request) throws Exception {
         int idUsuario = Integer.parseInt(request.getParameter(Utils.IDUSUARIOINPUT));
 
         return usuarioFacade.find(idUsuario);
     }
 
-    private boolean eliminarUsuario(HttpServletRequest request, HttpSession session) {
+    private boolean eliminarUsuario(HttpServletRequest request, HttpSession session) throws Exception {
         int idUsuario = Integer.parseInt(request.getParameter(Utils.IDUSUARIOINPUT));
         boolean resp;
 
