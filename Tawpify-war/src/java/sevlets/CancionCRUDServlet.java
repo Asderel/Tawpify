@@ -4,6 +4,7 @@ import entities.Album;
 import entities.Artista;
 import entities.Cancion;
 import entities.ListaReproduccion;
+import entities.Usuario;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -74,12 +75,13 @@ public class CancionCRUDServlet extends HttpServlet {
         try {
 
             HttpSession session = request.getSession();
-            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
+
+            Usuario u = (Usuario) session.getAttribute("usuarioConectado");
 
             List<Cancion> canciones = cancionFacade.selectCancionesOrdenadas();
             List<Artista> artistas = artistaFacade.findAll();
             List<Album> albumes = albumFacade.findAll();
-            List<ListaReproduccion> listasReproduccion = listaReproduccionFacade.findAll();
+            List<ListaReproduccion> listasReproduccion = cargarListasReproduccion(u);
 
             session.setAttribute("canciones", canciones);
             session.setAttribute("artistas", artistas);
@@ -200,6 +202,12 @@ public class CancionCRUDServlet extends HttpServlet {
         int idCancion = Integer.parseInt(request.getParameter(Utils.IDCANCIONINPUT));
 
         return cancionFacade.find(idCancion);
+    }
+
+    private List<ListaReproduccion> cargarListasReproduccion(Usuario usuario) throws Exception {
+        return usuario.getAdministrador() == 1
+                ? listaReproduccionFacade.findAll()
+                : listaReproduccionFacade.selectListasReproduccionByUsuario(usuario);
     }
 
     private Cancion crearCancion(HttpServletRequest request, Cancion cancion) throws Exception {

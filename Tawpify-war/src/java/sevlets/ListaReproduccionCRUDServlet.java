@@ -65,7 +65,6 @@ public class ListaReproduccionCRUDServlet extends HttpServlet {
         try {
 
             HttpSession session = request.getSession();
-            int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
 
             Usuario u = (Usuario) session.getAttribute("usuarioConectado");
             List<ListaReproduccion> listasReproduccion;

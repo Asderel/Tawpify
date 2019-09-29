@@ -209,7 +209,7 @@
 
 
                                         <div class="row p-2" style="border-top: solid 1px #444">
-                                            <div class="<%=usuarioConectado.getAdministrador() == 1 ? "col-4" : "col-12" %>" style="text-align: center">
+                                            <div class="<%=usuarioConectado.getAdministrador() == 1 ? "col-4" : "col-12"%>" style="text-align: center">
                                                 <button class="btn btn-outline-warning" type="submit" form="albumesForm" onclick="seleccionarAlbum(<%=al.getIdAlbum()%>, <%=Utils.OP_LISTAR%>)"
                                                         title="Ver album"
                                                         style="border: none;"><span class="far fa-eye"/></button>
@@ -261,16 +261,26 @@
 
                                                         elementos.each(function () {
                                                             var encontrado;
-                                                            var contenido = $(this).find('[id^=contenidoCard]');
+                                                            var cabeceraCard = $(this).find('[id^=cabeceraCard-]');
 
-                                                            contenido.each(function () {
-                                                                if ($(this).text().toUpperCase().indexOf(filtro) > -1) {
-                                                                    encontrado = true;
-                                                                    return false;
-                                                                } else {
-                                                                    encontrado = false;
-                                                                }
-                                                            });
+                                                            if (cabeceraCard.text().toUpperCase().indexOf(filtro) > -1) {
+                                                                encontrado = true;
+                                                            } else {
+                                                                encontrado = false;
+                                                            }
+
+                                                            if (!encontrado) {
+                                                                var contenido = $(this).find('[id^=contenidoCard]');
+
+                                                                contenido.each(function () {
+                                                                    if ($(this).text().toUpperCase().indexOf(filtro) > -1) {
+                                                                        encontrado = true;
+                                                                        return false;
+                                                                    } else {
+                                                                        encontrado = false;
+                                                                    }
+                                                                });
+                                                            }
 
                                                             if (encontrado) {
                                                                 $(this).parent().show();

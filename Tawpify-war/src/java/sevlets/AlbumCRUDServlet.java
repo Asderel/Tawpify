@@ -5,6 +5,7 @@ import entities.Album;
 import entities.Cancion;
 import entities.Genero;
 import entities.ListaReproduccion;
+import entities.Usuario;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -81,10 +82,12 @@ public class AlbumCRUDServlet extends HttpServlet {
             HttpSession session = request.getSession();
             int opcode = Integer.parseInt(request.getParameter(Utils.OPCODE));
 
+            Usuario u = (Usuario)session.getAttribute("usuarioConectado");
+
             List<Artista> artistas = artistaFacade.findAll();
             List<Album> albumes = albumFacade.findAll();
             List<Genero> generos = generoFacade.findAll();
-            List<ListaReproduccion> listasReproduccion = listaReproduccionFacade.findAll();
+            List<ListaReproduccion> listasReproduccion = cargarListasReproduccion(u);
 
             session.setAttribute("artistas", artistas);
             session.setAttribute("albumes", albumes);
@@ -227,7 +230,7 @@ public class AlbumCRUDServlet extends HttpServlet {
             HttpSession session = request.getSession();
             session.setAttribute("mensajeError", "Ooops. Algo ha ido mal prueba a intentarlo de nuevo");
             request.setAttribute(Utils.RUTA, Utils.RUTA_ERROR);
-            
+
             RequestDispatcher rd = getServletContext().getRequestDispatcher("/EnrutadorServlet");
             rd.forward(request, response);
         }
@@ -247,6 +250,12 @@ public class AlbumCRUDServlet extends HttpServlet {
         int idAlbum = Integer.parseInt(request.getParameter(Utils.IDALBUMINPUT));
 
         return albumFacade.find(idAlbum);
+    }
+
+    private List<ListaReproduccion> cargarListasReproduccion(Usuario usuario) throws Exception {
+        return usuario.getAdministrador() == 1
+                ? listaReproduccionFacade.findAll()
+                : listaReproduccionFacade.selectListasReproduccionByUsuario(usuario);
     }
 
     private Album crearAlbum(HttpServletRequest request, Album album) throws Exception {
