@@ -10,12 +10,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/all.css">
         <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-        <script src="https://kit.fontawesome.com/86da25765b.js" crossorigin="anonymous"></script>
 
         <%
             Usuario usuarioConectado = session.getAttribute("usuarioConectado") != null ? (Usuario) session.getAttribute("usuarioConectado") : null;
@@ -149,7 +149,7 @@
 
                         <div class="row">
                             <% for (Artista a : artistas) {%>
-                            <div data-aos="zoom-in" class="col-3">
+                            <div data-aos="zoom-in" class="col-md-3 col-sm-12">
                                 <div id="card-<%=a.getIdArtista()%>" class="card border-warning mb-3">
                                     <div id="cabeceraCard-<%=a.getIdArtista()%>" class="card-header"><%=a.getNombre()%></div>
                                     <div class="card-body">
@@ -246,47 +246,46 @@
         <!-- FIN MODALES -->
 
         <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
         <script>
                             AOS.init();
-        </script>
 
-        <script>
-            function seleccionarArtista(idArtista, accion) {
-                $('#idArtistaInput').val(idArtista);
-                $('#accionInput').val(accion);
-                $('#nombreInputModalModificarArtista').val($('#nombreOculto_' + idArtista).val());
-            }
+                            function seleccionarArtista(idArtista, accion) {
+                                $('#idArtistaInput').val(idArtista);
+                                $('#accionInput').val(accion);
+                                $('#nombreInputModalModificarArtista').val($('#nombreOculto_' + idArtista).val());
+                            }
 
-            function setupModificarArtista() {
-                $('#nombreInput').val($('#nombreInputModalModificarArtista').val());
-            }
+                            function setupModificarArtista() {
+                                $('#nombreInput').val($('#nombreInputModalModificarArtista').val());
+                            }
 
-            function setupCrearArtista() {
-                $('#nombreInput').val($('#nombreInputModalCrearArtista').val());
-                $('#accionInput').val(<%=Utils.OP_CREAR%>);
-            }
+                            function setupCrearArtista() {
+                                $('#nombreInput').val($('#nombreInputModalCrearArtista').val());
+                                $('#accionInput').val(<%=Utils.OP_CREAR%>);
+                            }
 
-            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 2 : 0%>
+                            var numFilasIngorar = <%=usuarioConectado.getAdministrador() == 1 ? 2 : 0%>
 
-            function filtrar(filtroInput, tabla) {
-                var input, filtro;
-                input = document.getElementById(filtroInput);
-                filtro = input.value.toUpperCase();
-                elementos = $('[id^=' + tabla + ']');
+                            function filtrar(filtroInput, tabla) {
+                                var input, filtro;
+                                input = document.getElementById(filtroInput);
+                                filtro = input.value.toUpperCase();
+                                elementos = $('[id^=' + tabla + ']');
 
-                elementos.each(function () {
-                   if ($(this).text().toUpperCase().indexOf(filtro) > -1) {
-                       $(this).parent().parent().show();
-                    } else {
-                       $(this).parent().parent().hide();
-                    }
-                });
-            }
+                                elementos.each(function () {
+                                    if ($(this).text().toUpperCase().indexOf(filtro) > -1) {
+                                        $(this).parent().parent().show();
+                                    } else {
+                                        $(this).parent().parent().hide();
+                                    }
+                                });
+                            }
 
-            function goto(ruta) {
-                $('#formRuta').attr('action', ruta);
-                $('#formRuta').submit();
-            }
+                            function goto(ruta) {
+                                $('#formRuta').attr('action', ruta);
+                                $('#formRuta').submit();
+                            }
         </script>
     </body>
 </html>
