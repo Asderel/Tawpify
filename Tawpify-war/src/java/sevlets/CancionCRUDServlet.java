@@ -171,7 +171,7 @@ public class CancionCRUDServlet extends HttpServlet {
             session.setAttribute("listasReproduccion", listasReproduccion);
 
             if (opcode != Utils.OP_REDIRECCION_CREAR_CANCION && opcode != Utils.OP_REDIRECCION_MODIFICAR) {
-                request.setAttribute(Utils.RUTA, Utils.RUTA_ERROR);
+                request.setAttribute(Utils.RUTA, Utils.RUTA_CANCIONES);
                 rd = getServletContext().getRequestDispatcher("/EnrutadorServlet");
                 rd.forward(request, response);
             }
@@ -179,7 +179,7 @@ public class CancionCRUDServlet extends HttpServlet {
         } catch (Exception e) {
             HttpSession session = request.getSession();
             session.setAttribute("mensajeError", "Ooops. Algo ha ido mal prueba a intentarlo de nuevo");
-            request.setAttribute(Utils.RUTA, Utils.RUTA_CANCIONES);
+            request.setAttribute(Utils.RUTA, Utils.RUTA_ERROR);
 
             RequestDispatcher rd = getServletContext().getRequestDispatcher("/EnrutadorServlet");
             rd.forward(request, response);
